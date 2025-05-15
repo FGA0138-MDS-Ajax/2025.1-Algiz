@@ -26,7 +26,7 @@ const config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'fga0138-mds-ajax', // Usually your GitHub org/user name.
   projectName: '2025.1-Algiz', // Usually your repo name.
-
+ 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
