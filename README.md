@@ -15,7 +15,8 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 
 ## Pré-requisitos
 
-Antes de começar, verifique se você possui as seguintes ferramentas instaladas em sua máquina:
+Antes de começar, recomendamos que você utilize o sistema operacional **Linux ou Linux WSL (Ubuntu)**, 
+verifique também se você possui as seguintes ferramentas instaladas em sua máquina:
 
 - [Node.js](https://nodejs.org/) (versão 20 ou superior)
 - [npm](https://www.npmjs.com/) (gerenciador de pacotes do Node.js)
@@ -32,8 +33,17 @@ git clone https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz.git
 ```
 
 ---
+## Passo 2: Primeira configuração
 
-## Passo 2: Instalar dependências
+Copie `.env.example` para `.env` na pasta backend:
+
+```bash
+cd backend
+cp .env.example .env
+```
+
+---
+## Passo 3: Instalar dependências
 
 Navegue até a pasta do projeto e execute os seguintes comandos para instalar as dependências do Node.js:
 
@@ -52,7 +62,7 @@ npm install
 
 ---
 
-## Passo 3: Iniciar o servidor
+## Passo 4: Iniciar o servidor
 
 ### Backend (usando Docker)
 
@@ -93,3 +103,11 @@ A documentação estará disponível em: [http://localhost:3000](http://localhos
 - O frontend utiliza Vite.js e roda na porta `5173`.
 - A documentação está disponível na porta `3000`.
 - Certifique-se de que as portas não estejam em uso por outros serviços locais.
+- Se o MySQL não conseguir iniciar:
+  - Tente `docker compose down -v` e depois `docker compose up --build`
+  - Verifique os registros com `docker compose logs db`
+
+- Para se conectar ao contêiner do MySQL:
+  ```bash
+  docker exec -it backend-db-1 mysql -u root -pyourpassword
+  ```
