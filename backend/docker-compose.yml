@@ -1,5 +1,3 @@
-
-
 services:
   backend:
     build:
@@ -8,6 +6,25 @@ services:
       - "3001:3001"
     volumes:
       - .:/app
+    depends_on:
+      - db
     environment:
-      - NODE_ENV=development
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: yourpassword
+      DB_NAME: econetdb
 
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: econetdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+
+volumes:
+  db_data:
