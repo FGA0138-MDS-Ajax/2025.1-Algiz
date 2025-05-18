@@ -43,9 +43,6 @@ export function validateCadastro(form, tipo) {
   if (tipo === "empresa") {
     const tel = validateTelefone(form.telefone);
     if (tel) return { field: "telefone", message: tel };
-
-    const cel = validateCelular(form.celular);
-    if (cel) return { field: "celular", message: cel };
   } else {
     const cel = validateCelular(form.celular);
     if (cel) return { field: "celular", message: cel };
