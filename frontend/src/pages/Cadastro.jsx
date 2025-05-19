@@ -74,7 +74,7 @@ export default function Cadastro() {
         <div className="flex gap-2 mb-8">
           <button
             type="button"
-            className={`px-6 py-2 rounded-full font-bold transition ${
+            className={`px-6 py-2 hover:bg-green-800 rounded-full cursor-pointer font-bold transition ${
               tipo === "pessoa"
                 ? "bg-green-600 text-white"
                 : "bg-white/20 text-white border border-white/30"
@@ -85,7 +85,7 @@ export default function Cadastro() {
           </button>
           <button
             type="button"
-            className={`px-6 py-2 rounded-full font-bold transition ${
+            className={`px-6 py-2 hover:bg-green-800 rounded-full cursor-pointer font-bold transition ${
               tipo === "empresa"
                 ? "bg-green-600 text-white"
                 : "bg-white/20 text-white border border-white/30"
@@ -314,7 +314,7 @@ export default function Cadastro() {
               </span>
             </div>
             <button
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 w-full rounded-full transition mb-6"
+              className="bg-green-600 hover:bg-green-800 text-white font-bold cursor-pointer py-3 w-full rounded-full transition mb-6"
               type="submit"
             >
               Cadastrar
