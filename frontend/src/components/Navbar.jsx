@@ -5,10 +5,12 @@ function Home() {
     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2 bg-green-100 shadow-md">
       {/* Logo */}
       <div className="flex items-center">
-        <Link to='/' className="w-8 h-8 text-green-600">
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.86,14.25c-2.65,3.52-9.89,3.23-9.89,3.23s-.74-7.24,3.41-9.89c2.65-1.68,6.47-.45,8.15,2.2S19.51,12.57,16.86,14.25Z" />
-          </svg>
+        <Link to='/' className="w-8 h-8">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-8 h-8 object-contain"
+          />
         </Link>
 
         {/* Search bar */}
