@@ -10,7 +10,7 @@ function Layout({ children }) {
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
-      <div className="p-4">{children}</div>
+      <div className="min-h-screen">{children}</div>
     </>
   );
 }
