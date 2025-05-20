@@ -111,3 +111,33 @@ A documentação estará disponível em: [http://localhost:3000](http://localhos
   ```bash
   docker exec -it backend-db-1 mysql -u root -pyourpassword
   ```
+  
+---
+### Regra de commit:
+Utilizar o [gitmoji](https://gitmoji.dev/) no começo de cada commit  
+Ex:  
+📝 Atualização da documentação
+
+---
+
+### Template de Pull Request:
+```bash
+PR Title: [Descrição breve do que foi feito]
+
+🔗 Issues Relacionadas:
+
+Resolve #1234 (substitua pelo número da issue, se o pr resolve a issue)
+
+Relacionado a #5678 (substitua pelo número da issue, use caso o PR não resolver completamente a issue)
+
+✅ Alterações Realizadas:
+   - Item 1
+   - Item 2
+
+🛠 Como Testar: (opcional)
+   - Passo 1
+   - Passo 2
+
+📌 Observações: (opcional)
+   - Algum detalhe extra?
+```
