@@ -10,9 +10,9 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Algiz Docs',
-  tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
+  title: 'EcoNet',
+  tagline: 'Matketplace de produtos sustentáveis',
+  favicon: 'img/logo-2.png',
   trailingSlash: false,
   deploymentBranch: 'gh-pages',
 

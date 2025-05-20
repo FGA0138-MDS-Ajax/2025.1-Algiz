@@ -1,0 +1,8 @@
+{
+  "label": "Arquitetura do Projeto",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Detalha a arquitetura do projeto, incluindo diagramas e descrições de componentes"
+  }
+}
