@@ -4,12 +4,9 @@ import Navbar from './Navbar'; // ajuste o caminho se a Navbar estiver em outro 
 function Layout({ children }) {
   const location = useLocation();
 
-  const hideNavbarOn = ['/Login'];
-  const shouldHideNavbar = hideNavbarOn.includes(location.pathname);
-
   return (
     <>
-      {!shouldHideNavbar && <Navbar />}
+      <Navbar />
       <div className="min-h-screen">{children}</div>
     </>
   );
