@@ -1,0 +1,3 @@
+-- Arquivo para popular o banco de dados(testes)
+-- Executar após criar o banco de dados e as tabelas (init.sql)
+--
