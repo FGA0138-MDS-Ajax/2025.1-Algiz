@@ -1,4 +1,4 @@
-// backend/db.js
+
 const mysql = require('mysql2/promise');
 
 const config = {
@@ -12,6 +12,7 @@ const config = {
 };
 
 const pool = mysql.createPool(config);
+
 
 module.exports = pool;
 
