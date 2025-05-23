@@ -22,7 +22,7 @@ sidebar_position: 2
 8. 
 
 ## Objetivos
-
+- Teste de deploy automatico pelo git Actions
 ## Discussões e Decisões
 
 ### 1. Review da segunda Sprint  
