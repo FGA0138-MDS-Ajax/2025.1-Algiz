@@ -8,6 +8,7 @@ sidebar_position: 2
 **Data:** 19/05/2025  
 **Horário de Início:** 20:13  
 **Horário de Término:** 20:32  
+**Duração:** 19 minutos  
 **Local:** Microsoft Teams
 
 ## Participantes
@@ -24,28 +25,12 @@ sidebar_position: 2
 
 ## Objetivos
 
-Mostrar atualizações no repositório [Algiz](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz) e a criação do project [Equipe Algiz 2025.1](https://github.com/orgs/FGA0138-MDS-Ajax/projects/11)  
-Informar a relevância de acompanhar o quadro das issues [Equipe Algiz 2025.1](https://github.com/orgs/FGA0138-MDS-Ajax/projects/11)  
-Acompanhar o andamento das issues passadas  
-Informar sobre o prazo de entrega das documentações
-
-## Discussões e Decisões
-
-### 1. Elaboração do documento de Visão do Projeto
-**Discussão:**
-
-
-**Decisões:**
-- Definição ...
-
-
-**Responsáveis:**
-Todos os...
+Mostrar atualizações no repositório [Algiz](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz) e a criação do project [Equipe Algiz 2025.1](https://github.com/orgs/FGA0138-MDS-Ajax/projects/11).  
+Informar a relevância de acompanhar o quadro das issues [Equipe Algiz 2025.1](https://github.com/orgs/FGA0138-MDS-Ajax/projects/11).  
+Acompanhar o andamento das issues passadas.  
+Informar sobre o prazo de entrega das documentações.
 
 ## Próxima Reunião
 **Data:** 21/05/2025  
+**Horário:** 14:00  
 **Local:** Microsoft Teams
-**Horário:** 20:00  
-
-## Observações
-Reunião...
