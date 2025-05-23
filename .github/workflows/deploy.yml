@@ -8,31 +8,30 @@ on:
       - docs/**
       - .github/workflows/deploy-docs.yml
 
-defaults:
-  run:
-    working-directory: docs
-
 jobs:
-
   build:
     name: Build Docusaurus
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: docs/
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
-          cache-dependency-path: '**/package-lock.json'
-          
+          cache-dependency-path: 'docs/package-lock.json'
+
       - name: Install dependencies
-        run: cd docs/ && npm ci
+        run: npm ci
+        working-directory: docs
+
       - name: Build website
-        run: cd docs/ && npm run build
+        run: npm run build
+        working-directory: docs
+
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
