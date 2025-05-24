@@ -14,5 +14,5 @@ sidebar_position: 2
 |**Métodos:**      | • Sprint Planning: Definição de tarefas no GitHub-Pages (Quadro Kanban).<br /> • Reuniões Diárias (Dailys): Reuniões rápidas via Microsoft Teams, fase de desenvolvimento e testes.<br /> • Sprint Review: Demonstração de funcionalidade para validação.<br /> • Retrospectiva: Análise de melhorias/implementações do processo |
 
 ![Representação gráfica do ciclo de vida do projeto.](../../static/img/Scrum.png)
-*Representação gráfica do ciclo de vida do projeto.*
+*Representação do diagrama do ciclo de vida do projeto.*
                                                                                                                                                                                                                                                                                                                                             
