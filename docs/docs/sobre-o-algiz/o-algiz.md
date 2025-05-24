@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Sobre o AGIS
+# Sobre o ALGIS
 
 ## O Problema
 
