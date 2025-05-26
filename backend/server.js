@@ -28,7 +28,7 @@ app.get('/ping-db', async (req, res) => {
   try {
     app.get('/users', async (req, res) => {
       try {
-        const [rows] = await db.query('SELECT * FROM users');
+        const [rows] = await db.query('SELECT * FROM USUARIO');
         res.json(rows);
       } catch (err) {
         console.error('Error fetching users:', err);

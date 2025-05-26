@@ -11,15 +11,20 @@ services:
     environment:
       DB_HOST: db
       DB_USER: root
-      DB_PASSWORD: yourpassword
-      DB_NAME: econetdb
+      DB_PASSWORD: suasenha
+      DB_NAME: EcoNet_DB
 
   db:
     image: mysql:8.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: yourpassword
-      MYSQL_DATABASE: econetdb
+      MYSQL_ROOT_PASSWORD: suasenha
+      MYSQL_DATABASE: EcoNet_DB
     ports:
       - "3307:3306"
     volumes:

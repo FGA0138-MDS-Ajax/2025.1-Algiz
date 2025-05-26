@@ -8,16 +8,16 @@ CREATE DATABASE IF NOT EXISTS EcoNet_DB;
 CREATE TABLE IF NOT EXISTS USUARIO (
     idUsuario       INT         NOT NULL    AUTO_INCREMENT,
     emailUsuario    VARCHAR(255)NOT NULL    UNIQUE,
-    telefoneUsuario INT         NOT NULL,
+    telefoneUsuario VARCHAR(20) NOT NULL,
     estado          VARCHAR(255)NOT NULL,
     PRIMARY KEY (idUsuario)
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS FISICO (
-    cpfFisico       INT(11)         NOT NULL,
+    cpfFisico       VARCHAR(14)        NOT NULL,
     nomeFisico      VARCHAR(255)    NOT NULL,
     sobrenomeFisico VARCHAR(255)    NOT NULL,
-    sexo            CHAR(1)   NOT NULL,
+    sexo            VARCHAR(17)   NOT NULL,
     dtNascimento    DATE            NOT NULL,
     idUsuario       INT             NOT NULL,
     PRIMARY KEY (cpfFisico),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS FISICO (
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS JURIDICO (
-    cnpjJuridico    VARCHAR(14) NOT NULL,
+    cnpjJuridico    VARCHAR(18) NOT NULL,
     razaoSocial     VARCHAR(255)NOT NULL,
     nomeComercial   VARCHAR(255)NOT NULL    UNIQUE,
     areaAtuacao     VARCHAR(255)NOT NULL,
