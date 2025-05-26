@@ -8,6 +8,7 @@ CREATE DATABASE IF NOT EXISTS EcoNet_DB;
 CREATE TABLE IF NOT EXISTS USUARIO (
     idUsuario       INT         NOT NULL    AUTO_INCREMENT,
     emailUsuario    VARCHAR(255)NOT NULL    UNIQUE,
+    senha           VARCHAR(255)NOT NULL,
     telefoneUsuario VARCHAR(20) NOT NULL,
     estado          VARCHAR(255)NOT NULL,
     PRIMARY KEY (idUsuario)
