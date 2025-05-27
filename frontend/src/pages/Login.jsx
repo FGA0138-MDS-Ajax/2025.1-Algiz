@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
+
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -16,8 +18,17 @@ function Login() {
       <div className="absolute inset-0 bg-green-950/80 z-0"></div>
       <form onSubmit={handleLogin} className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl p-8 w-[400px] flex flex-col items-center">
 
-        <Link to="/">
-          <img src="/logo.png" alt="Logo" className="w-24 mx-auto mb-4 cursor-pointer" />
+        <Link
+          to="/"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="transition-transform transform hover:scale-110"
+        >
+          <img
+            src={isHovered ? "/logo-4.png" : "/logo.png"}
+            alt="Logo"
+            className="w-24 mx-auto mb-2 cursor-pointer"
+          />
         </Link>
         <h2 className="text-2xl font-bold mb-6 text-white text-center">Login</h2>
 
