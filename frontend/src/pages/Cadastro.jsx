@@ -1,4 +1,5 @@
-import React, { useState } from "react";import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados, areasAtuacao } from "../utils/opcoes_form";
