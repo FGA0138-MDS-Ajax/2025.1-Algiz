@@ -2,47 +2,38 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
-import { estados, areasAtuacao } from "../utils/opcoes_form";
-
+import { estados } from "../utils/opcoes_form";
 
 export default function Cadastro() {
-  const [tipo, setTipo] = useState("pessoa");
   const initialForm = {
     nome: "",
     sobrenome: "",
     genero: "",
-    razaoSocial: "",
-    cnpj: "",
     celular: "",
     telefone: "",
     email: "",
     senha: "",
     repetirSenha: "",
-    area: "",
     estado: "",
   };
+
   const [form, setForm] = useState(initialForm);
   const [showSenha, setShowSenha] = useState(false);
   const [showRepetir, setShowRepetir] = useState(false);
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErro("");
   }
 
-  function handleTipoChange(novoTipo) {
-    setTipo(novoTipo);
-    setForm(initialForm);
-    setErro("");
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
     setErro("");
-    const error = validateCadastro(form, tipo);
+    const error = validateCadastro(form, "pessoa");
     if (error) {
       setErro(error);
       return;
@@ -65,168 +56,78 @@ export default function Cadastro() {
         style={{ minWidth: 700, minHeight: 750, maxWidth: 700, maxHeight: 750 }}
       >
         <div className="mb-2 flex flex-col items-center">
-          <Link to="/">
-            <img src="/logo.png" alt="Logo" className="w-24 mx-auto mb-2 cursor-pointer" />
+          <Link
+            to="/"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="transition-transform transform hover:scale-110"
+          >
+            <img
+              src={isHovered ? "/logo-4.png" : "/logo.png"}
+              alt="Logo"
+              className="w-24 mx-auto mb-2 cursor-pointer"
+            />
           </Link>
         </div>
-        <h2 className="text-2xl font-semibold mb-2 text-white text-left w-full">
+        <h2 className="text-2xl font-semibold mb-8 text-white text-left w-full">
           Cadastro
         </h2>
-        <div className="flex gap-2 mb-8">
-          <button
-            type="button"
-            className={`px-6 py-2 hover:bg-green-800 rounded-full cursor-pointer font-bold transition ${
-              tipo === "pessoa"
-                ? "bg-green-600 text-white"
-                : "bg-white/20 text-white border border-white/30"
-            }`}
-            onClick={() => handleTipoChange("pessoa")}
-          >
-            Pessoa
-          </button>
-          <button
-            type="button"
-            className={`px-6 py-2 hover:bg-green-800 rounded-full cursor-pointer font-bold transition ${
-              tipo === "empresa"
-                ? "bg-green-600 text-white"
-                : "bg-white/20 text-white border border-white/30"
-            }`}
-            onClick={() => handleTipoChange("empresa")}
-          >
-            Empresa
-          </button>
-        </div>
         <div className="flex w-full gap-12 flex-1">
           {/* Coluna ESQUERDA */}
           <div className="flex-1 flex flex-col gap-8 justify-start">
-            {tipo === "pessoa" ? (
-              <>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="nome">Nome*</label>
-                  <input
-                    id="nome"
-                    name="nome"
-                    placeholder="Digite seu nome"
-                    value={form.nome}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="sobrenome">Sobrenome*</label>
-                  <input
-                    id="sobrenome"
-                    name="sobrenome"
-                    placeholder="Digite seu sobrenome"
-                    value={form.sobrenome}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="celular">Celular*</label>
-                  <input
-                    id="celular"
-                    name="celular"
-                    placeholder="Ex: (61)91234-5678"
-                    value={form.celular}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="email">Email*</label>
-                  <input
-                    id="email"
-                    name="email"
-                    placeholder="Ex: usuario@email.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    type="email"
-                    className="input w-full"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="razaoSocial">Razão Social*</label>
-                  <input
-                    id="razaoSocial"
-                    name="razaoSocial"
-                    placeholder="Digite a razão social"
-                    value={form.razaoSocial}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="cnpj">CNPJ*</label>
-                  <input
-                    id="cnpj"
-                    name="cnpj"
-                    placeholder="Ex: 00.000.000/0001-00"
-                    value={form.cnpj}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="telefone">Telefone (Contato)*</label>
-                  <input
-                    id="telefone"
-                    name="telefone"
-                    placeholder="Ex: (61)1234-5678"
-                    value={form.telefone}
-                    onChange={handleChange}
-                    required
-                    className="input w-full"
-                  />
-                </div>
-                <div>
-                  <label className="block text-white mb-1" htmlFor="email">Email Corporativo*</label>
-                  <input
-                    id="email"
-                    name="email"
-                    placeholder="Ex: empresa@email.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    type="email"
-                    className="input w-full"
-                  />
-                </div>
-              </>
-            )}
+            <div>
+              <label className="block text-white mb-1" htmlFor="nome">Nome*</label>
+              <input
+                id="nome"
+                name="nome"
+                placeholder="Digite seu nome"
+                value={form.nome}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="sobrenome">Sobrenome*</label>
+              <input
+                id="sobrenome"
+                name="sobrenome"
+                placeholder="Digite seu sobrenome"
+                value={form.sobrenome}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="celular">Celular*</label>
+              <input
+                id="celular"
+                name="celular"
+                placeholder="Ex: (61)91234-5678"
+                value={form.celular}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="email">Email*</label>
+              <input
+                id="email"
+                name="email"
+                placeholder="Ex: usuario@email.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                type="email"
+                className="input w-full"
+              />
+            </div>
           </div>
+
           {/* Coluna DIREITA */}
           <div className="flex-1 flex flex-col gap-8 justify-start">
-            {tipo === "empresa" && (
-              <div>
-                <label className="block text-white mb-1" htmlFor="area">Área de atuação*</label>
-                <input
-                  id="area"
-                  name="area"
-                  placeholder="Ex: Tecnologia"
-                  value={form.area}
-                  onChange={handleChange}
-                  list="areas"
-                  required
-                  className="input w-full"
-                />
-                <datalist id="areas">
-                  {areasAtuacao.map((a) => (
-                    <option key={a} value={a} />
-                  ))}
-                </datalist>
-              </div>
-            )}
             <div>
               <label className="block text-white mb-1" htmlFor="estado">Estado*</label>
               <select
@@ -249,23 +150,21 @@ export default function Cadastro() {
                 ))}
               </select>
             </div>
-            {tipo === "pessoa" && (
-              <div>
-                <label className="block text-white mb-1" htmlFor="genero">Gênero</label>
-                <select
-                  id="genero"
-                  name="genero"
-                  value={form.genero}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">Gênero (opcional)</option>
-                  <option value="feminino">Feminino</option>
-                  <option value="masculino">Masculino</option>
-                  <option value="nao_dizer">Prefiro não dizer</option>
-                </select>
-              </div>
-            )}
+            <div>
+              <label className="block text-white mb-1" htmlFor="genero">Gênero</label>
+              <select
+                id="genero"
+                name="genero"
+                value={form.genero}
+                onChange={handleChange}
+                className="input w-full"
+              >
+                <option value="">Gênero (opcional)</option>
+                <option value="feminino">Feminino</option>
+                <option value="masculino">Masculino</option>
+                <option value="nao_dizer">Prefiro não dizer</option>
+              </select>
+            </div>
             <div className="relative w-full">
               <label className="block text-white mb-1" htmlFor="senha">Senha*</label>
               <input
@@ -322,7 +221,7 @@ export default function Cadastro() {
             </button>
           </div>
         </div>
-        {/* Mensagem de erro na mesma altura do botão, à esquerda */}
+        {/* Mensagem de erro */}
         <div className="flex w-full items-center -mt-17">
           <div className="flex-1">
             {erro && (
@@ -336,5 +235,4 @@ export default function Cadastro() {
       </form>
     </div>
   );
-
 }
