@@ -1,5 +1,6 @@
 ---
-sidebar_label: "Modelo de Ata"
+sidebar_label: "28/05/2025"
+sidebar_position: 2
 ---
 
 # Ata de Reunião
