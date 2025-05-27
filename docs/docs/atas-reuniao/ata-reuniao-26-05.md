@@ -3,7 +3,7 @@ sidebar_label: "26/05/2025"
 sidebar_position: 2
 ---
 
-# Ata da Reunião
+# Ata de Reunião
 
 **Data:** 26/05/2026  
 **Horário de Início:** 20:08  
