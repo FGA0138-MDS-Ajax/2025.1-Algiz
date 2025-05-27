@@ -6,9 +6,9 @@ sidebar_position: 2
 # Ata da Reunião
 
 **Data:** 26/05/2026  
-**Horário de Início:** 
-**Horário de Término:** 
-**Duração:**  
+**Horário de Início:** 20:08
+**Horário de Término:** 20:39
+**Duração:** 31:31
 **Local:** Microsoft Teams 
 
 ## Participantes
