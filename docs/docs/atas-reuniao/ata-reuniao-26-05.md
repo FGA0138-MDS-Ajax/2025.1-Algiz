@@ -6,20 +6,20 @@ sidebar_position: 2
 # Ata da Reunião
 
 **Data:** 26/05/2026  
-**Horário de Início:** 20:08
-**Horário de Término:** 20:39
-**Duração:** 31:31
+**Horário de Início:** 20:08  
+**Horário de Término:** 20:39  
+**Duração:** 31:31  
 **Local:** Microsoft Teams 
 
 ## Participantes
 1. Arthur de Lima Sobreira 
 2. Cauã Nicolas Pereira de Oliveira
 3. Diogo Oliveira Ferreira 
-4. Gabriel Augusto Vilarinho Viana Rocha -
+4. Gabriel Augusto Vilarinho Viana Rocha
 5. Gabriel Pereira da Silva 
 6. João Pedro Sampaio Maciel 
 7. João Victor Sousa Soares e Silva 
-8. Julia Oliveira Patricio - 231027140
+8. Julia Oliveira Patricio
 9. Mariana Ribeiro de Santana Gonzaga 
 10. Rafael Siqueira Soares 
 11. Tiago Scherrer Tavares de Lyra 
