@@ -11,8 +11,7 @@ function Sobrenos() {
           <div className="space-y-6">
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">Sobre nós</h1>
             <p className="text-lg text-gray-700 leading-relaxed">
-              A empresa e a cultura da EcoNet são muito parecidas com o nosso produto. São criadas, não improvisadas,
-              para uma experiência agradável.
+              Somos uma plataforma web, onde empresas podem se cadastrar e indicar se atuam como fornecedoras ou demandantes de materiais reaproveitáveis. A plataforma permite que essas organizações estabeleçam conexões, negociem parcerias e formalizem contratos, tudo dentro de um ambiente controlado e seguro.
             </p>
           </div>
 
@@ -59,8 +58,7 @@ function Sobrenos() {
               Nossa missão: ajudar milhões de organizações a crescerem melhor
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Acreditamos não apenas em crescer mais, mas em crescer melhor. E crescer melhor significa alinhar o
-              sucesso do seu negócio com o sucesso dos seus clientes. Ganha-ganha!
+              Acreditamos em promover soluções ambientais inovadoras e sustentáveis que contribuam para a preservação, recuperação e valorização dos recursos naturais, fortalecendo o equilíbrio ecológico e o desenvolvimento socioambiental das comunidades onde atuamos.
             </p>
           </div>
         </div>
@@ -78,7 +76,7 @@ function Sobrenos() {
           {/* Cards dos valores */}
           <div className="grid md:grid-cols-3 gap-6">
             {/* Card 1 */}
-            <div className="bg-green-200 rounded-2xl p-8 space-y-4 h-120">
+            <div className="bg-green-200 rounded-2xl p-8 space-y-4 h-120 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl hover:bg-green-300 cursor-pointer group">
               <div className="w-12 h-12 mx-auto flex items-center justify-center">
                 <svg className="w-full h-full text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -89,15 +87,14 @@ function Sobrenos() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 pt-15">Seja obcecado por membros</h3>
+              <h3 className="text-xl font-bold text-gray-900 pt-15">Sustentabilidade como propósito central</h3>
               <p className="text-gray-700 leading-relaxed">
-                Sempre tivermos práticas descomunais e a confiança de que, se inovássemos e nos esforçássemos,
-                alcançaríamos um sucesso extraordinário. Todos nós compartilhamos essa mentalidade e criança.
+                Nossa missão é promover o desenvolvimento sustentável em todas as nossas ações, garantindo que cada projeto e serviço ofereça soluções que preservem os recursos naturais e fortaleçam o equilíbrio ecológico do planeta.
               </p>
             </div>
 
             {/* Card 2 */}
-            <div className="bg-green-200 rounded-2xl p-8 space-y-4">
+            <div className="bg-green-200 rounded-2xl p-8 space-y-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl hover:bg-green-300 cursor-pointer group">
               <div className="w-12 h-12 mx-auto flex items-center justify-center">
                 <svg className="w-full h-full text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -108,15 +105,14 @@ function Sobrenos() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 pt-15">Seja obcecado por membros</h3>
+              <h3 className="text-xl font-bold text-gray-900 pt-15">Responsabilidade ambiental</h3>
               <p className="text-gray-700 leading-relaxed">
-                Sempre tivermos práticas descomunais e a confiança de que, se inovássemos e nos esforçássemos,
-                alcançaríamos um sucesso extraordinário. Todos nós compartilhamos essa mentalidade e crianção.
+                Reconhecemos a importância de minimizar os impactos ambientais gerados por indústrias, por isso buscamos constantemente contratos para o correto descarte e reaproveitamento de dejetos orgânicos, fazendo com que reduzam as emissões, desperdícios e o consumo excessivo de recursos, sempre respeitando os limites do meio ambiente e aproveitando ao máximo a reutilização de produtos descartáveis.
               </p>
             </div>
 
             {/* Card 3 */}
-            <div className="bg-green-200 rounded-2xl p-8 space-y-4">
+            <div className="bg-green-200 rounded-2xl p-8 space-y-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl hover:bg-green-300 cursor-pointer group">
               <div className="w-12 h-12 mx-auto flex items-center justify-center">
                 <svg className="w-full h-full text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -127,10 +123,9 @@ function Sobrenos() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 pt-15">Seja obcecado por membros</h3>
+              <h3 className="text-xl font-bold text-gray-900 pt-15">Ética ambiental</h3>
               <p className="text-gray-700 leading-relaxed">
-                Sempre tivermos práticas descomunais e a confiança de que, se inovássemos e nos esforçássemos,
-                alcançaríamos um sucesso extraordinário. Todos nós compartilhamos essa mentalidade e criança.
+                Agimos com responsabilidade moral, respeitando e incentivando o uso das leis ambientais e os princípios éticos que norteiam a proteção do meio ambiente. Entendemos que nossas ações visa beneficiar diretamente na qualidade de vida do planeta e das próximas gerações.
               </p>
             </div>
           </div>
@@ -140,7 +135,7 @@ function Sobrenos() {
       {/* Footer */}
       <footer className="container mx-auto px-6 py-8">
         <div className="border-t border-gray-300 pt-8">
-          <p className="text-center text-gray-600 text-sm">©2025 Secure Identity, LLC. All Rights Reserved.</p>
+          <p className="text-center text-gray-600 text-sm">©2025 EcoNet. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
