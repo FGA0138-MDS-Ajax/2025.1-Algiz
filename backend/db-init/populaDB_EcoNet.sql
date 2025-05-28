@@ -10,28 +10,28 @@ USE EcoNet_DB;
 -- Inserção na tabela USUARIO (20 registros)
 INSERT INTO USUARIO (emailUsuario, senha, telefoneUsuario, estado) VALUES
 -- Pessoas físicas (10)
-('joao.silva@email.com', 1198765432, 'SP'),
-('maria.souza@email.com', 2198765432, 'RJ'),
-('carlos.pereira@email.com', 3198765432, 'MG'),
-('ana.oliveira@email.com', 4198765432, 'PR'),
-('lucas.santos@email.com', 5198765432, 'RS'),
-('julia.ribeiro@email.com', 6198765432, 'DF'),
-('pedro.almeida@email.com', 7198765432, 'BA'),
-('fernanda.lima@email.com', 8198765432, 'PE'),
-('rafael.costa@email.com', 9198765432, 'CE'),
-('amanda.martins@email.com', 1098765432, 'SC'),
+('joao.silva@email.com', 'ecoNet123', 1198765432, 'SP'),
+('maria.souza@email.com', 'ecoNet123', 2198765432, 'RJ'),
+('carlos.pereira@email.com', 'ecoNet123', 3198765432, 'MG'),
+('ana.oliveira@email.com', 'ecoNet123', 4198765432, 'PR'),
+('lucas.santos@email.com', 'ecoNet123', 5198765432, 'RS'),
+('julia.ribeiro@email.com', 'ecoNet123', 6198765432, 'DF'),
+('pedro.almeida@email.com', 'ecoNet123', 7198765432, 'BA'),
+('fernanda.lima@email.com', 'ecoNet123', 8198765432, 'PE'),
+('rafael.costa@email.com', 'ecoNet123', 9198765432, 'CE'),
+('amanda.martins@email.com', 'ecoNet123', 1098765432, 'SC'),
 
 -- Empresas (10)
-('reciclatech@empresa.com', 1198765001, 'SP'),
-('ecopaper@empresa.com', 2198765002, 'RJ'),
-('sucatacenter@empresa.com', 3198765003, 'MG'),
-('verdemetal@empresa.com', 4198765004, 'PR'),
-('plastinovos@empresa.com', 5198765005, 'RS'),
-('madeiralegal@empresa.com', 6198765006, 'DF'),
-('vidrobelo@empresa.com', 7198765007, 'BA'),
-('eletrorecicle@empresa.com', 8198765008, 'PE'),
-('organicossustentaveis@empresa.com', 9198765009, 'CE'),
-('quimicaverde@empresa.com', 1098765010, 'SC');
+('reciclatech@empresa.com', 'ecoNet123', 1198765001, 'SP'),
+('ecopaper@empresa.com', 'ecoNet123', 2198765002, 'RJ'),
+('sucatacenter@empresa.com', 'ecoNet123', 3198765003, 'MG'),
+('verdemetal@empresa.com', 'ecoNet123', 4198765004, 'PR'),
+('plastinovos@empresa.com', 'ecoNet123', 5198765005, 'RS'),
+('madeiralegal@empresa.com', 'ecoNet123', 6198765006, 'DF'),
+('vidrobelo@empresa.com', 'ecoNet123', 7198765007, 'BA'),
+('eletrorecicle@empresa.com', 'ecoNet123', 8198765008, 'PE'),
+('organicossustentaveis@empresa.com', 'ecoNet123', 9198765009, 'CE'),
+('quimicaverde@empresa.com', 'ecoNet123', 1098765010, 'SC');
 
 -- Inserção na tabela FISICO (10 pessoas físicas)
 INSERT INTO FISICO (cpfFisico, nomeFisico, sobrenomeFisico, sexo, dtNascimento, idUsuario) VALUES
