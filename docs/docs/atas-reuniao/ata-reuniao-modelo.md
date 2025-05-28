@@ -2,7 +2,7 @@
 sidebar_label: "Modelo de Ata"
 ---
 
-# Ata da Reunião
+# Ata de Reunião
 
 **Data:** [Data da Reunião]  
 **Horário de Início:** [Hora de Início]  
