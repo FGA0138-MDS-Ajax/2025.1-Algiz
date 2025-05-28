@@ -111,7 +111,7 @@ function Sobrenos() {
               <h3 className="text-xl font-bold text-gray-900 pt-15">Seja obcecado por membros</h3>
               <p className="text-gray-700 leading-relaxed">
                 Sempre tivermos práticas descomunais e a confiança de que, se inovássemos e nos esforçássemos,
-                alcançaríamos um sucesso extraordinário. Todos nós compartilhamos essa mentalidade e criança.
+                alcançaríamos um sucesso extraordinário. Todos nós compartilhamos essa mentalidade e crianção.
               </p>
             </div>
 
