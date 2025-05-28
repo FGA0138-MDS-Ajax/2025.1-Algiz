@@ -5,68 +5,42 @@ sidebar_position: 2
 
 # Ata de Reunião
 
-**Data:** [Data da Reunião]  
-**Horário de Início:** [Hora de Início]  
-**Horário de Término:** [Hora de Término]  
-**Duração:**  [Tempo de duração]
-**Local:** [Local da Reunião]
+**Data:** 28/05/2026  
+**Horário de Início:** 14:10  
+**Horário de Término:** 14:31  
+**Duração:** 21:21 (m:s)  
+**Local:** Microsoft Teams 
 
 ## Participantes
-1. Ana Beatriz Cunha Wirthmann
-2. Arthur de Lima Sobreira
-3. Caua Nicolas Pereira de Oliveira
+
+1. Arthur de Lima Sobreira
+3. Cauã Nicolas Pereira de Oliveira
 4. Diogo Oliveira Ferreira
 5. Gabriel Augusto Vilarinho Viana Rocha
-6. Gabriel Pereira da Silva
-7. João Victor Sousa Soares e Silva
-8. João Pedro Sampaio Maciel
-9. Julia Oliveira Patricio
-10. Mariana Ribeiro Santana Gonzaga
-11. Rafael Siqueira Soares
-12. Tiago Scherrer Tavares de Lyra
+6. João Victor Sousa Soares e Silva
+7. João Pedro Sampaio Maciel 
+8. Julia Oliveira Patriciio 
+9. Rafael Siqueira Soares
+10. Tiago Scherrer Tavares de Lyra
 
 ## Objetivos
-[Espaço para quaisquer observações adicionais]
+- Verificar o andamento da conclusão do documento de arquitetura do projeto 
+- Acompanhar o andamento da Sprint e das issues
 
 ## Discussões e Decisões
 
-### 1. [Item 1]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
+### 1. Documento de arquitetura 
+**Discussão:** Foi discutindo a possibilidade de dividir a quantidade de diagramas do tópico 2.6 do documento de arquitetura.
 
-**Decisões:**
-- [Descrição da decisão tomada]
+**Decisão:** Dividimos os diagramas do tópico 2.6 do documento de arquitetura, segue a divisão 
+- Diagrama de estados (João Pedro)
+- Diagrama de atividades (Diogo)
+- Diagrama de classe (Gabriel Augusto)
 
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
-
-### 2. [Item 2]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
-**Decisões:**
-- [Descrição da decisão tomada]
-
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
-
-### 3. [Item 3]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
-**Decisões:**
-- [Descrição da decisão tomada]
-
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
+### 1. Review da Sprint 
+**Discussão:** Foi discutindo sobre o andamento das issues do frontend e foi informado pelos membros designados que elas estavam em andamento.  
 
 ## Próxima Reunião
-**Data:** [Data da Próxima Reunião]  
-**Local:** [Local da Próxima Reunião]  
-**Horário:** [Hora da Próxima Reunião]  
-
-## Observações
-[Espaço para quaisquer observações adicionais]
+**Data:** 02/06/2025
+**Local:** Microsoft Teams  
+**Horário:** 20:00 horas 
