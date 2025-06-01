@@ -1,6 +1,6 @@
-const db = require('../../../db');
-const { hashPassword } = require('../../utils/hash.util'); // comparePassword não é usado aqui
-const { cpf, cnpj } = require('cpf-cnpj-validator'); // << IMPORTAR A LIB AQUI
+const db = require('../../config/db');
+const { hashPassword } = require('../../utils/hash.util'); 
+const { cpf, cnpj } = require('cpf-cnpj-validator'); 
 
 async function createUser(userData) {
     const { nomeCompleto, email, senha, tipoUsuario, cpfCnpj } = userData;
@@ -56,8 +56,7 @@ async function createUser(userData) {
         } else if (valorLimpo.length === 14) {
             ehValido = cnpj.isValid(valorLimpo);
         } else {
-            // Nem 11 nem 14 dígitos após limpar, então formato já é inválido
-            // A biblioteca não seria chamada, então `ehValido` permaneceria false
+            
         }
 
         if (!ehValido) {
@@ -77,9 +76,7 @@ async function createUser(userData) {
     // 3. Verificar se o e-mail já existe (após validações básicas)
     const existingUser = await db.query('SELECT * FROM usuarios WHERE email = $1', [email]);
     if (existingUser.rows && existingUser.rows.length > 0) {
-        // É uma boa prática não detalhar se o email ou o CPF/CNPJ já existe para evitar enumeração de usuários
-        // Mas se a regra de negócio exige, você pode separar as mensagens.
-        // Para simplificar, um erro genérico ou um específico para email.
+        
         const error = new Error('Email já cadastrado.');
         error.name = 'ConflictError'; // Um nome de erro diferente pode ser útil
         throw error;
@@ -90,11 +87,11 @@ async function createUser(userData) {
 
     // 5. Montar o objeto do novo usuário
     const newUserPayload = {
-        nomeCompleto, // usa a variável desestruturada
-        email,        // usa a variável desestruturada
+        nomeCompleto, 
+        email,        
         senha: hashedPassword,
-        tipoUsuario,  // usa a variável desestruturada
-        cpfCnpj       // usa a variável desestruturada
+        tipoUsuario,  
+        cpfCnpj       
     };
 
     // 6. Inserir no banco de dados
@@ -104,8 +101,6 @@ async function createUser(userData) {
     );
 
     // 7. Retornar o ID do usuário criado e os dados (sem a senha hasheada, se preferir)
-    // O objeto newUserPayload já contém os dados corretos (com senha hasheada)
-    // Se não quiser retornar a senha hasheada:
     const { senha: _, ...userDataToReturn } = newUserPayload;
 
     return { id: result.rows[0].id, ...userDataToReturn };

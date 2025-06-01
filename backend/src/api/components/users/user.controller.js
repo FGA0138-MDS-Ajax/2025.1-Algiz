@@ -1,4 +1,5 @@
-const userService = require('src/api/components/users/user.service');
+const userService = require('./user.service');
+
 
 async function registerUser(req, res) {
     try {
