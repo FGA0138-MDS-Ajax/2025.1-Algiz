@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-function Home() {
+function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2 bg-gradient-to-b from-[#7ffa88] to-white shadow-md">
       {/* Left: Logo */}
@@ -40,7 +40,7 @@ function Home() {
       </div>
 
       {/* Right: Nav Items */}
-      <div className="flex flex-wrap items-center gap-7 text-gray-800 w-[400px] justify-end">
+      <div className="flex items-center gap-7 text-gray-800 w-[400px] justify-end">
         <NavLink 
           to="/" 
           className={({isActive}) => 
@@ -75,7 +75,7 @@ function Home() {
         </NavLink>
         <NavLink 
           to="/Login" 
-          className="px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-800"
+          className="px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-800 ml-2"
         >
           Login
         </NavLink>
@@ -84,4 +84,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Navbar;

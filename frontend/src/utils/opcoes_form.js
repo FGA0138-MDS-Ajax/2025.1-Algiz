@@ -42,3 +42,8 @@ export const areasAtuacao = [
   "Serviços",
   "Tecnologia"
 ];
+
+export const getEstadoCompleto = (sigla) => {
+  const estado = estados.find((e) => e.value === sigla);
+  return estado ? estado.label : "Estado inválido";
+}
