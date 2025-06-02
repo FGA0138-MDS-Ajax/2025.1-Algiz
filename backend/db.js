@@ -1,17 +1,18 @@
-// backend/db.js
-const mysql = require('mysql2/promise');
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 
-const config = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'yourpassword',
-  database: process.env.DB_NAME || 'EcoNet_DB',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-};
+dotenv.config();
 
-const pool = mysql.createPool(config);
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'EcoNet_DB',
+  process.env.DB_USER || 'root',
+  process.env.DB_PASSWORD || 'yourpassword',
+  {
+    host: process.env.DB_HOST || 'localhost',
+    dialect: 'mysql',
+    logging: false, // optional
+  }
+);
 
-module.exports = pool;
+export default sequelize;
 
