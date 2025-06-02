@@ -33,6 +33,15 @@ export function validateSenhaForte(senha) {
   return null;
 }
 
+export function validateEmail(email) {
+  if (!email) return "Email é obrigatório.";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return "O email deve estar no formato nomeusuario@nomedoservico.dominio.";
+  }
+  return null;
+}
+
 export function validateCadastro(form, tipo) {
   const passMatch = validatePasswordsMatch(form.senha, form.repetirSenha);
   if (passMatch) return { field: "repetirSenha", message: passMatch };
@@ -47,6 +56,9 @@ export function validateCadastro(form, tipo) {
     const cel = validateCelular(form.celular);
     if (cel) return { field: "celular", message: cel };
   }
+
+  const email = validateEmail(form.email);
+  if (email) return { field: "email", message: email };
 
   return null;
 }

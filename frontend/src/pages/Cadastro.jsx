@@ -1,12 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados, areasAtuacao } from "../utils/opcoes_form";
 
 
 export default function Cadastro() {
-  const [tipo, setTipo] = useState("pessoa");
+  const [searchParams] = useSearchParams(); // Obtém os parâmetros da URL
+  const tipoInicial = searchParams.get("tipo") || "pessoa"; // Define o tipo inicial com base na URL
+  const [tipo, setTipo] = useState(tipoInicial);
+
   const initialForm = {
     nome: "",
     sobrenome: "",

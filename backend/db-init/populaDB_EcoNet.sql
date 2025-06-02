@@ -1,5 +1,3 @@
--- Arquivo para popular o banco de dados EcoNet_DB (testes)
--- Inicia uma transação para garantir integridade dos dados
 USE EcoNet_DB;
 
 -- Limpa tabelas (opcional - só use se necessário para testes)
