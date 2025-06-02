@@ -1,15 +1,18 @@
 import { useLocation } from 'react-router-dom';
-import Navbar from './Navbar'; // ajuste o caminho se a Navbar estiver em outro lugar
+import Navbar from './Navbar';
 
 function Layout({ children }) {
   const location = useLocation();
 
-  const hideNavbarOn = ['/Login'];
-  const shouldHideNavbar = hideNavbarOn.includes(location.pathname);
+  // Define routes where the navbar should be hidden
+  const noNavbarRoutes = ['/Login', '/cadastro'];
+
+  // Check if the current route matches one of those
+  const hideNavbar = noNavbarRoutes.includes(location.pathname);
 
   return (
     <>
-      {!shouldHideNavbar && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <div className="min-h-screen">{children}</div>
     </>
   );

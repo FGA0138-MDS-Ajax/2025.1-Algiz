@@ -60,9 +60,9 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'AGIZ',
+        title: 'ALGIZ',
         logo: {
-          alt: 'AGIZ logo',
+          alt: 'ALGIZ logo',
           src: 'img/favicon.ico',
         },
         items: [

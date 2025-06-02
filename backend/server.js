@@ -2,11 +2,15 @@
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
+const authRoutes = require('./routes/auth');
+const protectedRoutes = require('./routes/protected');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api', authRoutes);
+app.use('/api', protectedRoutes);
 
 const PORT = 3001;
 
@@ -28,7 +32,7 @@ app.get('/ping-db', async (req, res) => {
   try {
     app.get('/users', async (req, res) => {
       try {
-        const [rows] = await db.query('SELECT * FROM users');
+        const [rows] = await db.query('SELECT * FROM USUARIO');
         res.json(rows);
       } catch (err) {
         console.error('Error fetching users:', err);

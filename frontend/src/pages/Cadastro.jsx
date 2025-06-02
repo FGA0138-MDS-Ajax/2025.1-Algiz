@@ -1,4 +1,5 @@
-import React, { useState } from "react";import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados, areasAtuacao } from "../utils/opcoes_form";
@@ -26,6 +27,7 @@ export default function Cadastro() {
   const [erro, setErro] = useState("");
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -64,8 +66,17 @@ export default function Cadastro() {
         style={{ minWidth: 700, minHeight: 750, maxWidth: 700, maxHeight: 750 }}
       >
         <div className="mb-2 flex flex-col items-center">
-          <Link to="/">
-            <img src="/logo.png" alt="Logo" className="w-24 mx-auto mb-2 cursor-pointer" />
+          <Link
+            to="/"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="transition-transform transform hover:scale-110"
+          >
+            <img
+              src={isHovered ? "/logo-4.png" : "/logo.png"}
+              alt="Logo"
+              className="w-24 mx-auto mb-2 cursor-pointer"
+            />
           </Link>
         </div>
         <h2 className="text-2xl font-semibold mb-2 text-white text-left w-full">
