@@ -1,16 +1,49 @@
-// backend/server.js
-const express = require('express');
-const cors = require('cors');
-const db = require('./db');
-const authRoutes = require('./routes/auth');
-const protectedRoutes = require('./routes/protected');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import db from './db.js';
+import bcrypt from 'bcrypt';
+import Usuario from './models/usuario.js';
+import { admin, adminRouter } from './admin.js';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import session from 'express-session';
+import connectSessionSequelize from 'connect-session-sequelize';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
+
+// 🔐 Session setup
+const SequelizeStore = connectSessionSequelize(session.Store);
+const sessionStore = new SequelizeStore({
+  db: db,
+});
+await db.authenticate();
+await sessionStore.sync();
+
 app.use(cors());
 app.use(express.json());
-app.use('/api', authRoutes);
-app.use('/api', protectedRoutes);
+
+// 🧠 IMPORTANT: Apply session middleware BEFORE admin router
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+      httpOnly: true,
+      secure: false, // set to true in production with HTTPS
+    },
+  })
+);
+
+// 🛠️ AdminJS
+app.use(admin.options.rootPath, adminRouter);
 
 const PORT = 3001;
 
@@ -18,30 +51,26 @@ app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
 
-app.get('/ping-db', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT 1');
-    res.json({ success: true, result: rows });
-  } catch (err) {
-    console.error('DB Ping failed:', err);
-    res.status(500).json({ error: 'DB ping failed' });
-  }
-});
-
 (async () => {
   try {
-    app.get('/users', async (req, res) => {
-      try {
-        const [rows] = await db.query('SELECT * FROM USUARIO');
-        res.json(rows);
-      } catch (err) {
-        console.error('Error fetching users:', err);
-        res.status(500).json({ error: 'Internal server error' });
-      }
-    });
+    // Ensure admin user exists
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    const existingAdmin = await Usuario.findOne({ where: { emailUsuario: process.env.ADMIN_EMAIL } });
+    if (!existingAdmin) {
+      await Usuario.create({
+        emailUsuario: process.env.ADMIN_EMAIL,
+        senha: hashedPassword,
+        telefoneUsuario: '0000000000',
+        estado: 'DF'
+      });
+      console.log('✅ Admin user created');
+    } else {
+      console.log('✅ Admin user already exists');
+    }
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`AdminJS dashboard at http://localhost:${PORT}${admin.options.rootPath}`);
     });
   } catch (err) {
     console.error(err.message);
