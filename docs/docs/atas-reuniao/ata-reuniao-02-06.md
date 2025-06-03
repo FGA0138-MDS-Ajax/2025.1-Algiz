@@ -6,8 +6,8 @@ sidebar_label: "02/06/2025"
 
 **Data:** 02/06/2026  
 **Horário de Início:** 20:14  
-**Horário de Término:** 20:48
-**Duração:** 34 minutos e 13 segundos
+**Horário de Término:** 20:48  
+**Duração:** 34 minutos e 13 segundos  
 **Local:** Microsoft Teams  
 
 ## Participantes
@@ -27,7 +27,7 @@ sidebar_label: "02/06/2025"
  
 ## Discussões e Decisões
 
-### 1. [Item 1]
+### Tópico 1
 **Discussão:**
 Foi realizada a entrega do documento de arquitetura.
 
@@ -37,7 +37,7 @@ Foi realizada a entrega do documento de arquitetura.
 **Responsáveis:**
 - Gabriel Augusto Vilarinho Viana Rocha
   
-### 2.
+### Tópico 2
 **Discussão:**
 Revisão das issues anteriores, identificando as que foram concluídas e as que ainda permanecem em aberto.
 
@@ -47,7 +47,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 **Responsáveis:**
 - Mariana Ribeiro Santana Gonzaga
 
-### 3.
+### Tópico 3
 **Discussão:**
 - Issue do backend  [Item #65](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/65), para 09/06/2025 (Sprint 4).
 
@@ -59,7 +59,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 - Julia Oliveira Patricio
 - Rafael Siqueira Soares
 
-  ### 4.
+### Tópico 4
 **Discussão:**
 - Issue do banco de dados [Item #61](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/61), para 09/06/2025 (Sprint 4).
 
@@ -70,8 +70,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 - João Victor Sousa Soares e Silva
 - João Pedro Sampaio Maciel
 
-  
-  ### 5. 
+### Tópico 5
 **Discussão:**
 - Issue do banco de dados [Item #62](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), para 09/06/2025 (Sprint 4).
 
@@ -82,8 +81,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 - João Victor Sousa Soares e Silva
 - João Pedro Sampaio Maciel
 
-  
-  ### 6. 
+### Tópico 6. 
 **Discussão:**
 - Issue do frontend [Item #60](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/60), para 09/06/2025 (Sprint 4).
 
@@ -93,7 +91,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 **Responsáveis:**
 -  Arthur de Lima Sobreira
 
-    ### 7. 
+### Tópico 7. 
 **Discussão:**
 - Issue do frontend [Item #59](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/59), para 09/06/2025 (Sprint 4).
 
@@ -103,7 +101,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 **Responsáveis:**
 -  Tiago Scherrer Tavares de Lyra
 
-  ### 8. 
+### Tópico 8. 
 **Discussão:**
 - Issue do backend [Item #56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), para 09/06/2025 (Sprint 4).
 
@@ -115,7 +113,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 - Julia Oliveira Patricio
 - Rafael Siqueira Soares
   
-   ### 9.
+### Tópico 9.
 **Discussão:**
 - Issue do frontend [Item #40](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40), para 09/06/2025 (Sprint 4).
 
@@ -125,7 +123,7 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 **Responsáveis:**
 - Caua Nicolas Pereira de Oliveira
 
-  ### 10. 
+### Tópico 10. 
 **Discussão:**
 - Issue do backend  [Item #5](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/5) com nova data, para 09/06/2025 (Sprint 4).
 
@@ -137,8 +135,6 @@ Revisão das issues anteriores, identificando as que foram concluídas e as que 
 - Julia Oliveira Patricio
 - Rafael Siqueira Soares
 
-
-  
 ## Próxima Reunião
 **Data:** 04/06/2025  
 **Local:** Microsoft Teams  
