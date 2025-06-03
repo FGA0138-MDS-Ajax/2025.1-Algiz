@@ -23,33 +23,33 @@ sidebar_label: "02/06/2025"
 10. Tiago Scherrer Tavares de Lyra
 
 ## Objetivos
- Novas issues para o dia 09/06/2025
+ Novas issues para o dia 09/06/2025 (Sprint 4).
  
 ## Discussões e Decisões
 
 ### 1. [Item 1]
 **Discussão:**
-Foi realizada a entrega do diagrama de arquitetura.
+Foi realizada a entrega do documento de arquitetura.
 
 **Decisões:**
-- Aprimoramento do diagrama de classes
+- Aprimoramento do diagrama de classes.
 
 **Responsáveis:**
 - Gabriel Augusto Vilarinho Viana Rocha
   
-### 2. [Item #2](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/2)
+### 2.
 **Discussão:**
-Revisão das issues anteriores, identificando as que foram concluídas e a que ainda permanece em aberto.
+Revisão das issues anteriores, identificando as que foram concluídas e as que ainda permanecem em aberto.
 
 **Decisões:**
-- A issue pertencente ao backend: Implementar login e início de sessão no frontend, que pertencia a sprint 3 foi movida para a sprint 4 devido a não conclusão dela.
+- A issue pertencente ao backend [Item #2](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/2): Implementar login e início de sessão no frontend, que pertencia a sprint 3 foi movida para a sprint 4 devido a não conclusão dela.
 
 **Responsáveis:**
 - Mariana Ribeiro Santana Gonzaga
 
-### 3. [Item #3](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/65)
+### 3.
 **Discussão:**
-- Issue do backend, para 09/06/2025.
+- Issue do backend  [Item #65](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/65), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Definir imagem padrão para foto de perfil e banner no cadastro de usuários.
@@ -59,9 +59,9 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 - Julia Oliveira Patricio
 - Rafael Siqueira Soares
 
-  ### 4. [Item #4](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/61)
+  ### 4.
 **Discussão:**
-- Issue do banco de dados, para 09/06/2025.
+- Issue do banco de dados [Item #61](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/61), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Criar relação entre usuários e empresas seguidas.
@@ -71,9 +71,9 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 - João Pedro Sampaio Maciel
 
   
-  ### 5. [Item #5](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62)
+  ### 5. 
 **Discussão:**
-- Issue do banco de dados, para 09/06/2025.
+- Issue do banco de dados [Item #62](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Adicionar tabela para sistema de recomendações.
@@ -83,9 +83,9 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 - João Pedro Sampaio Maciel
 
   
-  ### 6. [Item #6](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/60)
+  ### 6. 
 **Discussão:**
-- Issue do frontend, para 09/06/2025.
+- Issue do frontend [Item #60](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/60), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Criar layout da página pública de uma empresa.
@@ -93,19 +93,19 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 **Responsáveis:**
 -  Arthur de Lima Sobreira
 
-    ### 7. [Item #7](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/59)
+    ### 7. 
 **Discussão:**
-- Issue do frontend, para 09/06/2025.
+- Issue do frontend [Item #59](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/59), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
-- Conectar página de perfil à API de usuários
+- Conectar página de perfil à API de usuários.
   
 **Responsáveis:**
 -  Tiago Scherrer Tavares de Lyra
 
-  ### 8. [Item #8](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56)
+  ### 8. 
 **Discussão:**
-- Issue do backend, para 09/06/2025.
+- Issue do backend [Item #56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Criar API para retornar dados do usuário logado.
@@ -115,9 +115,9 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 - Julia Oliveira Patricio
 - Rafael Siqueira Soares
   
-   ### 9. [Item #9](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40)
+   ### 9.
 **Discussão:**
-- Issue do frontend, para 09/06/2025.
+- Issue do frontend [Item #40](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40), para 09/06/2025 (Sprint 4).
 
 **Decisões:**
 - Criar layout da página pública de empresas no Figma.
@@ -125,12 +125,12 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 **Responsáveis:**
 - Caua Nicolas Pereira de Oliveira
 
-  ### 10. [Item #10](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/5)
+  ### 10. 
 **Discussão:**
-- Issue do backend, para 09/06/2025.
+- Issue do backend  [Item #5](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/5) com nova data, para 09/06/2025 (Sprint 4).
 
 **Decisões:**
-- Conectar formulário de cadastro de usuário com backend 
+- Conectar formulário de cadastro de usuário com backend. 
   
 **Responsáveis:**
 - Diogo Oliveira Ferreira
@@ -145,6 +145,6 @@ Revisão das issues anteriores, identificando as que foram concluídas e a que a
 **Horário:**  14:00 horas 
 
 ## Observações
-Acrescentar mais uma reunião na semana, provavelmente às sextas-feiras no horário do almoço, votação no grupo do Whatsapp.
-Finalização das issues anteriores, com destaque a criação da página Home e Sobre nós.
-Atualização do Bando de dados.
+Acrescentar mais uma reunião na semana, provavelmente às sextas-feiras no horário do almoço, votação no grupo do Whatsapp.  
+Finalização das issues anteriores, com destaque a criação da página Home e Sobre nós.  
+Atualização do Banco de dados.
