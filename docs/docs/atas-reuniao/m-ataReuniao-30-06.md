@@ -1,5 +1,5 @@
 ---
-sidebar_label: "04/06/2025"
+sidebar_label: "30/06/2025"
 ---
 
 # Ata de Reunião
@@ -41,17 +41,6 @@ sidebar_label: "04/06/2025"
 - [Nome dos responsáveis pela ação]
 
 ### 2. [Item 2]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
-**Decisões:**
-- [Descrição da decisão tomada]
-
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
-
-### 3. [Item 3]
 **Discussão:**
 - [Descrição da discussão]
 - [Pontos relevantes levantados]
