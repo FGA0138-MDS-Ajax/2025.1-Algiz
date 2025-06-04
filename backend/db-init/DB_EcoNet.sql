@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS USUARIO (
     senha           VARCHAR(255)NOT NULL,
     telefoneUsuario VARCHAR(20) NOT NULL,
     estado          VARCHAR(255)NOT NULL,
+    fotoPerfil      VARCHAR(255)    NULL,
+    bannerPerfil    VARCHAR(255)    NULL,
     PRIMARY KEY (idUsuario)
 )ENGINE=INNODB;
 
@@ -20,7 +22,6 @@ CREATE TABLE IF NOT EXISTS FISICO (
     sobrenomeFisico VARCHAR(255)    NOT NULL,
     sexo            VARCHAR(17)   NOT NULL,
     dtNascimento    DATE            NOT NULL,
-    fotoPerfil      VARCHAR(255)   NULL,
     idUsuario       INT             NOT NULL,
     PRIMARY KEY (cpfFisico),
     FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario)
@@ -33,7 +34,6 @@ CREATE TABLE IF NOT EXISTS JURIDICO (
     razaoSocial     VARCHAR(255)NOT NULL,
     nomeComercial   VARCHAR(255)NOT NULL    UNIQUE,
     areaAtuacao     VARCHAR(255)NOT NULL,
-    fotoPerfil      VARCHAR(255)   NULL,
     idUsuario       INT         NOT NULL,
     PRIMARY KEY (cnpjJuridico),
     FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario)
