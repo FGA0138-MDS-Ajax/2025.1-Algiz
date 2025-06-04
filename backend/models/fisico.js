@@ -23,10 +23,6 @@ const Fisico = sequelize.define('Fisico', {
     type: DataTypes.DATEONLY,
     allowNull: false
   },
-  fotoPerfil: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
   idUsuario: {
     type: DataTypes.INTEGER,
     allowNull: false,

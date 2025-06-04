@@ -29,7 +29,15 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(255),
     allowNull: false,
     field: 'estado'
-  }
+  },
+  fotoPerfil: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  bannerPerfil: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
 }, {
   tableName: 'USUARIO',
   timestamps: false, // Since your table doesn't have createdAt/updatedAt
