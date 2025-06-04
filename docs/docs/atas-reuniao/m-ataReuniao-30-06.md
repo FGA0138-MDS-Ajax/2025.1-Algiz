@@ -4,11 +4,11 @@ sidebar_label: "30/06/2025"
 
 # Ata de Reunião
 
-**Data:** [Data da Reunião]  
+**Data:** 30/06/2025  
 **Horário de Início:** [Hora de Início]  
 **Horário de Término:** [Hora de Término]  
 **Duração:**  [Tempo de duração]
-**Local:** [Local da Reunião]
+**Local:** Microsoft Teams
 
 ## Participantes
 1. Ana Beatriz Cunha Wirthmann
@@ -52,9 +52,9 @@ sidebar_label: "30/06/2025"
 - [Nome dos responsáveis pela ação]
 
 ## Próxima Reunião
-**Data:** [Data da Próxima Reunião]  
-**Local:** [Local da Próxima Reunião]  
-**Horário:** [Hora da Próxima Reunião]  
+**Data:** 02/07/2025  
+**Local:** Microsoft Teams 
+**Horário:** 14:00 
 
 ## Observações
 [Espaço para quaisquer observações adicionais]
