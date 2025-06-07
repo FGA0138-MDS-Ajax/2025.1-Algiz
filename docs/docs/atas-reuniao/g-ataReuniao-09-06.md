@@ -7,7 +7,7 @@ sidebar_label: "09/06/2025"
 **Data:** 09/06/2025  
 **Horário de Início:** [Hora de Início]  
 **Horário de Término:** [Hora de Término]  
-**Duração:**  [Tempo de duração]
+**Duração:**  [Tempo de duração]  
 **Local:** Microsoft Teams
 
 ## Participantes
