@@ -20,10 +20,6 @@ const Empresa = sequelize.define('JURIDICO', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  fotoPerfil: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   idUsuario: {
     type: DataTypes.INTEGER,
     allowNull: false,

@@ -1,14 +1,14 @@
 ---
-sidebar_label: "Modelo de Ata"
+sidebar_label: "18/06/2025"
 ---
 
 # Ata de Reunião
 
-**Data:** [Data da Reunião]  
+**Data:** 18/06/2025  
 **Horário de Início:** [Hora de Início]  
 **Horário de Término:** [Hora de Término]  
 **Duração:**  [Tempo de duração]
-**Local:** [Local da Reunião]
+**Local:** Microsoft Teams
 
 ## Participantes
 1. Ana Beatriz Cunha Wirthmann
@@ -51,21 +51,10 @@ sidebar_label: "Modelo de Ata"
 **Responsáveis:**
 - [Nome dos responsáveis pela ação]
 
-### 3. [Item 3]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
-**Decisões:**
-- [Descrição da decisão tomada]
-
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
-
 ## Próxima Reunião
-**Data:** [Data da Próxima Reunião]  
-**Local:** [Local da Próxima Reunião]  
-**Horário:** [Hora da Próxima Reunião]  
+**Data:** 23/06/2025 
+**Local:** Microsoft Teams 
+**Horário:** 20:00  
 
 ## Observações
 [Espaço para quaisquer observações adicionais]
