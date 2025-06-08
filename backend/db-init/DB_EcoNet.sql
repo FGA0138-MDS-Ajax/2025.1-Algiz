@@ -17,10 +17,10 @@ CREATE TABLE IF NOT EXISTS USUARIO (
 )ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS FISICO (
-    cpfFisico       VARCHAR(14)        NOT NULL,
+    cpfFisico       VARCHAR(14)     NOT NULL,
     nomeFisico      VARCHAR(255)    NOT NULL,
     sobrenomeFisico VARCHAR(255)    NOT NULL,
-    sexo            VARCHAR(17)   NOT NULL,
+    sexo            VARCHAR(17)     NOT NULL,
     dtNascimento    DATE            NOT NULL,
     idUsuario       INT             NOT NULL,
     PRIMARY KEY (cpfFisico),
@@ -37,6 +37,77 @@ CREATE TABLE IF NOT EXISTS JURIDICO (
     idUsuario       INT         NOT NULL,
     PRIMARY KEY (cnpjJuridico),
     FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS segue (
+    idUsuario           INT         NOT NULL,
+    idUsuarioSeguido    INT         NOT NULL,
+    dtInicio            DATETIME    NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario),
+    FOREIGN KEY (idUsuarioSeguido) REFERENCES USUARIO(idUsuario)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS POSTAGENS (
+    idPost      INT                         NOT NULL,
+    idUsuario   INT                         NOT NULL,
+    conteudo    TEXT                        NOT NULL,
+    imagemURL   VARCHAR,
+    tipo        ENUM('oferta', 'demanda')   NOT NULL,
+    criado_em  DATETIME                    NOT NULL,
+    PRIMARY KEY (idPost),
+    FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS curte (
+    idUsuario   INT         NOT NULL,
+    idPost      INT         NOT NULL,
+    curtido_em  DATETIME    NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario),
+    FOREIGN KEY (idPost) REFERENCES POSTAGENS(idPost)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS salva (
+    idUsuario   INT         NOT NULL,
+    idPost      INT         NOT NULL,
+    salvo_em    DATETIME    NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario),
+    FOREIGN KEY (idPost) REFERENCES POSTAGENS(idPost)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS compartilha (
+    idUsuario           INT         NOT NULL,
+    idPost              INT         NOT NULL,
+    redeDestino         VARCHAR     NOT NULL,
+    compartilhado_em    DATETIME    NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario),
+    FOREIGN KEY (idPost) REFERENCES POSTAGENS(idPost)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS TAGS (
+    idTag   INT     NOT NULL    AUTO_INCREMENT,
+    nomeTag VARCHAR NOT NULL,
+    PRIMARY KEY (idTag)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS postagem_tag (
+    idPost  INT NOT NULL,
+    idTag   INT NOT NULL,
+    FOREIGN KEY (idPost) REFERENCES POSTAGENS(idPost),
+    FOREIGN KEY (idTag) REFERENCES TAGS(idTag)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 )ENGINE=INNODB;
