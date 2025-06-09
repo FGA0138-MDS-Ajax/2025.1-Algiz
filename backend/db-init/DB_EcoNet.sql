@@ -4,13 +4,11 @@
 -- Executar apenas uma vez
 CREATE DATABASE IF NOT EXISTS EcoNet_DB;
 
--- Comando de criação das tabelas
+- Comando de criação das tabelas
 CREATE TABLE IF NOT EXISTS USUARIO (
     idUsuario       INT         NOT NULL    AUTO_INCREMENT,
     emailUsuario    VARCHAR(255)NOT NULL    UNIQUE,
     senha           VARCHAR(255)NOT NULL,
-    telefoneUsuario VARCHAR(20) NOT NULL,
-    estado          VARCHAR(255)NOT NULL,
     fotoPerfil      VARCHAR(255)    NULL,
     bannerPerfil    VARCHAR(255)    NULL,
     PRIMARY KEY (idUsuario)
@@ -20,6 +18,8 @@ CREATE TABLE IF NOT EXISTS FISICO (
     cpfFisico       VARCHAR(14)     NOT NULL,
     nomeFisico      VARCHAR(255)    NOT NULL,
     sobrenomeFisico VARCHAR(255)    NOT NULL,
+    telefonePessoa  VARCHAR(20)     NOT NULL,
+    estadoPessoa    VARCHAR(255)    NOT NULL,
     sexo            VARCHAR(17)     NOT NULL,
     dtNascimento    DATE            NOT NULL,
     idUsuario       INT             NOT NULL,
@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS JURIDICO (
     cnpjJuridico    VARCHAR(18) NOT NULL,
     razaoSocial     VARCHAR(255)NOT NULL,
     nomeComercial   VARCHAR(255)NOT NULL    UNIQUE,
+    telefoneEmpresa VARCHAR(20) NOT NULL,
+    estadoEmpresa   VARCHAR(255)NOT NULL,
     areaAtuacao     VARCHAR(255)NOT NULL,
     idUsuario       INT         NOT NULL,
     PRIMARY KEY (cnpjJuridico),
