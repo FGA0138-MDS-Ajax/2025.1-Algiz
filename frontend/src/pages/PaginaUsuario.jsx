@@ -10,22 +10,44 @@ import Salvos from "../components/Salvos";
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
   const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const users = JSON.parse(sessionStorage.getItem("fakeUsers") || "[]");
-    const found = users.find((u) => u.id === idUsuario);
-    setUsuario(found);
+    async function fetchUsuario() {
+      try {
+        const response = await fetch('/api/usuarios/${idUsuario}');
+        if (!response.ok) throw new Error("Erro ao buscar usuário");
+        const data = await response.json();
+        setUsuario(data);
+      } catch (err) {
+        console.error(err);
+        setError("Erro ao carregar usuário.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUsuario();
   }, [idUsuario]);
 
-  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-  const isUsuarioLogado = usuarioLogado?.id === usuario?.id;
+  if (loading) {
+    return (
+      <div className="h-32 flex items-ceenter justify-center">
+        Carregando informações do usuário...
+      </div>
+    );
+  }
 
-  if (!usuario)
+  if (error || !usuario) {
     return (
       <div className="h-32 flex items-center justify-center">
         Usuário não encontrado.
       </div>
     );
+  }
+
+  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  const isUsuarioLogado = usuarioLogado?.id === usuario?.id;
 
   return (
     <div className="bg-white px-8 py-6">
