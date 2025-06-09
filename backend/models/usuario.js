@@ -1,13 +1,15 @@
 // backend/models/usuario.js
 import { DataTypes } from 'sequelize';
 import sequelize from './index.js';
+import Empresa from './empresa.js';
+import Fisico from './fisico.js';
 
 const Usuario = sequelize.define('Usuario', {
   idUsuario: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: 'idUsuario' // Explicitly map to column name
+    field: 'idUsuario'
   },
   emailUsuario: {
     type: DataTypes.STRING(255),
@@ -40,8 +42,22 @@ const Usuario = sequelize.define('Usuario', {
   },
 }, {
   tableName: 'USUARIO',
-  timestamps: false, // Since your table doesn't have createdAt/updatedAt
-  freezeTableName: true // Prevent Sequelize from pluralizing the table name
+  timestamps: false, 
+  freezeTableName: true 
+});
+
+// Associação Usuario para FISICO OU EMPRESA
+
+Usuario.hasOne(Fisico, {
+  foreignKey: 'idUsuario',
+  as: 'dadosFisicos', // Nome para associar
+  onDelete: 'CASCADE'
+});
+
+Usuario.hasOne(Empresa, {
+  foreignKey: 'idUsuario',
+  as: 'dadosJuridicos', // Nome para associar
+  onDelete: 'CASCADE'
 });
 
 export default Usuario;

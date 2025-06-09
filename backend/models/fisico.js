@@ -1,6 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from './index.js';
 import Usuario from './usuario.js';
+import Empresa from './empresa.js';
+import VinculoEmpresaFisico from './vinculoEmpresaFisico.js';
 
 const Fisico = sequelize.define('Fisico', {
   cpfFisico: {
@@ -37,8 +39,15 @@ const Fisico = sequelize.define('Fisico', {
   timestamps: false
 });
 
-// Define association (1:1)
-Usuario.hasOne(Fisico, { foreignKey: 'idUsuario', onDelete: 'CASCADE' });
-Fisico.belongsTo(Usuario, { foreignKey: 'idUsuario' });
+// Definir associação Fisico -> Usuario (1:1)
+Fisico.belongsTo(Usuario, { foreignKey: 'idUsuario' , as: 'usuario'});
+
+// Relação ( 1 : Many ) -- Funcionario para Empresas
+Fisico.belongsToMany(Empresa, {
+  through: VinculoEmpresaFisico,
+  foreignKey: 'cpfFisico',
+  otherKey: 'cnpjJuridico',
+  as: 'empresas'
+});
 
 export default Fisico;
