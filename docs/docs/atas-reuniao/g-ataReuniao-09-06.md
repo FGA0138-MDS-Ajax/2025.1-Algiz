@@ -59,9 +59,9 @@ Backlog da semana
 - Caua Nicolas Pereira de Oliveira
 
 
-  ### 3. Issues do backend e banco de dados
+### 3. Issues do backend e banco de dados
 **Discussão:**
-- Issues issues da sprint 5, para o dia 16/06/2025. 
+- Issues da sprint 5, para o dia 16/06/2025. 
 
 **Decisões:**
 - Finalização da issue [#56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), do backend;
@@ -80,7 +80,7 @@ Backlog da semana
 - Gabriel Pereira da Silva
 - Rafael Siqueira Soares
 
-   ### 4. Apresentação da release
+### 4. Apresentação da release
 **Discussão:**
 - Métodos utilizados na apresentação da release do dia 16/06/2025.
   
