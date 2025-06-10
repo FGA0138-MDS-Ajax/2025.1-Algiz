@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('src/api/components/users/user.controller'); // Ajuste o caminho
+const userController = require('src/api/components/users/user.controller'); 
+const verifyToken = require('../../middleware/auth.middleware')
+
 
 
 router.post('/', userController.registerUser);
+router.post('/register', userController.registerUser);
 
 // ---------- DEFINIÇÃO DAS ROTAS DE USUÁRIO -------
 
@@ -14,6 +17,7 @@ router.post('/', userController.registerUser);
  */
 
 router.post('/', userController.registerUser);
+router.get('/:id', verifyToken, userController.getUserProfile);
 
 const db = require('config/db');
 router.get('/', async(req, res) =>{

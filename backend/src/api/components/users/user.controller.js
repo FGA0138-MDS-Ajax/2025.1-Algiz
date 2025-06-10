@@ -22,7 +22,43 @@ async function registerUser(req, res) {
         return res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
     }
 }
+async function loginUser(req, res) {
+    try{
+        const{email, passoword} = req.body;
+        const { token, user } = await userService.authenticateUser(email, password);
+        res.json({ token, user });
+    }catch(error){
+        if(error.name === 'AutenticationError'){
+            return res.status(401).json({erro: error.massage});
+        }
+        res.status(500).json({ erro: 'Ocorreu um erro interno no servidor.' });
+    }
+    
+}
+async function getUserProfile(req, res) {
+    try {
+        
+        const requestedUserId = req.param.id;
+        const authenticatedUserId = req.user.id;
+         if (parseInt(requestedUserId) !== authenticatedUserId) {
+            return res.status(403).json({ erro: "Você não tem permissão para acessar este perfil." });
+        }
+
+        const userProfile = await userService.findUserProfileById(requestedUserId);
+
+        if (!userProfile) {
+            return res.status(404).json({ erro: "Usuário não encontrado." });
+        }
+
+        res.json(userProfile);
+    } catch (error) {
+        console.error("Erro ao buscar perfil de usuário:", error);
+        res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+        
+    }
+    
+}
 
 module.exports = {
-    registerUser
+    registerUser, loginUser, getUserProfile
 };

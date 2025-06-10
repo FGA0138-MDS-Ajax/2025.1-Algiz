@@ -1,6 +1,8 @@
 const db = require('../../config/db');
 const { hashPassword } = require('../../utils/hash.util'); 
 const { cpf, cnpj } = require('cpf-cnpj-validator'); 
+const jwt = require('jsonwebtoken');
+const {comparePassword} = require('src/api/utils/hash.password.js');
 
 async function createUser(userData) {
     const { nomeCompleto, email, senha, tipoUsuario, cpfCnpj } = userData;
@@ -38,7 +40,7 @@ async function createUser(userData) {
     if (!tipoUsuario || tipoUsuario.trim() === "") {
         erros.push({ campo: "tipoUsuario", mensagem: "Tipo de usuário é obrigatório." });
     } else {
-        const tiposValidos = ['EMPRESA', 'INTERESSADO', 'ADMIN'];
+        const tiposValidos = ['EMPRESA', 'USUARIO', 'ADMIN'];
         if (!tiposValidos.includes(tipoUsuario.toUpperCase())) {
             erros.push({ campo: "tipoUsuario", mensagem: `Tipo de usuário inválido. Permitidos: ${tiposValidos.join(', ')}` });
         }
@@ -105,7 +107,62 @@ async function createUser(userData) {
 
     return { id: result.rows[0].id, ...userDataToReturn };
 }
+async function findUserProfileById(userId) {
+   
+    const userQuery = `
+        SELECT
+            u.id,
+            u.name,
+            u.email,
+            u.telefone, -- Adicione estas colunas 
+            u.estado,   -- Adicione estas colunas 
+            u.foto_perfil_url, -- Adicione estas colunas
+            u.banner_url,      -- Adicione estas colunas
+            e.id as empresa_id,
+            e.nome as empresa_nome,
+            e.descricao as empresa_descricao
+        FROM usuarios u
+        LEFT JOIN empresas e ON u.empresa_id_associada = e.id -- Supondo que 'usuarios' tem uma FK para 'empresas'
+        WHERE u.id = ?;
+    `;
+    const [userRows] = await db.query(userQuery, [userId]);
+
+    if (userRows.length === 0) {
+        return null;
+    }
+    const userProfile = userRows[0];
+
+    const followedCompaniesQuery = `
+        SELECT
+            e.id,
+            e.nome,
+            e.logo_url
+        FROM empresas e
+        INNER JOIN usuarios_seguem_empresas usf ON e.id = usf.empresa_id
+        WHERE usf.usuario_id = ?;
+    `;
+    const [followedCompaniesRows] = await db.query(followedCompaniesQuery, [userId]);
+
+    const finalResponse = {
+        nome: userProfile.name,
+        email: userProfile.email,
+        telefone: userProfile.telefone,
+        estado: userProfile.estado,
+        foto_perfil_url: userProfile.foto_perfil_url,
+        banner_url: userProfile.banner_url,
+        dados_empresa_associada: userProfile.empresa_id ? {
+            id: userProfile.empresa_id,
+            nome: userProfile.empresa_nome,
+            descricao: userProfile.empresa_descricao
+        } : null,
+        empresas_seguidas: followedCompaniesRows
+    };
+
+    return finalResponse;
+
+}
+    
 
 module.exports = {
-    createUser
+    createUser, authenticateUser,findUserProfileById
 };
