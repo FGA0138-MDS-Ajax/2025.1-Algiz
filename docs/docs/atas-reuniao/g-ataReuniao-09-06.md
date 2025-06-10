@@ -65,12 +65,12 @@ Backlog da semana
 - Finalização das issues da sprint 4 que estão em abertas, para o dia 16/06/2025. 
 
 **Decisões:**
-- Finalização da issue [item #56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), do backend;
-- Finalização da issue [item #61](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/61), do banco de dados;
-- Finalização da issue [item #62](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), do banco de dados;
-- Finalização da issue [item #63](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), do backend;
-- Finalização da issue [item #64](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/64), do banco de dados;
-- Finalização da issue [item #65](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/65), do backend.
+- Finalização da issue [#56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), do backend;
+- Finalização da issue [#61](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/61), do banco de dados;
+- Finalização da issue [#62](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), do banco de dados;
+- Finalização da issue [#63](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/62), do backend;
+- Finalização da issue [#64](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/64), do banco de dados;
+- Finalização da issue [#65](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/65), do backend.
 
 **Responsáveis:**
 - Diogo Oliveira Ferreira
