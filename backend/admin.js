@@ -5,10 +5,15 @@ import expressSession from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
-import Usuario from './models/usuario.js';
-import Fisico from './models/fisico.js'; 
-import Empresa from './models/empresa.js';
-
+import models from './models/index.js';
+const { Usuario, Fisico, Empresa } = models;
+if (typeof Usuario.findOne !== 'function') {
+  throw new Error('Usuario model is not properly initialized.');
+}
+console.log('Usuario type:', typeof Usuario); // Should be 'function'
+console.log('Is model:', typeof Usuario.findOne); // Should be 'function' if it's a model
+console.log(Usuario === models.Usuario); // Should be true
+console.log(Usuario.getTableName?.());   // Should print 'USUARIO' if it’s a Sequelize model
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
