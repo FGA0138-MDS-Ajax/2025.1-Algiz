@@ -1,10 +1,6 @@
-// backend/models/usuario.js
 import { DataTypes } from 'sequelize';
-import sequelize from './index.js';
-import Empresa from './empresa.js';
-import Fisico from './fisico.js';
 
-const Usuario = sequelize.define('Usuario', {
+const Usuario = (sequelize) => sequelize.define('Usuario', {
   idUsuario: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -32,32 +28,12 @@ const Usuario = sequelize.define('Usuario', {
     allowNull: false,
     field: 'estado'
   },
-  fotoPerfil: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  bannerPerfil: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
+  fotoPerfil: { type: DataTypes.STRING, allowNull: true },
+  bannerPerfil: { type: DataTypes.STRING, allowNull: true },
 }, {
   tableName: 'USUARIO',
-  timestamps: false, 
-  freezeTableName: true 
-});
-
-// Associação Usuario para FISICO OU EMPRESA
-
-Usuario.hasOne(Fisico, {
-  foreignKey: 'idUsuario',
-  as: 'dadosFisicos', // Nome para associar
-  onDelete: 'CASCADE'
-});
-
-Usuario.hasOne(Empresa, {
-  foreignKey: 'idUsuario',
-  as: 'dadosJuridicos', // Nome para associar
-  onDelete: 'CASCADE'
+  freezeTableName: true,
+  timestamps: false
 });
 
 export default Usuario;
