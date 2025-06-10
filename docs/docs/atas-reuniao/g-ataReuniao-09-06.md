@@ -49,10 +49,10 @@ Backlog da semana
 - Issues do frontend, para o dia 16/06/2025.
 
 **Decisões:**
-- Construção da página Home pública, [#40] (https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40);
-- Construção da página pública do usuário, [#60] (https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/60);
-- Construção da página pública de empresa, [#80] (https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/80);
-- Construção da página pública de um post, [#81] (https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/81).
+- Construção da página Home pública, [#40](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40);
+- Construção da página pública do usuário, [#60](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/60);
+- Construção da página pública de empresa, [#80](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/80);
+- Construção da página pública de um post, [#81](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/81).
   
 **Responsáveis:**
 - Tiago Scherrer Tavares de Lyra
