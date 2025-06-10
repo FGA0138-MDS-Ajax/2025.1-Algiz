@@ -2,9 +2,10 @@
 --
 -- Comando de criação do banco de dados
 -- Executar apenas uma vez
+
 CREATE DATABASE IF NOT EXISTS EcoNet_DB;
 
-- Comando de criação das tabelas
+-- Comando de criação das tabelas
 CREATE TABLE IF NOT EXISTS USUARIO (
     idUsuario       INT         NOT NULL    AUTO_INCREMENT,
     emailUsuario    VARCHAR(255)NOT NULL    UNIQUE,
@@ -71,14 +72,15 @@ CREATE TABLE IF NOT EXISTS POSTAGENS (
     idPost      INT                         NOT NULL,
     idUsuario   INT                         NOT NULL,
     conteudo    TEXT                        NOT NULL,
-    imagemURL   VARCHAR,
+    imagemURL   VARCHAR(255),
     tipo        ENUM('oferta', 'demanda')   NOT NULL,
-    criado_em  DATETIME                    NOT NULL,
+    criado_em   DATETIME                    NOT NULL,
     PRIMARY KEY (idPost),
     FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 )ENGINE=INNODB;
+
 
 CREATE TABLE IF NOT EXISTS CURTE (
     idUsuario   INT         NOT NULL,
@@ -103,7 +105,7 @@ CREATE TABLE IF NOT EXISTS SALVA (
 CREATE TABLE IF NOT EXISTS COMPARTILHA (
     idUsuario           INT         NOT NULL,
     idPost              INT         NOT NULL,
-    redeDestino         VARCHAR     NOT NULL,
+    redeDestino         VARCHAR(255) NOT NULL,
     compartilhado_em    DATETIME    NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES USUARIO(idUsuario),
     FOREIGN KEY (idPost) REFERENCES POSTAGENS(idPost)
@@ -111,13 +113,13 @@ CREATE TABLE IF NOT EXISTS COMPARTILHA (
     ON UPDATE CASCADE
 )ENGINE=INNODB;
 
+
 CREATE TABLE IF NOT EXISTS TAGS (
-    idTag   INT     NOT NULL    AUTO_INCREMENT,
-    nomeTag VARCHAR NOT NULL,
+    idTag   INT         NOT NULL AUTO_INCREMENT,
+    nomeTag VARCHAR(255) NOT NULL,
     PRIMARY KEY (idTag)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
 )ENGINE=INNODB;
+
 
 CREATE TABLE IF NOT EXISTS POSTAGEM_TAG (
     idPost  INT NOT NULL,

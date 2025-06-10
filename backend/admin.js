@@ -35,8 +35,8 @@ const adminOptions = {
             availableValues: estados.map(uf => ({ value: uf, label: uf }))
           }
         },
-        listProperties: ['idUsuario', 'emailUsuario', 'telefoneUsuario', 'estado'],
-        editProperties: ['emailUsuario', 'senha', 'telefoneUsuario', 'estado'],
+        listProperties: ['idUsuario', 'emailUsuario'],
+        editProperties: ['emailUsuario', 'senha'],
         actions: {
           new: {
             before: async (request) => {
@@ -77,9 +77,9 @@ const adminOptions = {
             }
           }
         },
-        listProperties: ['idUsuario', 'nomeFisico', 'cpfFisico', 'sexo', 'dtNascimento'],
-        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'cpfFisico', 'sexo', 'dtNascimento'],
-        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'cpfFisico', 'sexo', 'dtNascimento']
+        listProperties: ['idUsuario', 'nomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa'],
+        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa'],
+        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa']
       }
     },
     {
@@ -99,9 +99,9 @@ const adminOptions = {
                 }
             }
             },
-            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao'],
-            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao'],
-            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao']
+            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao'],
+            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao'],
+            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao']
         }
     },
     {
