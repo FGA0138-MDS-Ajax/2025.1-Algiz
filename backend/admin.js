@@ -6,7 +6,7 @@ import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
 import models from './models/index.js';
-const { Usuario, Fisico, Empresa } = models;
+const { Usuario, Fisico, Empresa, VinculoEmpresaFisico } = models;
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -104,6 +104,28 @@ const adminOptions = {
             editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao']
         }
     },
+    {
+      resource: VinculoEmpresaFisico,
+      options: {
+        properties: {
+          id: { isVisible: false },
+          cpfFisico: {
+            reference: 'FISICO',
+            isTitle: true
+          },
+          cnpjJuridico: {
+            reference: 'JURIDICO',
+            isTitle: true
+          },
+          cargo: {
+            type: 'string'
+          }
+        },
+        listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
+        showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
+        editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo']
+      }
+    }
   ],
   branding: {
     companyName: 'EcoNet Admin',
