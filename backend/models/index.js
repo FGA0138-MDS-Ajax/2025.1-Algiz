@@ -44,6 +44,11 @@ setupAssociations(models);
   }
 })();
 
+(async () => {
+  await sequelize.sync({ alter: true });
+  console.log("✅ All models were synchronized.");
+})();
+
 export { sequelize };
 export default models;
 
