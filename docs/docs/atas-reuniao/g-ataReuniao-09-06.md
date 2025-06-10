@@ -5,9 +5,9 @@ sidebar_label: "09/06/2025"
 # Ata de Reunião
 
 **Data:** 09/06/2025  
-**Horário de Início:** 20:08 
-**Horário de Término:** 20:43
-**Duração:** 35 minutos
+**Horário de Início:** 20:08  
+**Horário de Término:** 20:43  
+**Duração:** 35 minutos  
 **Local:** Microsoft Teams
 
 ## Participantes
