@@ -43,5 +43,15 @@ INSERT INTO JURIDICO (
 ('65.432.198/0001-04', 'VERDE METAL RECICLADORA EIRELI', 'VerdeMetal', '(41) 98765-0004', 'PR', 'Reciclagem de metais', 9),
 ('78.901.234/0001-05', 'PLASTINOVOS INDUSTRIA E COMERCIO LTDA', 'PlastiNovos', '(51) 98765-0005', 'RS', 'Transformação de plásticos', 10);
 
+-- Inserção na tabela VINCULO_EMPRESA_FISICO (5 vínculos entre pessoas físicas e empresas)
+INSERT INTO VINCULO_EMPRESA_FISICO (
+  cpfFisico, cnpjJuridico, cargo
+) VALUES
+('111.222.333-01', '12.345.678/0001-01', 'Analista Ambiental'),
+('222.333.444-02', '98.765.432/0001-02', 'Engenheira de Processos'),
+('333.444.555-03', '45.678.901/0001-03', 'Gerente de Operações'),
+('444.555.666-04', '65.432.198/0001-04', 'Assistente Técnica'),
+('555.666.777-05', '78.901.234/0001-05', 'Supervisor de Logística');
+
 -- Confirma todas as inserções
 COMMIT;
