@@ -2,13 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import db from './db.js';
 import bcrypt from 'bcrypt';
-import Usuario from './models/usuario.js';
 import { admin, adminRouter } from './admin.js';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
+import models from './models/index.js';
+const { Usuario } = models;
 
 dotenv.config();
 
