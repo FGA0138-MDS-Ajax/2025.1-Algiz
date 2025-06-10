@@ -27,9 +27,8 @@ Backlog da semana
 
 ## Discussões e Decisões
 
-### 1. [Item 1]
+### 1. Documento de arquitetura
 **Discussão:**
-- Documentação de arquitetura
 - Conversa com a monitora, pontos a melhorar no documento: tópico 2.1 (SCRUM), cuidado com requisitos não funcionais, falta do diagrama de atividades, melhoria do diagrama de classes.
   
 **Decisões:**
@@ -44,9 +43,9 @@ Backlog da semana
 - Gabriel Pereira da Silva
 - Mariana Ribeiro Santana Gonzaga
 
-### 2. [Item 2]
+### 2. Issues do frontend
 **Discussão:**
-- Issues do frontend, para o dia 16/06/2025.
+- Issues da sprint 5, para o dia 16/06/2025.
 
 **Decisões:**
 - Construção da página Home pública, [#40](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/40);
@@ -60,9 +59,9 @@ Backlog da semana
 - Caua Nicolas Pereira de Oliveira
 
 
-  ### 3. [Item 3]
+  ### 3. Issues do backend e banco de dados
 **Discussão:**
-- Finalização das issues da sprint 4 que estão em abertas, para o dia 16/06/2025. 
+- Issues issues da sprint 5, para o dia 16/06/2025. 
 
 **Decisões:**
 - Finalização da issue [#56](https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/issues/56), do backend;
@@ -81,9 +80,9 @@ Backlog da semana
 - Gabriel Pereira da Silva
 - Rafael Siqueira Soares
 
-   ### 4. [Item 4]
+   ### 4. Apresentação da release
 **Discussão:**
-- Apresentação da release pro dia 16/06/2025.
+- Métodos utilizados na apresentação da release do dia 16/06/2025.
   
 **Decisões:**
 - Utilização do figma e do site na apresentação, além disso, decidido a utilização de slides.
