@@ -2,6 +2,12 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
+import UsuarioDef from './usuario.js';
+import FisicoDef from './fisico.js';
+import EmpresaDef from './empresa.js';
+import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.js';
+import setupAssociations from './associacoes.js';
+
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -19,7 +25,14 @@ const sequelize = new Sequelize(
   }
 );
 
-export default sequelize;
+const models = {
+  Usuario: UsuarioDef(sequelize),
+  Fisico: FisicoDef(sequelize),
+  Empresa: EmpresaDef(sequelize),
+  VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize),
+};
+
+setupAssociations(models);
 
 // Test the connection
 (async () => {
@@ -30,3 +43,7 @@ export default sequelize;
     console.error('Unable to connect to the database:', error);
   }
 })();
+
+export { sequelize };
+export default models;
+
