@@ -1,7 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Empresas() {
   const [showPopup, setShowPopup] = useState(false);
+  const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const [tab, setTab] = useState("area");
+  // Estados para animação dos botões de cada post
+  const [reacoes, setReacoes] = useState([
+    { like: false, comment: false, share: false },
+    { like: false, comment: false, share: false },
+    { like: false, comment: false, share: false },
+  ]);
+
+  const empresasArea = [
+    {
+      nome: "Cacau Show",
+      desc: "É uma marca de chocolates nacional, fundada em 1988.",
+      img: "/empresa5.png",
+    },
+    {
+      nome: "Nestle",
+      desc: "Nestlé S.A. é uma empresa transnacional suíça do setor de alimentos e bebidas",
+      img: "/empresa6.png",
+    },
+    {
+      nome: "Lacta",
+      desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.",
+      img: "/empresa7.png",
+    },
+    {
+      nome: "Coca Cola",
+      desc: "A marca é reconhecida mundialmente pela sua bebida icônica",
+      img: "/empresa8.png",
+    },
+    {
+      nome: "Lacta",
+      desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.",
+      img: "/empresa7.png",
+    },
+    {
+      nome: "Coca Cola",
+      desc: "A marca é reconhecida mundialmente pela sua bebida icônica",
+      img: "/empresa8.png",
+    },
+    {
+      nome: "Lacta",
+      desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.",
+      img: "/empresa7.png",
+    },
+    {
+      nome: "Coca Cola",
+      desc: "A marca é reconhecida mundialmente pela sua bebida icônica",
+      img: "/empresa8.png",
+    },
+  ];
 
   const empresasRecomendadas = [
     {
@@ -36,6 +87,25 @@ function Empresas() {
     },
   ];
 
+  // Função para alternar o estado dos emojis
+  const handleReacao = (idx, tipo) => {
+    setReacoes((prev) =>
+      prev.map((r, i) =>
+        i === idx ? { ...r, [tipo]: !r[tipo] } : r
+      )
+    );
+  };
+  useEffect(() => {
+    if (showPopup || showProfilePopup) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [showPopup, showProfilePopup]);
+
+  const empresasLista = tab === "area" ? empresasArea : empresasRecomendadas;
+
   return (
     <div className="bg-green-50 min-h-screen py-2">
       <div className="h-12" />
@@ -54,8 +124,9 @@ function Empresas() {
               <img
                 src="/user/foto-perfil-padrao-empresa.png"
                 alt="Logo Empresa"
-                className="w-32 h-32 rounded-full border-4 border-white shadow absolute left-8 -bottom-16 bg-white"
+                className="w-32 h-32 rounded-full border-4 border-white shadow absolute left-8 -bottom-16 bg-white              cursor-pointer"
                 style={{ top: '96px' }}
+                onClick={() => setShowProfilePopup(true)}
               />
             </div>
             {/* Informações da empresa */}
@@ -87,7 +158,7 @@ function Empresas() {
                 <div className="font-bold text-lg">Seguir</div>
                 <div className="text-gray-600 text-sm">Siga essa empresa e fique por dentro de todas as postagens</div>
               </div>
-              <button className="mt-4 bg-green-400 hover:bg-green-500 text-white px-6 py-2 rounded-full font-semibold flex items-center gap-2 self-start">
+              <button className="mt-4 bg-green-400 hover:bg-green-500 text-white px-6 py-2 rounded-full cursor-pointer group font-semibold flex items-center gap-2 self-start">
                 Seguir <span className="text-xl">+</span>
               </button>
             </div>
@@ -111,7 +182,7 @@ function Empresas() {
                   <div className="font-semibold">Nome do usuário</div>
                   <div className="text-gray-500 text-sm">Cargo/função</div>
                   <div className="text-gray-400 text-xs mb-2">25/05/2025 - Presente</div>
-                  <button className="border border-green-400 text-green-600 px-3 py-1 rounded-full text-sm hover:bg-green-100">
+                  <button className="border border-green-400 text-green-600 px-3 py-1 cursor-pointer group rounded-full text-sm hover:bg-green-100">
                     Perfil Usuário
                   </button>
                 </div>
@@ -144,9 +215,33 @@ function Empresas() {
                     Com o uso massivo de aparelhos eletrônicos simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a...
                   </div>
                   <div className="flex gap-4 text-gray-500 text-xl mt-2">
-                    <button title="Curtir"><span role="img" aria-label="Curtir">💚</span></button>
-                    <button title="Comentar"><span role="img" aria-label="Comentar">💬</span></button>
-                    <button title="Compartilhar"><span role="img" aria-label="Compartilhar">🔄</span></button>
+                    <button
+                      title="Curtir"
+                      onClick={() => handleReacao(i - 1, "like")}
+                      className={`transition-all duration-200 cursor-pointer group${
+                        reacoes[i - 1]?.like ? "text-green-500 scale-125" : "hover:text-green-400"
+                      }`}
+                    >
+                      <span role="img" aria-label="Curtir">💚</span>
+                    </button>
+                    <button
+                      title="Comentar"
+                      onClick={() => handleReacao(i - 1, "comment")}
+                      className={`transition-all duration-200 cursor-pointer group${
+                        reacoes[i - 1]?.comment ? "text-blue-500 scale-125" : "hover:text-blue-400"
+                      }`}
+                    >
+                      <span role="img" aria-label="Comentar">💬</span>
+                    </button>
+                    <button
+                      title="Compartilhar"
+                      onClick={() => handleReacao(i - 1, "share")}
+                      className={`transition-all duration-200 cursor-pointer group${
+                        reacoes[i - 1]?.share ? "text-yellow-500 scale-125" : "hover:text-yellow-400"
+                      }`}
+                    >
+                      <span role="img" aria-label="Compartilhar">🔄</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -156,7 +251,7 @@ function Empresas() {
 
         {/* Sidebar de empresas sugeridas */}
         <aside className="w-80">
-          <div className="bg-white rounded-xl shadow p-4 sticky top-20 z-30">
+          <div className="bg-white rounded-xl shadow-lg p-4 sticky top-20 z-30">
             <h4 className="font-bold text-lg mb-4">Empresas que talvez você conheça</h4>
             <ul className="space-y-3">
               {empresasRecomendadas.map((empresa, idx) => (
@@ -168,14 +263,14 @@ function Empresas() {
                       <div className="text-xs text-gray-500">{empresa.desc}</div>
                     </div>
                   </div>
-                  <button className="border border-blue-400 text-blue-500 px-3 py-1 rounded-full text-sm hover:bg-blue-50">
+                  <button className="border border-blue-400 text-blue-500 px-3 py-1 rounded-full cursor-pointer group text-sm hover:bg-blue-50">
                     Seguir
                   </button>
                 </li>
               ))}
             </ul>
             <button
-              className="block text-blue-600 text-sm mt-4 text-right w-full"
+              className="block text-blue-600 text-sm mt-9 text-center w-full cursor-pointer group hover:bg-blue-50 px-4 py-2 rounded-full   transition-colors"
               onClick={() => setShowPopup(true)}
             >
               Ver todas
@@ -186,30 +281,95 @@ function Empresas() {
 
       {/* Popup de empresas sugeridas */}
       {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-hidden">
+          <div
+            className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full relative"
+            style={{ maxHeight: "90vh", minHeight: "90vh", overflow: "hidden" }}
+          >
             <button
-              className="absolute top-4 right-6 text-2xl text-gray-400 hover:text-gray-700"
+              className="absolute font-bold top-4 right-6 text-2xl text-gray-400 hover:text-gray-700 cursor-pointer group"
               onClick={() => setShowPopup(false)}
               aria-label="Fechar"
             >
               ×
             </button>
             <h2 className="text-2xl font-bold mb-4">Empresas que talvez você conheça</h2>
-            <ul className="space-y-6">
-              {empresasRecomendadas.map((empresa, idx) => (
-                <li key={idx} className="flex items-center gap-4">
-                  <img src={empresa.img} alt={empresa.nome} className="w-14 h-14 rounded-full bg-white border" />
-                  <div className="flex-1">
-                    <div className="font-bold">{empresa.nome}</div>
-                    <div className="text-gray-600 text-sm">{empresa.desc}</div>
-                  </div>
-                  <button className="border border-green-400 text-green-700 px-4 py-1 rounded-full text-sm font-semibold hover:bg-green-50">
-                    Conectar
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {/* Barra de navegação */}
+            <div className="flex gap-8 mb-6 mt-2 border-b-2 border-gray-200">
+              <button
+                className={`pb-2 font-semibold ${
+                  tab === "recomendadas"
+                    ? "text-green-700 border-b-2 border-green-700"
+                    : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
+                } transition-colors cursor-pointer group`}
+                onClick={() => setTab("recomendadas")}
+              >
+                As mais recomendadas
+              </button>
+              <button
+                className={`pb-2 font-semibold ${
+                  tab === "area"
+                    ? "text-green-700 border-b-2 border-green-700"
+                    : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
+                } transition-colors cursor-pointer group`}
+                onClick={() => setTab("area")}
+              >
+                Da sua área de interesse
+              </button>
+            </div>
+            {/* Conteúdo com rolagem apenas na caixa */}
+            <div className="overflow-y-auto pr-5" style={{ maxHeight: "71vh" }}>
+              <ul className="space-y-6">
+                {empresasLista.map((empresa, idx) => (
+                  <li key={idx} className="flex items-center gap-4">
+                    <img src={empresa.img} alt={empresa.nome} className="w-14 h-14 rounded-full bg-white border" />
+                    <div className="flex-1">
+                      <div className="font-bold">{empresa.nome}</div>
+                      <div className="text-gray-600 text-sm">{empresa.desc}</div>
+                    </div>
+                    <button className="border border-green-400 text-green-700 px-4 py-1 rounded-full text-sm font-semibold hover:bg-green-100 cursor-pointer group">
+                      Conectar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup de perfil da empresa */}
+      {showProfilePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-hidden">
+          <div
+            className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full relative flex flex-col items-center"
+            style={{ maxHeight: "90vh", minHeight: "400px", overflow: "hidden" }}
+          >
+            <button
+              className="absolute top-4 right-6 text-2xl text-gray-400 hover:text-gray-700 font-bold cursor-pointer"
+              onClick={() => setShowProfilePopup(false)}
+              aria-label="Fechar"
+            >
+              ×
+            </button>
+            <h2 className="text-2xl font-bold mb-6 text-center w-full">Foto de perfil</h2>
+            <img
+              src="/user/foto-perfil-padrao-empresa.png"
+              alt="Foto de perfil"
+              className="w-60 h-60 rounded-full object-cover mx-auto mb-8 border-4 border-green-200 shadow"
+            />
+            <div className="flex gap-6 w-full justify-center">
+              <button
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-2 rounded-full flex-1 transition-colors text-lg"
+              >
+                Trocar
+              </button>
+              <button
+                className="bg-white border-2 border-green-700 text-green-700 font-semibold px-8 py-2 rounded-full flex-1 transition-colors text-lg hover:bg-green-50"
+              >
+                Remover
+              </button>
+            </div>
           </div>
         </div>
       )}
