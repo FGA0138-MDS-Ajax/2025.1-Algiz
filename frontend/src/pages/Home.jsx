@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThumbsUp, MessageSquare, Share2, Bookmark } from 'lucide-react';
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
+  const navigate = useNavigate();
 
   const empresas = [
     { nome: 'Cacau Show', descricao: 'É uma marca de chocolates nacional, fundada em 1988.', logo: '/cacau.png' },
@@ -38,7 +39,11 @@ export default function HomePublica() {
 
         {/* Conteúdo central */}
         <main className="flex-1 space-y-6">
-          <div className="bg-white p-4 rounded-xl shadow-xl border borde-gray-200">
+          <div
+            className="bg-white p-4 rounded-xl shadow-xl border borde-gray-200 cursor-pointer hover:shadow-lg transition"
+            onClick={() => navigate("/post")}
+            title="Ver post completo"
+          >
             <div className="flex items-center gap-2">
               <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
               <div>
@@ -58,7 +63,11 @@ export default function HomePublica() {
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl shadow-xl borde borde-gray-200">
+          <div
+            className="bg-white p-4 rounded-xl shadow-xl borde borde-gray-200 cursor-pointer hover:shadow-lg transition"
+            onClick={() => navigate("/post")}
+            title="Ver post completo"
+          >
             <div className="flex items-center gap-2">
               <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
               <div>

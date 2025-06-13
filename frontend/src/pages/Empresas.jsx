@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Empresas() {
   const [showPopup, setShowPopup] = useState(false);
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [tab, setTab] = useState("area");
   const [seguindo, setSeguindo] = useState(false);
-  // Estados para animação dos botões de cada post
   const [reacoes, setReacoes] = useState([
     { like: false, comment: false, share: false },
     { like: false, comment: false, share: false },
     { like: false, comment: false, share: false },
   ]);
+  const navigate = useNavigate();
 
   const empresasArea = [
     {
@@ -203,7 +204,12 @@ function Empresas() {
             <h3 className="font-bold text-lg mb-4">Postagens da empresa</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-xl shadow p-4">
+                <div
+                  key={i}
+                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition"
+                  onClick={() => navigate("/post")}
+                  title="Ver post completo"
+                >
                   <div className="flex items-center gap-2 mb-2">
                     <img src="https://img.freepik.com/vetores-gratis/arvore-colorida-com-folhas-de-outono_23-2147511406.jpg" alt="Logo" className="w-8 h-8 rounded-full" />
                     <div>
@@ -225,7 +231,7 @@ function Empresas() {
                   <div className="flex gap-4 text-gray-500 text-xl mt-2">
                     <button
                       title="Curtir"
-                      onClick={() => handleReacao(i - 1, "like")}
+                      onClick={e => { e.stopPropagation(); handleReacao(i - 1, "like"); }}
                       className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.like ? "text-green-500 scale-125" : "hover:text-green-400"
                         }`}
                     >
@@ -233,7 +239,7 @@ function Empresas() {
                     </button>
                     <button
                       title="Comentar"
-                      onClick={() => handleReacao(i - 1, "comment")}
+                      onClick={e => { e.stopPropagation(); handleReacao(i - 1, "comment"); }}
                       className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.comment ? "text-blue-500 scale-125" : "hover:text-blue-400"
                         }`}
                     >
@@ -241,7 +247,7 @@ function Empresas() {
                     </button>
                     <button
                       title="Compartilhar"
-                      onClick={() => handleReacao(i - 1, "share")}
+                      onClick={e => { e.stopPropagation(); handleReacao(i - 1, "share"); }}
                       className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.share ? "text-yellow-500 scale-125" : "hover:text-yellow-400"
                         }`}
                     >
