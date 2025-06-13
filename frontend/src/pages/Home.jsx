@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ThumbsUp, MessageSquare, Share2, Bookmark } from 'lucide-react';
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -12,7 +13,7 @@ export default function HomePublica() {
   ];
 
   return (
-    <div className="min-h-screen bg-green-50">
+    <div className="min-h-screen bg-green-50 flex flex-col">
       {/* Navbar */}
       <header className="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
@@ -26,7 +27,7 @@ export default function HomePublica() {
         </nav>
       </header>
 
-      <div className="container mx-auto px-4 py-6 flex gap-6">
+      <div className="container mx-auto px-4 py-6 flex gap-6 flex-1">
         {/* Lateral esquerda */}
         <aside className="w-1/4 space-y-4">
           <div className="bg-white rounded-xl shadow p-4 text-center">
@@ -37,7 +38,7 @@ export default function HomePublica() {
 
         {/* Conteúdo central */}
         <main className="flex-1 space-y-6">
-          <div className="bg-white p-4 rounded-xl shadow">
+          <div className="bg-white p-4 rounded-xl shadow-xl border borde-gray-200">
             <div className="flex items-center gap-2">
               <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
               <div>
@@ -46,18 +47,18 @@ export default function HomePublica() {
               </div>
             </div>
             <h3 className="font-bold mt-2">Uso massivo de aparelhos eletrônicos</h3>
-            <img src="/post-eletronico.png" className="w-full rounded-lg my-4" />
+            <img src="/post.png" className="w-full rounded-lg my-4" />
             <p className="text-sm text-gray-700">Com o uso massivo de aparelhos eletrônicos...</p>
             <span className="inline-block mt-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Doação</span>
-            <div className="flex justify-around mt-4 text-gray-600">
-              <button>♡</button>
-              <button>💬</button>
-              <button>↗</button>
-              <button>🔖</button>
+            <div className="flex justify-around mt-4 text-gray-700">
+              <button><ThumbsUp className="w-5 h-5 hover:text-green-900" /></button>
+              <button><MessageSquare className="w-5 h-5 hover:text-green-900" /></button>
+              <button><Share2 className="w-5 h-5 hover:text-green-900" /></button>
+              <button><Bookmark className="w-5 h-5 hover:text-green-900" /></button>
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-xl shadow">
+          <div className="bg-white p-4 rounded-xl shadow-xl borde borde-gray-200">
             <div className="flex items-center gap-2">
               <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
               <div>
@@ -67,11 +68,11 @@ export default function HomePublica() {
             </div>
             <h3 className="font-bold mt-2">Uso massivo de aparelhos eletrônicos</h3>
             <p className="text-sm text-gray-700">Com o uso massivo de aparelhos eletrônicos...</p>
-            <div className="flex justify-around mt-4 text-gray-600">
-              <button>♡</button>
-              <button>💬</button>
-              <button>↗</button>
-              <button>🔖</button>
+            <div className="flex justify-around mt-4 text-gray-700">
+              <button><ThumbsUp className="w-5 h-5 hover:text-green-900" /></button>
+              <button><MessageSquare className="w-5 h-5 hover:text-green-900" /></button>
+              <button><Share2 className="w-5 h-5 hover:text-green-900" /></button>
+              <button><Bookmark className="w-5 h-5 hover:text-green-900" /></button>
             </div>
           </div>
         </main>
@@ -123,7 +124,7 @@ export default function HomePublica() {
       )}
 
       {/* Rodapé */}
-      <footer className="text-center text-sm text-gray-600 py-4">
+      <footer className="text-center text-sm text-gray-600 py-4 mt-auto bg-white border-t">
         ©2025 EcoNet. Todos os direitos reservados.
       </footer>
     </div>
