@@ -326,7 +326,7 @@ function Empresas() {
                   } transition-colors cursor-pointer group`}
                 onClick={() => setTab("area")}
               >
-                Da sua área de interesse
+                Da sua área de interesse.
               </button>
             </div>
             {/* Conteúdo com rolagem apenas na caixa */}
