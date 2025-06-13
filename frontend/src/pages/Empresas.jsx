@@ -4,6 +4,7 @@ function Empresas() {
   const [showPopup, setShowPopup] = useState(false);
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [tab, setTab] = useState("area");
+  const [seguindo, setSeguindo] = useState(false);
   // Estados para animação dos botões de cada post
   const [reacoes, setReacoes] = useState([
     { like: false, comment: false, share: false },
@@ -86,6 +87,7 @@ function Empresas() {
       img: "/empresa10.png",
     },
   ];
+  const todasEmpresas = [...empresasArea, ...empresasRecomendadas];
 
   // Função para alternar o estado dos emojis
   const handleReacao = (idx, tipo) => {
@@ -95,6 +97,9 @@ function Empresas() {
       )
     );
   };
+  const [empresasSeguidas, setEmpresasSeguidas] = useState(Array(empresasRecomendadas.length).fill(false));
+  const [empresasConectadas, setEmpresasConectadas] = useState(Array(todasEmpresas.length).fill(false));
+
   useEffect(() => {
     if (showPopup || showProfilePopup) {
       document.body.classList.add("overflow-hidden");
@@ -103,8 +108,8 @@ function Empresas() {
     }
     return () => document.body.classList.remove("overflow-hidden");
   }, [showPopup, showProfilePopup]);
-
   const empresasLista = tab === "area" ? empresasArea : empresasRecomendadas;
+  const offset = tab === "area" ? 0 : empresasArea.length;
 
   return (
     <div className="bg-green-50 min-h-screen py-2">
@@ -124,9 +129,8 @@ function Empresas() {
               <img
                 src="/user/foto-perfil-padrao-empresa.png"
                 alt="Logo Empresa"
-                className="w-32 h-32 rounded-full border-4 border-white shadow absolute left-8 -bottom-16 bg-white              cursor-pointer"
+                className="w-32 h-32 rounded-full border-4 border-white shadow absolute left-8 -bottom-16 bg-white"
                 style={{ top: '96px' }}
-                onClick={() => setShowProfilePopup(true)}
               />
             </div>
             {/* Informações da empresa */}
@@ -158,8 +162,12 @@ function Empresas() {
                 <div className="font-bold text-lg">Seguir</div>
                 <div className="text-gray-600 text-sm">Siga essa empresa e fique por dentro de todas as postagens</div>
               </div>
-              <button className="mt-4 bg-green-400 hover:bg-green-500 text-white px-6 py-2 rounded-full cursor-pointer group font-semibold flex items-center gap-2 self-start">
-                Seguir <span className="text-xl">+</span>
+              <button
+                className={`mt-4 px-6 py-2 rounded-full cursor-pointer group font-medium flex items-center gap-2 self-start text-white text-lg transition-colors
+                  ${seguindo ? "bg-green-600" : "bg-green-400 hover:bg-green-500"}`}
+                onClick={() => setSeguindo((prev) => !prev)}
+              >
+                {seguindo ? "Deixar de seguir" : "Seguir"} <span className="text-xl">{seguindo ? "✓" : "+"}</span>
               </button>
             </div>
           </div>
@@ -173,7 +181,7 @@ function Empresas() {
           </div>
 
           {/* Usuários vinculados */}
-          <div className="bg-white rounded-xl shadow p-6 mt-6"> 
+          <div className="bg-white rounded-xl shadow p-6 mt-6">
             <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
             <div className="flex gap-4 flex-wrap">
               {[1, 2, 3, 4].map((i) => (
@@ -218,27 +226,24 @@ function Empresas() {
                     <button
                       title="Curtir"
                       onClick={() => handleReacao(i - 1, "like")}
-                      className={`transition-all duration-200 cursor-pointer group${
-                        reacoes[i - 1]?.like ? "text-green-500 scale-125" : "hover:text-green-400"
-                      }`}
+                      className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.like ? "text-green-500 scale-125" : "hover:text-green-400"
+                        }`}
                     >
                       <span role="img" aria-label="Curtir">💚</span>
                     </button>
                     <button
                       title="Comentar"
                       onClick={() => handleReacao(i - 1, "comment")}
-                      className={`transition-all duration-200 cursor-pointer group${
-                        reacoes[i - 1]?.comment ? "text-blue-500 scale-125" : "hover:text-blue-400"
-                      }`}
+                      className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.comment ? "text-blue-500 scale-125" : "hover:text-blue-400"
+                        }`}
                     >
                       <span role="img" aria-label="Comentar">💬</span>
                     </button>
                     <button
                       title="Compartilhar"
                       onClick={() => handleReacao(i - 1, "share")}
-                      className={`transition-all duration-200 cursor-pointer group${
-                        reacoes[i - 1]?.share ? "text-yellow-500 scale-125" : "hover:text-yellow-400"
-                      }`}
+                      className={`transition-all duration-200 cursor-pointer group${reacoes[i - 1]?.share ? "text-yellow-500 scale-125" : "hover:text-yellow-400"
+                        }`}
                     >
                       <span role="img" aria-label="Compartilhar">🔄</span>
                     </button>
@@ -255,16 +260,25 @@ function Empresas() {
             <h4 className="font-bold text-lg mb-4">Empresas que talvez você conheça</h4>
             <ul className="space-y-3">
               {empresasRecomendadas.map((empresa, idx) => (
-                <li key={idx} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img src={empresa.img} alt={empresa.nome} className="w-8 h-8 rounded-full" />
-                    <div>
-                      <div className="font-semibold">{empresa.nome}</div>
-                      <div className="text-xs text-gray-500">{empresa.desc}</div>
-                    </div>
+                <li key={idx} className="flex items-center gap-2">
+                  <img src={empresa.img} alt={empresa.nome} className="w-10 h-10 rounded-full" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold">{empresa.nome}</div>
+                    <div className="text-xs text-gray-500 line-clamp-2">{empresa.desc}</div>
                   </div>
-                  <button className="border border-blue-400 text-blue-500 px-3 py-1 rounded-full cursor-pointer group text-sm hover:bg-blue-50">
-                    Seguir
+                  <button
+                    className={`ml-1 border px-4 py-1 cursor-pointer group rounded-full text-sm font-semibold transition-colors min-w-[90px] text-center
+                      ${empresasSeguidas[idx]
+                        ? "bg-blue-600 border-blue-600 text-white"
+                        : "border-blue-400 text-blue-500 hover:bg-blue-100"}
+                      `}
+                    onClick={() => {
+                      setEmpresasSeguidas((prev) =>
+                        prev.map((v, i) => (i === idx ? !v : v))
+                      );
+                    }}
+                  >
+                    {empresasSeguidas[idx] ? "Seguindo" : "Seguir"}
                   </button>
                 </li>
               ))}
@@ -297,21 +311,19 @@ function Empresas() {
             {/* Barra de navegação */}
             <div className="flex gap-8 mb-6 mt-2 border-b-2 border-gray-200">
               <button
-                className={`pb-2 font-semibold ${
-                  tab === "recomendadas"
-                    ? "text-green-700 border-b-2 border-green-700"
-                    : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
-                } transition-colors cursor-pointer group`}
+                className={`pb-2 font-semibold ${tab === "recomendadas"
+                  ? "text-green-700 border-b-2 border-green-700"
+                  : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
+                  } transition-colors cursor-pointer group`}
                 onClick={() => setTab("recomendadas")}
               >
                 As mais recomendadas
               </button>
               <button
-                className={`pb-2 font-semibold ${
-                  tab === "area"
-                    ? "text-green-700 border-b-2 border-green-700"
-                    : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
-                } transition-colors cursor-pointer group`}
+                className={`pb-2 font-semibold ${tab === "area"
+                  ? "text-green-700 border-b-2 border-green-700"
+                  : "text-gray-700 border-b-2 border-transparent hover:border-green-700 hover:text-green-700"
+                  } transition-colors cursor-pointer group`}
                 onClick={() => setTab("area")}
               >
                 Da sua área de interesse
@@ -323,52 +335,27 @@ function Empresas() {
                 {empresasLista.map((empresa, idx) => (
                   <li key={idx} className="flex items-center gap-4">
                     <img src={empresa.img} alt={empresa.nome} className="w-14 h-14 rounded-full bg-white border" />
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="font-bold">{empresa.nome}</div>
-                      <div className="text-gray-600 text-sm">{empresa.desc}</div>
+                      <div className="text-gray-600 text-sm line-clamp-2">{empresa.desc}</div>
                     </div>
-                    <button className="border border-green-400 text-green-700 px-4 py-1 rounded-full text-sm font-semibold hover:bg-green-100 cursor-pointer group">
-                      Conectar
+                    <button
+                      className={`border-2 px-5 py-1 rounded-full text-sm font-semibold transition-colors min-w-[110px] text-center
+                        ${empresasConectadas[idx]
+                          ? "bg-green-600 border-green-600 text-white"
+                          : "border-green-600 text-green-600 hover:bg-green-50"}
+                        `}
+                      onClick={() => {
+                        setEmpresasConectadas((prev) =>
+                          prev.map((v, i) => (i === idx + offset ? !v : v))
+                        );
+                      }}
+                    >
+                      {empresasConectadas[idx + offset] ? "Conectado" : "Conectar"}
                     </button>
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Popup de perfil da empresa */}
-      {showProfilePopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 overflow-hidden">
-          <div
-            className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full relative flex flex-col items-center"
-            style={{ maxHeight: "90vh", minHeight: "400px", overflow: "hidden" }}
-          >
-            <button
-              className="absolute top-4 right-6 text-2xl text-gray-400 hover:text-gray-700 font-bold cursor-pointer"
-              onClick={() => setShowProfilePopup(false)}
-              aria-label="Fechar"
-            >
-              ×
-            </button>
-            <h2 className="text-2xl font-bold mb-6 text-center w-full">Foto de perfil</h2>
-            <img
-              src="/user/foto-perfil-padrao-empresa.png"
-              alt="Foto de perfil"
-              className="w-60 h-60 rounded-full object-cover mx-auto mb-8 border-4 border-green-200 shadow"
-            />
-            <div className="flex gap-6 w-full justify-center">
-              <button
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-2 rounded-full flex-1 transition-colors text-lg"
-              >
-                Trocar
-              </button>
-              <button
-                className="bg-white border-2 border-green-700 text-green-700 font-semibold px-8 py-2 rounded-full flex-1 transition-colors text-lg hover:bg-green-50"
-              >
-                Remover
-              </button>
             </div>
           </div>
         </div>
