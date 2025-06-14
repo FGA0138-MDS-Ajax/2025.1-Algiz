@@ -77,7 +77,7 @@ const adminOptions = {
             }
           }
         },
-        listProperties: ['idUsuario', 'nomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
+        listProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
         showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
         editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico']
       }
@@ -99,9 +99,9 @@ const adminOptions = {
                 }
             }
             },
-            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'areaAtuacao'],
-            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'areaAtuacao'],
-            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'areaAtuacao']
+            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
         }
     },
     {

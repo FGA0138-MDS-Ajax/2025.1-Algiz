@@ -9,8 +9,8 @@ const Fisico = (sequelize) => sequelize.define('Fisico', {
   sobrenomeFisico: { type: DataTypes.STRING(255), allowNull: false },
   sexo: { type: DataTypes.STRING(17), allowNull: false },
   dtNascimento: { type: DataTypes.DATEONLY, allowNull: false },
-  telefoneFisico: { type: DataTypes.STRING(20), allowNull: false, field: 'Telefone' },
-  estadoFisico: { type: DataTypes.STRING(255), allowNull: false, field: 'Estado' },
+  telefoneFisico: { type: DataTypes.STRING(20), allowNull: false },
+  estadoFisico: { type: DataTypes.STRING(255), allowNull: false },
   idUsuario: {
     type: DataTypes.INTEGER,
     allowNull: false,
