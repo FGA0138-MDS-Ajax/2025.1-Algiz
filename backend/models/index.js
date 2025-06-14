@@ -10,10 +10,11 @@ import setupAssociations from './associacoes.js';
 
 dotenv.config();
 
+// Apenas cria e configura a instância do Sequelize
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'EcoNet_DB',
+  process.env.DB_NAME || 'econetdb',
   process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || 'yourpassword',
+  process.env.DB_PASSWORD, // A senha virá do seu arquivo .env
   {
     host: process.env.DB_HOST || 'localhost',
     dialect: 'mysql',
@@ -21,10 +22,11 @@ const sequelize = new Sequelize(
       freezeTableName: true,
       timestamps: false
     },
-    logging: false // Set to true if you want to see SQL queries
+    logging: false // Mude para console.log para ver as queries SQL
   }
 );
 
+// Define todos os modelos
 const models = {
   Usuario: UsuarioDef(sequelize),
   Fisico: FisicoDef(sequelize),
@@ -32,6 +34,7 @@ const models = {
   VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize),
 };
 
+// Configura as associações entre os modelos
 setupAssociations(models);
 
 // Test the connection
@@ -44,6 +47,10 @@ setupAssociations(models);
   }
 })();
 
+(async () => {
+  await sequelize.sync({ alter: true });
+  console.log("✅ All models were synchronized.");
+})();
+
 export { sequelize };
 export default models;
-

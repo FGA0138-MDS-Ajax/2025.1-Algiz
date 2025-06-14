@@ -18,16 +18,6 @@ const Usuario = (sequelize) => sequelize.define('Usuario', {
     allowNull: false,
     field: 'senha'
   },
-  telefoneUsuario: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    field: 'telefoneUsuario'
-  },
-  estado: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-    field: 'estado'
-  },
   fotoPerfil: { type: DataTypes.STRING, allowNull: true },
   bannerPerfil: { type: DataTypes.STRING, allowNull: true },
 }, {
