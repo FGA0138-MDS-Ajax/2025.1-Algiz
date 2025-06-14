@@ -17,7 +17,7 @@ const VinculoEmpresaFisico = (sequelize) => sequelize.define('VinculoEmpresaFisi
     allowNull: true
   }
 }, {
-  tableName: 'VINCULO_EMPRESA_FISICO',
+  tableName: 'VINCULO_JURIDICO_FISICO',
   timestamps: false
 });
 

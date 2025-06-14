@@ -23,7 +23,6 @@ export default function setupAssociations(models) {
     as: 'usuario'
   });
 
-  // Many-to-many: Empresa <-> Fisico via VinculoEmpresaFisico
   Fisico.belongsToMany(Empresa, {
     through: VinculoEmpresaFisico,
     foreignKey: 'cpfFisico',

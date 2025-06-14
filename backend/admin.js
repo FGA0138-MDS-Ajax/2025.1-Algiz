@@ -31,7 +31,7 @@ const adminOptions = {
               show: false
             }
           },
-          estado: {
+          estadoFisico: {
             availableValues: estados.map(uf => ({ value: uf, label: uf }))
           }
         },
@@ -77,9 +77,9 @@ const adminOptions = {
             }
           }
         },
-        listProperties: ['idUsuario', 'nomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa'],
-        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa'],
-        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefonePessoa', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoPessoa']
+        listProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
+        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
+        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico']
       }
     },
     {
@@ -99,9 +99,9 @@ const adminOptions = {
                 }
             }
             },
-            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao'],
-            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao'],
-            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'telefoneEmpresa', 'cnpjJuridico', 'areaAtuacao']
+            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
         }
     },
     {
