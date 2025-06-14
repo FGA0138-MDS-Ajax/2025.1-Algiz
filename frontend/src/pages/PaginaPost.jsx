@@ -68,22 +68,24 @@ export default function PaginaPost() {
       <main className="flex gap-6 max-w-6xl mx-auto mt-8">
         {/* Sidebar esquerda */}
         <aside className="w-1/4">
-          <div className="bg-white rounded-xl shadow p-4 pt-3 pb-6 text-left border border-gray-200">
-            <div className="text-[23px] leading-snug mb-6 break-words font-semibold">
-              Desde 2025
-              <br />
-              Conectando empresas
-              <br />
-              com soluções sustentáveis
-              <br />
-              de forma simples e eficiente
+          <div className="sticky top-20"> {/* top-20 = 5rem */}
+            <div className="bg-white rounded-xl shadow p-4 pt-3 pb-6 text-left border border-gray-200">
+              <div className="text-[23px] leading-snug mb-6 break-words font-semibold">
+                Desde 2025
+                <br />
+                Conectando empresas
+                <br />
+                com soluções sustentáveis
+                <br />
+                de forma simples e eficiente
+              </div>
+              <Link
+                to="/cadastro"
+                className="block w-full bg-green-600 text-white py-2 rounded-md text-center font-medium hover:bg-green-700 transition"
+              >
+                Cadastrar-se →
+              </Link>
             </div>
-            <Link
-              to="/cadastro"
-              className="block w-full bg-green-600 text-white py-2 rounded-md text-center font-medium hover:bg-green-700 transition"
-            >
-              Cadastrar-se →
-            </Link>
           </div>
         </aside>
 
