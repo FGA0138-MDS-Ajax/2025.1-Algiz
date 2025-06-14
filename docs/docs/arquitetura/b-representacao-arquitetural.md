@@ -56,9 +56,8 @@ Essa divisão modular facilita a manutenção e os testes independentes de cada 
 
 ### Representação Visual da Arquitetura: 
 
- ![Representação Visual da Arquitetura](../../static/img/image6.png)                             
+![Representação Visual da Arquitetura](../../static/img/esquematico%20representação%20arquitetural.png)                             
 
-Figura 1: Diagrama Desenho esquemático da representação arquitetural
 
 Foi elaborado um diagrama arquitetural que ilustra a divisão em camadas, os fluxos de dados e a comunicação entre os componentes. Portanto, nosso modelo arquitetural pode ser resumido como:
 
