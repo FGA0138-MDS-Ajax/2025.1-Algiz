@@ -8,8 +8,9 @@ const Empresa = (sequelize) => sequelize.define('JURIDICO', {
   razaoSocial: { type: DataTypes.STRING, allowNull: false },
   nomeComercial: { type: DataTypes.STRING, allowNull: false, unique: true },
   areaAtuacao: { type: DataTypes.STRING, allowNull: false },
-  telefoneEmpresa: { type: DataTypes.STRING(20), allowNull: false, field: 'Telefone' },
-  estadoEmpresa: { type: DataTypes.STRING(255), allowNull: false, field: 'Estado' },
+  telefoneJuridico: { type: DataTypes.STRING(20), allowNull: false, field: 'Telefone' },
+  estadoJuridico: { type: DataTypes.STRING(255), allowNull: false, field: 'Estado' },
+  enderecoJuridico: { type: DataTypes.STRING(255), allowNull: false, field: 'Endereço' },
   idUsuario: {
     type: DataTypes.INTEGER,
     allowNull: false,
