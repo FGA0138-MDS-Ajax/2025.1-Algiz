@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Empresas() {
   const [showPopup, setShowPopup] = useState(false);
@@ -12,6 +12,22 @@ function Empresas() {
     { like: false, comment: false, share: false },
   ]);
   const navigate = useNavigate();
+  const { idEmpresa } = useParams();
+
+  // Pegando os valores de empresa do sessionStorage
+  const [empresa, setEmpresa] = useState(null);
+
+  useEffect(() => {
+    if (idEmpresa) {
+      try {
+        const empresas = JSON.parse(sessionStorage.getItem("fakeEmpresas")) || [];
+        const emp = empresas.find((e) => e.id === idEmpresa);
+        setEmpresa(emp || null);
+      } catch {
+        setEmpresa(null);
+      }
+    }
+  }, [idEmpresa]);
 
   const empresasArea = [
     {
@@ -122,13 +138,13 @@ function Empresas() {
             {/* Banner */}
             <div className="relative">
               <img
-                src="/user/banner-padrao-1.png"
+                src={empresa?.banner || "/user/banner-padrao-1.png"}
                 alt="Banner da empresa"
                 className="w-full h-40 object-cover"
               />
               {/* Avatar sobreposto ao banner */}
               <img
-                src="/user/foto-perfil-padrao-empresa.png"
+                src={empresa?.logo || "/user/foto-perfil-padrao-empresa.png"}
                 alt="Logo Empresa"
                 className="w-32 h-32 rounded-full border-4 border-white shadow absolute left-8 -bottom-16 bg-white"
                 style={{ top: '96px' }}
@@ -136,10 +152,18 @@ function Empresas() {
             </div>
             {/* Informações da empresa */}
             <div className="pt-20 pb-6 px-6">
-              <h2 className="text-3xl font-bold">Nome do empresa</h2>
-              <p className="text-gray-600">Email: emaildousuario@econet.com</p>
-              <p className="text-gray-600">Contato: (85) 9 ########</p>
-              <p className="text-gray-500">Endereço do usuário vai aqui, Brasília, Distrito Federal</p>
+              <h2 className="text-3xl font-bold">
+                {idEmpresa && empresa ? empresa.nome : "Nome do empresa"}
+              </h2>
+              <p className="text-gray-600">
+                Email: {idEmpresa && empresa ? empresa.email || "email@empresa.com" : "emaildousuario@econet.com"}
+              </p>
+              <p className="text-gray-600">
+                Contato: {idEmpresa && empresa ? empresa.contato || "(00) 0000-0000" : "(85) 9 ########"}
+              </p>
+              <p className="text-gray-500">
+                {idEmpresa && empresa ? empresa.endereco || "Endereço não informado" : "Endereço do usuário vai aqui, Brasília, Distrito Federal"}
+              </p>
             </div>
           </div>
 
@@ -177,7 +201,9 @@ function Empresas() {
           <div className="bg-white rounded-xl shadow p-6 mt-6">
             <h3 className="font-bold text-xl mb-2">Sobre a empresa</h3>
             <p className="text-gray-700 text-sm">
-              Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+              {idEmpresa && empresa
+                ? empresa.descricao || "Sem descrição cadastrada."
+                : `Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.`}
             </p>
           </div>
 

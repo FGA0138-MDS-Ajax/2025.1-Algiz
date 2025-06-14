@@ -30,6 +30,8 @@ function App() {
           <Route path="/sobrenos" element={<Sobrenos />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/empresas" element={<Empresas />} />
+          {/* Rota empresa/:id Irei deixar por enquanto a rota empresas/ do jeito que foi feito */ }
+          <Route path="/empresa/:idEmpresa" element={<Empresas />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
           <Route path="/login" element={<Login />} />
