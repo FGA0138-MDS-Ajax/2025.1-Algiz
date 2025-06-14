@@ -73,6 +73,28 @@ cd backend
 docker compose up --build
 ```
 
+🔁 Resetar banco de dados:
+Se você deseja apagar todo o banco, reconstruir os containers e aplicar os dados do zero (ideal para desenvolvimento), utilize o script abaixo:
+
+```bash
+./scripts/reset-db.sh
+```
+Este script irá:
+- Derrubar os containers e volumes ```bash docker compose down -v ``` 
+- Subir tudo novamente ```bash docker compose up ```
+
+💡 Recomendado quando você quer garantir que está usando dados de teste atualizados.
+
+⚙️ Rodar apenas migrations e seeders:
+Primeiro: Certifique-se de que o backend esteja rodando com os containers Docker.
+Se já está em execução (containers já estão rodando), você pode apenas aplicar as migrations e popular com os dados iniciais usando:
+``` bash
+./scripts/setup-db.sh
+```
+Esse script irá:
+- Executar as migrations ```bash sequelize-cli db:migrate ```
+- Rodar os seeders ```bash sequelize-cli db:seed:all ```
+
 ### Frontend
 
 Em outro terminal, vá até a pasta `frontend`:
