@@ -1,80 +1,126 @@
+// backend/server.js
 import express from 'express';
 import cors from 'cors';
-import db from './db.js';
 import bcrypt from 'bcrypt';
-import { admin, adminRouter } from './admin.js';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
-import models from './models/index.js';
+
+// Importa a instância do sequelize e os modelos do arquivo models/index.js
+import models, { sequelize } from './models/index.js';
+import { admin, adminRouter } from './admin.js';
+
+// --- LOG DE VERIFICAÇÃO ADICIONADO ---
+console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTA POST) ---');
+// ------------------------------------
+
 const { Usuario } = models;
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const app = express();
-
-// 🔐 Session setup
-const SequelizeStore = connectSessionSequelize(session.Store);
-const sessionStore = new SequelizeStore({
-  db: db,
-});
-await db.authenticate();
-await sessionStore.sync();
-
-app.use(cors());
-app.use(express.json());
-
-// 🧠 IMPORTANT: Apply session middleware BEFORE admin router
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: {
-      httpOnly: true,
-      secure: false, // set to true in production with HTTPS
-    },
-  })
-);
-
-// 🛠️ AdminJS
-app.use(admin.options.rootPath, adminRouter);
-
 const PORT = 3001;
 
-app.get('/', (req, res) => {
-  res.send('Hello from the backend!');
-});
-
-(async () => {
+// Função assíncrona para garantir a ordem correta de inicialização
+async function startServer() {
   try {
-    // Ensure admin user exists
-    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
-    const existingAdmin = await Usuario.findOne({ where: { emailUsuario: process.env.ADMIN_EMAIL } });
-    if (!existingAdmin) {
-      await Usuario.create({
-        emailUsuario: process.env.ADMIN_EMAIL,
-        senha: hashedPassword,
-        telefoneUsuario: '0000000000',
-        estado: 'DF'
-      });
-      console.log('✅ Admin user created');
+    // 1. Conecta ao banco de dados
+    await sequelize.authenticate();
+    console.log('✅ Conexão com o MySQL estabelecida com sucesso.');
+
+    // 2. Sincroniza os modelos e cria as tabelas (se não existirem)
+    await sequelize.sync();
+    console.log('✅ Todas as tabelas foram criadas com sucesso.');
+
+    // 3. Configura o armazenamento de sessão usando o sequelize
+    const SequelizeStore = connectSessionSequelize(session.Store);
+    const sessionStore = new SequelizeStore({
+      db: sequelize, // Usa a instância única e já conectada do sequelize
+    });
+
+    // 4. Configura os middlewares do Express
+    app.use(cors());
+    app.use(express.json());
+    app.use(
+      session({
+        secret: process.env.SESSION_SECRET || 'uma-chave-secreta-muito-forte',
+        resave: false,
+        saveUninitialized: false,
+        store: sessionStore,
+        cookie: {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', // Em produção, usar true com HTTPS
+        },
+      })
+    );
+    await sessionStore.sync(); // Garante que a tabela de sessões seja criada
+
+    // 5. Configura as rotas
+    app.use(admin.options.rootPath, adminRouter);
+    app.get('/', (req, res) => {
+      res.send('Backend da EcoNet no ar!');
+    });
+
+    // NOVA ROTA PARA CRIAR USUÁRIOS
+    app.post('/api/usuarios', async (req, res) => {
+      console.log('LOG: Rota POST /api/usuarios foi acessada.');
+      console.log('LOG: Corpo da requisição:', req.body);
+
+      try {
+        const { emailUsuario, senha, telefoneUsuario, estado } = req.body;
+
+        if (!emailUsuario || !senha) {
+          return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
+        }
+
+        const hashedPassword = await bcrypt.hash(senha, 10);
+
+        const novoUsuario = await Usuario.create({
+          emailUsuario,
+          senha: hashedPassword,
+          telefoneUsuario,
+          estado,
+        });
+
+        const { senha: _, ...usuarioSemSenha } = novoUsuario.get({ plain: true });
+        res.status(201).json(usuarioSemSenha);
+
+      } catch (error) {
+        console.error('Erro ao criar usuário:', error);
+        res.status(500).json({ error: 'Não foi possível criar o usuário.' });
+      }
+    });
+
+
+    // 6. Garante que o usuário administrador existe
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
+    const [adminUser, created] = await Usuario.findOrCreate({
+        where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
+        defaults: {
+            senha: hashedPassword,
+            telefoneUsuario: '0000000000',
+            estado: 'DF'
+        }
+    });
+
+    if (created) {
+        console.log('✅ Usuário administrador criado.');
     } else {
-      console.log('✅ Admin user already exists');
+        console.log('✅ Usuário administrador já existe.');
     }
 
+    // 7. Inicia o servidor web APENAS DEPOIS de tudo pronto
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-      console.log(`AdminJS dashboard at http://localhost:${PORT}${admin.options.rootPath}`);
+      // --- LOG DE VERIFICAÇÃO ADICIONADO ---
+      console.log(`🚀 VERIFICADO: Servidor rodando na porta ${PORT}`);
+      console.log(`🔑 Painel AdminJS em http://localhost:${PORT}${admin.options.rootPath}`);
     });
+
   } catch (err) {
-    console.error(err.message);
+    console.error('❌ Não foi possível iniciar o servidor:', err);
     process.exit(1);
   }
-})();
+}
+
+// Chama a função para iniciar o servidor
+startServer();
