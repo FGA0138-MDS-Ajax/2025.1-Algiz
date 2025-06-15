@@ -131,9 +131,9 @@ function Empresas() {
   return (
     <div className="bg-green-50 min-h-screen py-2">
       <div className="h-12" />
-      <main className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto mt-8 px-2 md:px-6">
+      <main className="flex gap-6 max-w-6xl mx-auto mt-8">
         {/* Perfil da Empresa */}
-        <section className="flex-1 min-w-0">
+        <section className="flex-1">
           <div className="bg-white rounded-xl shadow p-0 overflow-hidden">
             {/* Banner */}
             <div className="relative">
@@ -164,18 +164,13 @@ function Empresas() {
               <p className="text-gray-500">
                 {idEmpresa && empresa ? empresa.endereco || "Endereço não informado" : "Endereço do usuário vai aqui, Brasília, Distrito Federal"}
               </p>
-            <div className="pt-20 pb-6 px-4 md:px-6">
-              <h2 className="text-2xl md:text-3xl font-bold">Nome do empresa</h2>
-              <p className="text-gray-600 text-sm md:text-base">Email: emaildousuario@econet.com</p>
-              <p className="text-gray-600 text-sm md:text-base">Contato: (85) 9 ########</p>
-              <p className="text-gray-500 text-xs md:text-sm">Endereço do usuário vai aqui, Brasília, Distrito Federal</p>
             </div>
           </div>
-          </div>
+
           {/* Seguidores e Seguir */}
-          <div className="flex flex-col md:flex-row gap-4 mt-4">
+          <div className="flex gap-4 mt-4">
             {/* Caixa de Seguidores fixa */}
-            <div className="bg-green-50 rounded-xl p-4 flex items-center gap-4 shadow sticky top-8 z-20 w-full md:w-1/2">
+            <div className="flex-1 bg-green-50 rounded-xl p-4 flex items-center gap-4 shadow sticky top-8 z-20">
               <div>
                 <div className="font-bold text-lg">Seguidores</div>
                 <div className="text-gray-600 text-sm">Usuários que estão me seguindo</div>
@@ -187,17 +182,17 @@ function Empresas() {
                 </div>
               </div>
             </div>
-            <div className="bg-green-50 rounded-xl p-4 flex flex-col justify-between shadow w-full md:w-1/2">
+            <div className="flex-1 bg-green-50 rounded-xl p-4 flex flex-col justify-between shadow">
               <div>
                 <div className="font-bold text-lg">Seguir</div>
                 <div className="text-gray-600 text-sm">Siga essa empresa e fique por dentro de todas as postagens</div>
               </div>
               <button
-                className={`mt-4 px-6 py-2 rounded-full cursor-pointer group font-medium flex items-center gap-2 self-start text-white text-lg transition-colors ${seguindo ? "bg-green-600" : "bg-green-400 hover:bg-green-500"
-                  }`}
+                className={`mt-4 px-6 py-2 rounded-full cursor-pointer group font-medium flex items-center gap-2 self-start text-white text-lg transition-colors
+                  ${seguindo ? "bg-green-600" : "bg-green-400 hover:bg-green-500"}`}
                 onClick={() => setSeguindo((prev) => !prev)}
               >
-                {seguindo ? "Seguindo" : "Seguir"} <span className="text-xl">{seguindo ? "✓" : "+"}</span>
+                {seguindo ? "Deixar de seguir" : "Seguir"} <span className="text-xl">{seguindo ? "✓" : "+"}</span>
               </button>
             </div>
           </div>
@@ -215,9 +210,9 @@ function Empresas() {
           {/* Usuários vinculados */}
           <div className="bg-white rounded-xl shadow p-6 mt-6">
             <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
+            <div className="flex gap-4 flex-wrap">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-green-50 rounded-xl p-4 flex flex-col items-center w-full shadow">
+                <div key={i} className="bg-green-50 rounded-xl p-4 flex flex-col items-center w-60 shadow">
                   <img src="/user/foto-perfil-padrao-1.png" alt="Usuário" className="w-16 h-16 rounded-full mb-2" />
                   <div className="font-semibold">Nome do usuário</div>
                   <div className="text-gray-500 text-sm">Cargo/função</div>
@@ -290,8 +285,8 @@ function Empresas() {
             </div>
           </div>
         </section>
-        {/* Sidebar de empresas sugeridas - só aparece em md+ */}
-        <aside className="w-80 hidden md:block">
+        {/* Sidebar de empresas sugeridas */}
+        <aside className="w-80">
           <div className="bg-white rounded-xl shadow-lg p-4 sticky top-20 z-30">
             <h4 className="font-bold text-lg mb-4">Empresas que talvez você conheça</h4>
             <ul className="space-y-3">
@@ -362,7 +357,7 @@ function Empresas() {
                   } transition-colors cursor-pointer group`}
                 onClick={() => setTab("area")}
               >
-                Da sua área de interesse...
+                Da sua área de interesse.
               </button>
             </div>
             {/* Conteúdo com rolagem apenas na caixa */}
@@ -378,8 +373,8 @@ function Empresas() {
                     <button
                       className={`border-2 px-5 py-1 rounded-full text-sm font-semibold transition-colors min-w-[110px] text-center
                         ${empresasConectadas[idx]
-                          ? "bg-green-600 border-green-600 text-white cursor-pointer group"
-                          : "border-green-600 text-green-600 hover:bg-green-50 cursor-pointer group"}
+                          ? "bg-green-600 border-green-600 text-white"
+                          : "border-green-600 text-green-600 hover:bg-green-50"}
                         `}
                       onClick={() => {
                         setEmpresasConectadas((prev) =>
@@ -396,13 +391,6 @@ function Empresas() {
           </div>
         </div>
       )}
-
-      {/* Footer */}
-      <footer className="container mx-auto px-50 py-8">
-        <div className="border-t border-gray-300 pt-8">
-          <p className="text-center text-gray-600 text-sm">©2025 EcoNet. Todos os direitos reservados.</p>
-        </div>
-      </footer>
     </div>
   );
 }
