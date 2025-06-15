@@ -1,35 +1,30 @@
 import React from "react";
 
-export default function SugestoesEmpresas({ usuario }) {
-  
-  const numeroDeSugestoes = Math.floor(Math.random() * 10) + 1;
-
-  
-  const idsAleatorios = [];
-  while (idsAleatorios.length < numeroDeSugestoes) {
-    const id = Math.floor(Math.random() * 10) + 1; 
-    if (!idsAleatorios.includes(id)) {
-      idsAleatorios.push(id);
-    }
-  }
-
-  
-  const empresas = JSON.parse(sessionStorage.getItem("fakeEmpresas") || "[]");
-
-  
-  const sugestoes = empresas.filter((empresa) => idsAleatorios.includes(Number(empresa.id)));
-
+export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
   return (
-    <div className="rounded-3xl bg-gray-100 shadow p-6 h-full flex flex-col">
-      <div className="font-bold text-lg mb-2">Empresas que você talvez conheça</div>
-      <div className="flex flex-col gap-3">
-        {sugestoes.map((empresa) => (
-          <div key={empresa.id} className="flex items-center gap-2">
-            <img src={empresa.logo} alt={empresa.nome} className="w-8 h-8 rounded-full" />
-            <span>{empresa.nome}</span>
-          </div>
+    <div className="bg-white rounded-xl shadow-lg p-4 sticky top-20 z-30">
+      <h4 className="font-bold text-lg mb-4">Empresas que talvez você conheça</h4>
+      <ul className="space-y-3">
+        {sugestoes.map((empresa, idx) => (
+          <li key={idx} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <img src={empresa.logo} alt={empresa.nome} className="w-8 h-8 rounded-full" />
+              <div>
+                <div className="font-semibold">{empresa.nome}</div>
+              </div>
+            </div>
+            <button className="border border-green-400 text-green-700 px-3 py-1 rounded-full cursor-pointer group text-sm hover:bg-green-100">
+              Seguir
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
+      <button
+        className="block text-green-600 text-sm mt-9 text-center w-full cursor-pointer group hover:bg-green-50 px-4 py-2 rounded-full transition-colors"
+        onClick={onVerTodas}
+      >
+        Ver todas
+      </button>
     </div>
   );
 }
