@@ -14,4 +14,4 @@ O detalhamento do escopo encontra-se no documento [Visão do Produto - EcoNet](.
 
 ---
 ## Primeira versão do Documento de Arquitetura
-Para acessar a versão 1.0 da Arquitetura do Projeto, consulte o [PDF Documento de Arquitetura- EcoNet](../../static/files/Documento-de-Arquitetura-Algiz-2025-1.pdf)
+Para acessar a versão 1.0 da Arquitetura do Projeto, consulte o [PDF Documento de Arquitetura- EcoNet](../../static/files/documento-de-arquitetura-algiz-2025-1%20.pdf)
