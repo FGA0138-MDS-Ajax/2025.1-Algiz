@@ -15,19 +15,6 @@ export default function HomePublica() {
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col">
-      {/* Navbar */}
-      <header className="bg-white shadow-sm py-4 px-6 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <img src="/logo.svg" alt="EcoNet" className="h-8" />
-        </div>
-        <input type="text" placeholder="Pesquisar" className="w-1/2 border px-4 py-1 rounded-full" />
-        <nav className="flex gap-6 items-center">
-          <Link to="/" className="hover:underline">Home</Link>
-          <Link to="/sobrenos" className="hover:underline">Sobre nós</Link>
-          <Link to="/login" className="bg-green-600 text-white px-4 py-1 rounded-full hover:bg-green-700">Login →</Link>
-        </nav>
-      </header>
-
       <div className="container mx-auto px-4 py-6 flex gap-6 flex-1">
         {/* Lateral esquerda */}
         <aside className="w-1/4 space-y-4">
