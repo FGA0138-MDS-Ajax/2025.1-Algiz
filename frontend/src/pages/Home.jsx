@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ThumbsUp, MessageSquare, Share2, Bookmark } from "lucide-react";
+import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
@@ -10,7 +10,6 @@ export default function HomePublica() {
   const [tab, setTab] = useState("recomendadas");
   const navigate = useNavigate();
 
-  // Lista de empresas sugeridas
   const sugestoesEmpresas = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
     { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -20,7 +19,6 @@ export default function HomePublica() {
     { id: "6", nome: "Kactus", logo: "/empresa10.png" },
   ];
 
-  // Dados para o modal
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
     nome: e.nome,
     img: e.logo,
@@ -30,41 +28,67 @@ export default function HomePublica() {
   return (
     <div className="min-h-screen bg-green-50 flex flex-col pt-16">
       <div className="container mx-auto px-4 py-6 flex gap-6 flex-1">
-        {/* Lateral esquerda */}
+        {/* Sidebar esquerda */}
         <SidebarIntro />
-        {/* Conteúdo central */}
-        <main className="flex-1 space-y-6">
+
+        {/* Feed central */}
+        <main className="flex-1 flex flex-col items-center gap-6">
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="bg-white p-4 rounded-xl shadow-xl border borde-gray-200 cursor-pointer hover:shadow-lg transition"
+              className="bg-white p-4 rounded-xl shadow-md cursor-pointer transition hover:shadow-lg w-full max-w-[520px]"
               onClick={() => navigate("/post")}
               title="Ver post completo"
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-2">
                 <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
                 <div>
-                  <p className="font-semibold">Relog</p>
-                  <p className="text-sm text-gray-500">Promovido</p>
+                  <p className="font-semibold text-sm">Relog</p>
+                  <p className="text-xs text-gray-500">Promovido</p>
                 </div>
               </div>
-              <h3 className="font-bold mt-2">Uso massivo de aparelhos eletrônicos</h3>
-              <img src="/post.png" className="w-full rounded-lg my-4" />
-              <p className="text-sm text-gray-700">
+
+              <h3 className="font-semibold text-base mb-2">
+                Uso massivo de aparelhos eletrônicos
+              </h3>
+
+              <img
+                src="/post.png"
+                className="w-full rounded-xl object-cover mb-3"
+              />
+
+              <p className="text-sm text-gray-600 line-clamp-2 mb-2">
                 Com o uso massivo de aparelhos eletrônicos...
               </p>
-              <span className="inline-block mt-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Doação</span>
-              <div className="flex justify-around mt-4 text-gray-700">
-                <button><ThumbsUp className="w-5 h-5 hover:text-green-900" /></button>
-                <button><MessageSquare className="w-5 h-5 hover:text-green-900" /></button>
-                <button><Share2 className="w-5 h-5 hover:text-green-900" /></button>
-                <button><Bookmark className="w-5 h-5 hover:text-green-900" /></button>
+
+              <span className="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded mb-3">
+                Doação
+              </span>
+
+              <div className="flex items-center justify-between mt-4 text-gray-600">
+              {/* Left side icons */}
+              <div className="flex items-center gap-4 text-xl">
+                <button title="Curtir">
+                  <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                </button>
+                <button title="Comentar">
+                  <MessageSquare className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                </button>
+                <button title="Compartilhar">
+                  <Share2 className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                </button>
               </div>
+
+              {/* Right side: save icon */}
+              <button title="Salvar">
+                <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
+              </button>
+            </div>
             </div>
           ))}
         </main>
 
-        {/* Sidebar direita com componente */}
+        {/* Sidebar direita */}
         <aside className="w-1/4 space-y-4">
           <SugestoesEmpresas
             sugestoes={sugestoesEmpresas}
@@ -73,7 +97,7 @@ export default function HomePublica() {
         </aside>
       </div>
 
-      {/* Modal com componente */}
+      {/* Modal */}
       <EmpresasModal
         open={modalAberto}
         onClose={() => setModalAberto(false)}
