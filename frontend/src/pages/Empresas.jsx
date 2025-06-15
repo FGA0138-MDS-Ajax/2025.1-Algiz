@@ -285,7 +285,6 @@ function Empresas() {
             </div>
           </div>
         </section>
-
         {/* Sidebar de empresas sugeridas */}
         <aside className="w-80">
           <div className="bg-white rounded-xl shadow-lg p-4 sticky top-20 z-30">
