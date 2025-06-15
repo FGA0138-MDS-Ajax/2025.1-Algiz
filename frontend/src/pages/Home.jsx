@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ThumbsUp, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
+import SidebarIntro from "../components/SidebarIntro";
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -30,17 +31,7 @@ export default function HomePublica() {
     <div className="min-h-screen bg-green-50 flex flex-col pt-16">
       <div className="container mx-auto px-4 py-6 flex gap-6 flex-1">
         {/* Lateral esquerda */}
-        <aside className="w-1/4 space-y-4">
-          <div className="bg-white rounded-xl shadow p-4 text-center">
-            <h2 className="text-xl font-semibold leading-snug">
-              Desde 2025<br />Conectando empresas<br />com soluções sustentáveis<br />de forma simples e eficiente
-            </h2>
-            <Link to="/cadastro" className="inline-block mt-4 bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700">
-              Cadastrar-se →
-            </Link>
-          </div>
-        </aside>
-
+        <SidebarIntro />
         {/* Conteúdo central */}
         <main className="flex-1 space-y-6">
           {[1, 2].map((i) => (
