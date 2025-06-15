@@ -10,6 +10,7 @@ import Cadastro from './pages/Cadastro';
 import PaginaUsuario from './pages/PaginaUsuario';
 import { seedFakeUsers } from "./utils/fakeUsers";
 import { seedFakeEmpresas } from "./utils/fakeEmpresas";
+import PaginaPost from './pages/PaginaPost';
 
 function App() {
   useEffect(() => {
@@ -29,9 +30,12 @@ function App() {
           <Route path="/sobrenos" element={<Sobrenos />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/empresas" element={<Empresas />} />
+          {/* Rota empresa/:id Irei deixar por enquanto a rota empresas/ do jeito que foi feito */ }
+          <Route path="/empresa/:idEmpresa" element={<Empresas />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/post" element={<PaginaPost />} />
         </Routes>
       </Layout>
     </BrowserRouter>
