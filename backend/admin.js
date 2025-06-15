@@ -5,10 +5,8 @@ import expressSession from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
-import Usuario from './models/usuario.js';
-import Fisico from './models/fisico.js'; 
-import Empresa from './models/empresa.js';
-
+import models from './models/index.js';
+const { Usuario, Fisico, Empresa, VinculoEmpresaFisico } = models;
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -33,12 +31,12 @@ const adminOptions = {
               show: false
             }
           },
-          estado: {
+          estadoFisico: {
             availableValues: estados.map(uf => ({ value: uf, label: uf }))
           }
         },
-        listProperties: ['idUsuario', 'emailUsuario', 'telefoneUsuario', 'estado'],
-        editProperties: ['emailUsuario', 'senha', 'telefoneUsuario', 'estado'],
+        listProperties: ['idUsuario', 'emailUsuario'],
+        editProperties: ['emailUsuario', 'senha'],
         actions: {
           new: {
             before: async (request) => {
@@ -79,9 +77,9 @@ const adminOptions = {
             }
           }
         },
-        listProperties: ['idUsuario', 'nomeFisico', 'cpfFisico', 'sexo', 'dtNascimento'],
-        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'cpfFisico', 'sexo', 'dtNascimento'],
-        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'cpfFisico', 'sexo', 'dtNascimento']
+        listProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
+        showProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico'],
+        editProperties: ['idUsuario', 'nomeFisico', 'sobrenomeFisico', 'telefoneFisico', 'cpfFisico', 'sexo', 'dtNascimento', 'estadoFisico']
       }
     },
     {
@@ -101,11 +99,33 @@ const adminOptions = {
                 }
             }
             },
-            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao'],
-            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao'],
-            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'areaAtuacao']
+            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
         }
     },
+    {
+      resource: VinculoEmpresaFisico,
+      options: {
+        properties: {
+          id: { isVisible: false },
+          cpfFisico: {
+            reference: 'FISICO',
+            isTitle: true
+          },
+          cnpjJuridico: {
+            reference: 'JURIDICO',
+            isTitle: true
+          },
+          cargo: {
+            type: 'string'
+          }
+        },
+        listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
+        showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
+        editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo']
+      }
+    }
   ],
   branding: {
     companyName: 'EcoNet Admin',
