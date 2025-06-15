@@ -14,7 +14,7 @@ export default function HomePublica() {
   ];
 
   return (
-    <div className="min-h-screen bg-green-50 flex flex-col">
+    <div className="min-h-screen bg-green-50 flex flex-col pt-16">
       <div className="container mx-auto px-4 py-6 flex gap-6 flex-1">
         {/* Lateral esquerda */}
         <aside className="w-1/4 space-y-4">
