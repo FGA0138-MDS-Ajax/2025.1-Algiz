@@ -1,16 +1,20 @@
-const db = require('../../config/db');
-const { hashPassword } = require('../../utils/hash.util'); 
-const { cpf, cnpj } = require('cpf-cnpj-validator'); 
-const jwt = require('jsonwebtoken');
-const {comparePassword} = require('src/api/utils/hash.password.js');
+// backend/src/api/components/users/user.service.js
+import db from '../../config/db.js';  
+import { hashPassword } from '../../utils/hash.util.js';
+import { cpf, cnpj } from 'cpf-cnpj-validator';
+//import jwt from 'jsonwebtoken';
+//import { comparePassword } from '../../utils/hash.password.js';  // Fixed path
 
 async function createUser(userData) {
-    const { nomeCompleto, email, senha, tipoUsuario, cpfCnpj } = userData;
+    const { nome, sobrenome, email, senha, telefone, estado, sexo, dtNascimento, cpfCnpj } = userData;
     const erros = [];
 
     // 1. Validações de campos obrigatórios e formato
-    if (!nomeCompleto || nomeCompleto.trim() === "") {
-        erros.push({ campo: "nomeCompleto", mensagem: "Nome completo é obrigatório." });
+    if (!nome || nome.trim() === "") {
+        erros.push({ campo: "nome", mensagem: "Nome é obrigatório." });
+    }
+    if (!sobrenome || sobrenome.trim() === "") {
+        erros.push({ campo: "sobrenome", mensagem: "Sobrenome é obrigatório." });
     }
     if (!email || email.trim() === "") {
         erros.push({ campo: "email", mensagem: "Email é obrigatório." });
@@ -37,33 +41,27 @@ async function createUser(userData) {
             erros.push({ campo: "senha", mensagem: "Senha deve conter pelo menos um número." });
         }
     }
-    if (!tipoUsuario || tipoUsuario.trim() === "") {
-        erros.push({ campo: "tipoUsuario", mensagem: "Tipo de usuário é obrigatório." });
-    } else {
-        const tiposValidos = ['EMPRESA', 'USUARIO', 'ADMIN'];
-        if (!tiposValidos.includes(tipoUsuario.toUpperCase())) {
-            erros.push({ campo: "tipoUsuario", mensagem: `Tipo de usuário inválido. Permitidos: ${tiposValidos.join(', ')}` });
-        }
+    if (!telefone || telefone.trim() === "") {
+        erros.push({ campo: "telefone", mensagem: "Telefone é obrigatório." });
+    }
+    if (!estado || estado.trim() === "") {
+        erros.push({ campo: "estado", mensagem: "Estado é obrigatório." });
+    }
+    if (!sexo || sexo.trim() === "") {
+        erros.push({ campo: "sexo", mensagem: "Sexo é obrigatório." });
+    }
+    if (!dtNascimento || dtNascimento.trim() === "") {
+        erros.push({ campo: "dtNascimento", mensagem: "Data de nascimento é obrigatória." });
     }
 
     // Validação CPF/CNPJ
+    // Basic validation without cpf-cnpj-validator
     if (!cpfCnpj || cpfCnpj.trim() === "") {
         erros.push({ campo: "cpfCnpj", mensagem: "CPF/CNPJ é obrigatório." });
     } else {
         const valorLimpo = cpfCnpj.replace(/\D/g, '');
-        let ehValido = false;
-
-        if (valorLimpo.length === 11) {
-            ehValido = cpf.isValid(valorLimpo);
-        } else if (valorLimpo.length === 14) {
-            ehValido = cnpj.isValid(valorLimpo);
-        } else {
-            
-        }
-
-        if (!ehValido) {
-            // Se não for válido pela biblioteca OU se o tamanho não for 11 nem 14
-            erros.push({ campo: "cpfCnpj", mensagem: "CPF/CNPJ inválido (formato ou dígitos verificadores)." });
+        if (valorLimpo.length !== 11 && valorLimpo.length !== 14) {
+            erros.push({ campo: "cpfCnpj", mensagem: "CPF/CNPJ deve ter 11 (CPF) ou 14 (CNPJ) dígitos." });
         }
     }
 
@@ -75,37 +73,40 @@ async function createUser(userData) {
         throw error;
     }
 
-    // 3. Verificar se o e-mail já existe (após validações básicas)
-    const existingUser = await db.query('SELECT * FROM usuarios WHERE email = $1', [email]);
-    if (existingUser.rows && existingUser.rows.length > 0) {
-        
+    const existingUser = await db.query('SELECT * FROM USUARIO WHERE emailUsuario = ?', [email]);
+    if (existingUser[0].length > 0) {
         const error = new Error('Email já cadastrado.');
-        error.name = 'ConflictError'; // Um nome de erro diferente pode ser útil
+        error.name = 'ConflictError';
         throw error;
     }
 
-    // 4. Hashear a senha
     const hashedPassword = await hashPassword(senha);
 
-    // 5. Montar o objeto do novo usuário
-    const newUserPayload = {
-        nomeCompleto, 
-        email,        
-        senha: hashedPassword,
-        tipoUsuario,  
-        cpfCnpj       
-    };
+    // 1. Inserir em USUARIO
+    const insertUserSql = `
+        INSERT INTO USUARIO (emailUsuario, senha)
+        VALUES (?, ?)
+    `;
+    const [userResult] = await db.query(insertUserSql, [email, hashedPassword]);
+    const insertedUserId = userResult.insertId;
 
-    // 6. Inserir no banco de dados
-    const result = await db.query(
-        'INSERT INTO usuarios (nome_completo, email, senha_hash, tipo_usuario, cpf_cnpj) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [newUserPayload.nomeCompleto, newUserPayload.email, newUserPayload.senha, newUserPayload.tipoUsuario, newUserPayload.cpfCnpj]
-    );
+    // 2. Inserir em FISICO
+    const insertFisicoSql = `
+        INSERT INTO FISICO (cpfFisico, nomeFisico, sobrenomeFisico, telefoneFisico, dtNascimento, estadoFisico, sexo, idUsuario)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    await db.query(insertFisicoSql, [
+        cpfCnpj,
+        nome,
+        sobrenome,
+        telefone,
+        dtNascimento,
+        estado,
+        sexo,
+        insertedUserId
+    ]);
 
-    // 7. Retornar o ID do usuário criado e os dados (sem a senha hasheada, se preferir)
-    const { senha: _, ...userDataToReturn } = newUserPayload;
-
-    return { id: result.rows[0].id, ...userDataToReturn };
+    return { id: insertedUserId, email, nome, sobrenome };
 }
 async function findUserProfileById(userId) {
    
@@ -161,8 +162,8 @@ async function findUserProfileById(userId) {
     return finalResponse;
 
 }
-    
 
-module.exports = {
-    createUser, authenticateUser,findUserProfileById
+export default {
+    createUser,
+    findUserProfileById
 };
