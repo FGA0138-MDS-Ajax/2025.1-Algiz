@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados } from "../utils/opcoes_form";
+import axios from 'axios'; 
 
 export default function Cadastro() {
   const initialForm = {
@@ -10,12 +11,14 @@ export default function Cadastro() {
     sobrenome: "",
     genero: "",
     celular: "",
-    telefone: "",
     email: "",
     senha: "",
     repetirSenha: "",
     estado: "",
+    dtNascimento: "",
+    cpfCnpj: "",
   };
+
   const [form, setForm] = useState(initialForm);
   const [showSenha, setShowSenha] = useState(false);
   const [showRepetir, setShowRepetir] = useState(false);
@@ -29,7 +32,7 @@ export default function Cadastro() {
     setErro("");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setErro("");
     const error = validateCadastro(form, "pessoa");
@@ -37,10 +40,42 @@ export default function Cadastro() {
       setErro(error);
       return;
     }
-    setShowPopup(true);
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3001/api/usuarios/register',
+        {
+          nome: form.nome,
+          sobrenome: form.sobrenome,
+          email: form.email,
+          senha: form.senha,
+          telefone: form.celular,
+          estado: form.estado,
+          sexo: form.genero,
+          dtNascimento: form.dtNascimento,
+          cpfCnpj: form.cpfCnpj,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+
+      console.log('Usuário criado:', response.data);
+      setShowPopup(true);
+      setTimeout(() => navigate("/login"), 2000);
+
+    } catch (err) {
+      console.error('Full error:', err);
+      if (err.response?.data?.details) {
+        const errorMessages = err.response.data.details.map(e => e.mensagem).join(', ');
+        setErro(`Erros encontrados: ${errorMessages}`);
+      } else if (err.response?.data?.erro) {
+        setErro(err.response.data.erro);
+        console.log("Erro backend completo:", err.response?.data);
+      } else {
+        setErro("Erro ao conectar com o servidor");
+      }
+    }
   }
 
   return (
@@ -94,6 +129,18 @@ export default function Cadastro() {
                 name="sobrenome"
                 placeholder="Digite seu sobrenome"
                 value={form.sobrenome}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="cpfCnpj">CPF*</label>
+              <input
+                id="cpfCnpj"
+                name="cpfCnpj"
+                placeholder="Digite seu CPF"
+                value={form.cpfCnpj}
                 onChange={handleChange}
                 required
                 className="input w-full"
@@ -164,6 +211,18 @@ export default function Cadastro() {
                 <option value="masculino">Masculino</option>
                 <option value="nao_dizer">Prefiro não dizer</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="dtNascimento">Data de Nascimento*</label>
+              <input
+                id="dtNascimento"
+                name="dtNascimento"
+                type="date"
+                value={form.dtNascimento}
+                onChange={handleChange}
+                required
+                className="input w-full"
+              />
             </div>
             <div className="relative w-full">
               <label className="block text-white mb-1" htmlFor="senha">Senha*</label>
