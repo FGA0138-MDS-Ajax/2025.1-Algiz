@@ -67,8 +67,7 @@ async function startServer() {
       console.log('LOG: Corpo da requisição:', req.body);
 
       try {
-        const { emailUsuario, senha, telefoneUsuario, estado } = req.body;
-
+        const { emailUsuario, senha } = req.body;
         if (!emailUsuario || !senha) {
           return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
         }
@@ -77,9 +76,7 @@ async function startServer() {
 
         const novoUsuario = await Usuario.create({
           emailUsuario,
-          senha: hashedPassword,
-          telefoneUsuario,
-          estado,
+          senha: hashedPassword
         });
 
         const { senha: _, ...usuarioSemSenha } = novoUsuario.get({ plain: true });
