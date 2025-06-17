@@ -66,7 +66,7 @@ function Navbar() {
           Sobre nós
         </NavLink>
         <NavLink 
-          to="/Login" 
+          to="/login" 
           className="px-4 py-1 bg-green-600 text-white rounded-md hover:bg-green-800 ml-2"
         >
           Login

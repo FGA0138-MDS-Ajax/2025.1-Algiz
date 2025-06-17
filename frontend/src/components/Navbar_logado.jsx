@@ -81,16 +81,6 @@ function NavbarLogado({ usuario }) {
           Empresas
         </NavLink>
         <NavLink
-          to="/Blog"
-          className={({ isActive }) =>
-            isActive
-              ? "text-green-800 font-bold"
-              : "hover:text-green-600 hover:scale-105 transition-transform"
-          }
-        >
-          Blog
-        </NavLink>
-        <NavLink
           to="/Sobrenos"
           className={({ isActive }) =>
             isActive
