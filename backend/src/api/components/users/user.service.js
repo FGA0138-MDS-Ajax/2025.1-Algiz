@@ -1,9 +1,9 @@
-// backend/src/api/components/users/user.service.js
 import db from '../../config/db.js';  
 import { hashPassword } from '../../utils/hash.util.js';
-import { cpf, cnpj } from 'cpf-cnpj-validator';
-//import jwt from 'jsonwebtoken';
-//import { comparePassword } from '../../utils/hash.password.js';  // Fixed path
+//import { cpf, cnpj } from 'cpf-cnpj-validator';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
+import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
 
 async function createUser(userData) {
     const { nome, sobrenome, email, senha, telefone, estado, sexo, dtNascimento, cpfCnpj } = userData;
@@ -163,7 +163,48 @@ async function findUserProfileById(userId) {
 
 }
 
+async function authenticateUser(email, password) {
+    try {
+        const [userRows] = await db.query('SELECT * FROM USUARIO WHERE emailUsuario = ?', [email]);
+
+        if (userRows.length === 0) {
+            const error = new Error('Usuário não encontrado.');
+            error.name = 'AuthenticationError';
+            throw error;
+        }
+
+        const user = userRows[0];
+        const senhaHash = user.senha;
+
+        const senhaCorreta = await comparePassword(password, senhaHash);
+        if (!senhaCorreta) {
+            const error = new Error('Senha incorreta.');
+            error.name = 'AuthenticationError';
+            throw error;
+        }
+
+        const tokenPayload = {
+            id: user.idUsuario,
+            email: user.emailUsuario,
+        };
+
+        const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+        return {
+            token,
+            user: {
+                id: user.idUsuario,
+                email: user.emailUsuario
+            }
+        };
+    } catch (err) {
+        console.error('Erro no authenticateUser:', err);
+        throw err;
+    }
+}
+
 export default {
     createUser,
-    findUserProfileById
+    findUserProfileById,
+    authenticateUser
 };

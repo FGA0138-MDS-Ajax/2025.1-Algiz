@@ -43,6 +43,13 @@ export const areasAtuacao = [
   "Tecnologia"
 ];
 
+export const generos = [
+  { label: "Escolha seu Gênero", value: "", disabled: true },
+  { label: "Feminino", value: "feminino" },
+  { label: "Masculino", value: "masculino" },
+  { label: "Prefiro não dizer", value: "nao_dizer" },
+];
+
 export const getEstadoCompleto = (sigla) => {
   const estado = estados.find((e) => e.value === sigla);
   return estado ? estado.label : "Estado inválido";

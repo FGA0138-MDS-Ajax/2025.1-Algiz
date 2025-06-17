@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/register', userController.registerUser); // Remove verifyToken middleware
 router.get('/:id', verifyToken, userController.getUserProfile); // Keep protected
+router.post('/login', userController.loginUser);
 
 router.get('/', async (req, res) => {
   try {

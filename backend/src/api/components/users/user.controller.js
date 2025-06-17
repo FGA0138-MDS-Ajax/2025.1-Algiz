@@ -27,7 +27,7 @@ async function loginUser(req, res) {
         const { token, user } = await userService.authenticateUser(email, password);
         res.json({ token, user });
     } catch (error) {
-        if (error.name === 'AutenticationError') {  // Fix typo: 'AutenticationError' → 'AuthenticationError'
+        if (error.name === 'AuthenticationError') {  // Fix typo: 'AutenticationError' → 'AuthenticationError'
             return res.status(401).json({ erro: error.message });  // Fix typo: 'massage' → 'message'
         }
         res.status(500).json({ erro: 'Ocorreu um erro interno no servidor.' });

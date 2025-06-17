@@ -8,23 +8,33 @@ function Login() {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  setErro("");
 
-    // Busca os usuários no sessionStorage
-    const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers") || "[]");
+  try {
+    const response = await fetch("http://localhost:3001/api/usuarios/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password: senha })
+    });
 
-    // Verifica se o email e a senha correspondem a algum usuário
-    const usuario = usuarios.find((u) => u.email === email && u.senha === senha);
+    const data = await response.json();
 
-    if (usuario) {
-      // Armazena o usuário logado no sessionStorage
-      sessionStorage.setItem("usuarioLogado", JSON.stringify(usuario));
-      navigate(`home`); // Redireciona para a página do usuário
-    } else {
-      setErro("Email ou senha inválidos.");
+    if (!response.ok) {
+      throw new Error(data.erro || "Erro ao fazer login.");
     }
-  };
+
+    // Armazena token e usuário no sessionStorage
+    sessionStorage.setItem("authToken", data.token);
+    sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+    navigate("/home");
+  } catch (err) {
+    setErro(err.message);
+  }
+};
 
   return (
     <div

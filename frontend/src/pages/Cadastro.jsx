@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
-import { estados } from "../utils/opcoes_form";
+import { estados, generos } from "../utils/opcoes_form";
 import axios from 'axios'; 
 
 export default function Cadastro() {
@@ -198,18 +198,25 @@ export default function Cadastro() {
               </select>
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="genero">Gênero</label>
+              <label className="block text-white mb-1" htmlFor="genero">Gênero*</label>
               <select
                 id="genero"
                 name="genero"
                 value={form.genero}
                 onChange={handleChange}
+                required
                 className="input w-full"
               >
-                <option value="">Gênero (opcional)</option>
-                <option value="feminino">Feminino</option>
-                <option value="masculino">Masculino</option>
-                <option value="nao_dizer">Prefiro não dizer</option>
+                {generos.map((g) => (
+                  <option
+                    key={g.value}
+                    value={g.value}
+                    disabled={g.disabled}
+                    hidden={g.disabled}
+                  >
+                    {g.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
