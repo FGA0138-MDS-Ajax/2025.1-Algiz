@@ -5,9 +5,9 @@ sidebar_label: "16/06/2025"
 # Ata de Reunião
 
 **Data:** 16/06/2025  
-**Horário de Início:** 20:13
-**Horário de Término:** 20:40
-**Duração:**  27 minutos
+**Horário de Início:** 20:13  
+**Horário de Término:** 20:40  
+**Duração:**  27 minutos  
 **Local:** Microsoft Teams
 
 ## Participantes
@@ -54,5 +54,5 @@ sidebar_label: "16/06/2025"
 
 ## Próxima Reunião
 **Data:** 18/06/2025  
-**Local:** Microsoft Teams 
-**Horário:** 14:00  
+**Local:** Microsoft Teams  
+**Horário:** 20:00  
