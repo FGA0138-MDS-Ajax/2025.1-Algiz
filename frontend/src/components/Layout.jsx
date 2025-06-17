@@ -6,7 +6,7 @@ function Layout({ children }) {
   const location = useLocation();
 
   
-  const noNavbarRoutes = ["/Login", "/cadastro"];
+  const noNavbarRoutes = ["/Login", "/cadastro", "/login"];
 
   
   const hideNavbar = noNavbarRoutes.includes(location.pathname);

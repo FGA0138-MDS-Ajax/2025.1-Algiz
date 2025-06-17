@@ -17,7 +17,7 @@ export default function SidebarIntro() {
           </div>
           <Link
             to="/cadastro"
-            className="block w-full bg-green-600 text-white py-2 rounded-md text-center font-medium hover:bg-green-700 transition"
+            className="block w-full bg-green-600 text-white py-2 rounded-md text-center font-medium hover:bg-green-800 transition"
           >
             Cadastrar-se →
           </Link>
