@@ -29,14 +29,7 @@ Protótipo da Página Login
 Protótipo da Página Sobre Nós
 
 ## Camada de Negócio
-A camada de negócios é o núcleo funcional da aplicação. Os pacotes desta camada são responsáveis por:
-- Receber as requisições vindas da interface de usuário.
-- Processar os dados conforme as regras definidas (autenticação, validação e autorização).
-- Interagir com a camada de persistência para armazenar ou recuperar dados.
+A camada de negócios é o núcleo funcional da aplicação. Os pacotes desta camada são responsáveis por receber as requisições vindas da interface de usuário, processar os dados conforme as regras definidas (como autenticação, validação e autorização) e interagir com a camada de persistência para armazenar ou recuperar dados.
 
 ## Camada de Persistência
-A camada de persistência tem como principal função gerenciar a comunicação com o banco de dados da aplicação. Os pacotes desta camada realizam:
-- Conexão com o banco de dados.
-- Execução de instruções SQL.
-- Operações de leitura, inserção, atualização e exclusão de dados.
-- Fornecimento dos dados necessários para a camada de negócios.
+A camada de persistência tem como principal função gerenciar a comunicação com o banco de dados da aplicação. Os pacotes desta camada realizam a conexão com o banco, executam instruções SQL e fornecem à camada de negócios os dados necessários para o funcionamento da aplicação. São incluídas aqui as operações de leitura, inserção, atualização e exclusão de dados.
