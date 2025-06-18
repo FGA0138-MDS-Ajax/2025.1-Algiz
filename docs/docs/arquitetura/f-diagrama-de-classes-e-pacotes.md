@@ -6,7 +6,7 @@ sidebar_position: 6
 
 # Diagrama de Classes
 
-![Representação Visual da Arquitetura](../../static/img/image2.png)
+![Diagrama de classes](../../static/img/image2.png)
 
 O diagrama ilustrado apresenta diversas classes fundamentais organizadas de forma a refletir a complexidade e a modularização do sistema. Entre as classes principais, destacam-se:
 
@@ -23,3 +23,8 @@ As conexões entre as classes, representadas por linhas no diagrama, indicam com
 - Visualizar a dependência entre os módulos do sistema.
 - Identificar pontos de integração e interface entre componentes.
 - Assegurar que a implementação respeite as diretrizes da orientação a objetos, promovendo baixo acoplamento e alta coesão.
+
+## Diagrama de pacotes
+O EcoNet adota uma arquitetura baseada em três camadas principais: apresentação, negócio e persistência. Essa abordagem favorece a separação de responsabilidades, tornando o sistema mais modular e de fácil manutenção. A seguir, é apresentado um diagrama de pacotes representando as camadas do projeto e os pacotes que a compõem.
+
+![Diagrama de pacotes](../../static/img/image12.png)
