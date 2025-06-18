@@ -14,44 +14,44 @@ O diagrama representa o fluxo de navegação de um sistema web desde o acesso in
 
 1. **Acesso Inicial:**
 
-* O usuário acessa o site e é direcionado para a **Tela Home**.
+    - O usuário acessa o site e é direcionado para a **Tela Home**.
 
-* Da Home, pode ir para a **Tela Sobre Nós**, **Login**, ou recuperar a senha.
+    - Da Home, pode ir para a **Tela Sobre Nós**, **Login**, ou recuperar a senha.
 
 2. **Login e Cadastro:**
 
-* O usuário tenta fazer login.
+    - O usuário tenta fazer login.
 
-* Se não for cadastrado, é direcionado para a **Tela Cadastrar**.
+    - Se não for cadastrado, é direcionado para a **Tela Cadastrar**.
 
-* Após o cadastro e validação, retorna ao login.
+    - Após o cadastro e validação, retorna ao login.
 
-* Caso esqueça a senha, pode usar **Recuperar Senha**, acessando por token e chegando até **Redefinir Senha** (e retorna ao login).
+    - Caso esqueça a senha, pode usar **Recuperar Senha**, acessando por token e chegando até **Redefinir Senha** (e retorna ao login).
 
 3. **Pós-Login:**
 
-* Se o login for bem-sucedido, verifica-se se o usuário possui vínculo com alguma empresa.
+    - Se o login for bem-sucedido, verifica-se se o usuário possui vínculo com alguma empresa.
 
-* **Se sim:** é direcionado à **Tela Home (com vínculo)**.
+    - **Se sim:** é direcionado à **Tela Home (com vínculo)**.
 
-* **Se não:** vai para a **Tela Home (usuário)**.
+    - **Se não:** vai para a **Tela Home (usuário)**.
 
 4. **Funcionalidades pós-login:**
 
-* Usuários sem vínculo podem acessar:
+    - Usuários sem vínculo podem acessar:
 
-* **Perfil do Usuário**
+    - **Perfil do Usuário**
 
-* **Página de Configurações (usuário)**
+    - **Página de Configurações (usuário)**
 
-* Usuários com vínculo podem acessar:
+    - Usuários com vínculo podem acessar:
 
-* **Empresa**
+    - **Empresa**
 
-* **Perfil Empresa**
+    - **Perfil Empresa**
 
-* **Página de Configurações**
+    - **Página de Configurações**
 
-* **Página de Contratos**
+    - **Página de Contratos**
 
-* **Criação de Posts**
+    - **Criação de Posts**
