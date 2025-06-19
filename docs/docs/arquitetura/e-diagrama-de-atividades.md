@@ -4,68 +4,44 @@ sidebar_position: 5
 ---
 # Diagrama de atividades  
 
-# Diagrama de Atividades
+![Representação Visual da Arquitetura](../../static/img/diagrama_atividades.png)
 
-Este diagrama descreve o fluxo de trabalho do sistema EcoNet, detalhando as etapas e decisões para a criação, visualização e gerenciamento de postagens (anúncios) de materiais para reaproveitamento entre empresas, considerando os diferentes papeis dos usuários.
+Figura 5: Diagrama de atividades
 
-## 1. Acesso e Autenticação
-- O usuário acessa a Tela de Login e insere suas credenciais.
-- O sistema verifica as credenciais:
-  - Se válidas, direciona o usuário ao Painel Principal/Tela Inicial.
-  - Se inválidas, exibe mensagem de erro com opção de nova tentativa ou recuperação de senha.
-- Para novos usuários/empresas não cadastrados:
-  - O "Dono da Empresa" pode iniciar o cadastro de uma nova empresa.
+O diagrama de atividade apresentado mapeia de forma clara e dinâmica o fluxo de interações de um usuário dentro do sistema web, desde o acesso inicial até a execução de funcionalidades específicas pós-login.
 
-## 2. Painel Principal / Tela Inicial
-- Após o login, cada usuário visualiza um painel personalizado.
-- Funcionalidades incluem:
-  - Visualização de um feed de postagens de materiais disponíveis ou procurados.
-  - Ferramentas para busca e filtro de postagens e empresas.
-  - Menus de navegação ajustados conforme o papel do usuário.
+**Fluxo de Navegação Inicial:**
 
-## 3. Gerenciamento de Postagens (Anúncios de Materiais)
-### 3.1 Criar Nova Postagem
-- Selecionar "Criar Postagem".
-- Escolher tipo: "Material Disponível" ou "Necessidade de Material".
-- Preencher formulário com detalhes e publicar.
+* **Acesso ao Site:**  
+   O fluxo inicia com o usuário acessando o site, o que resulta na apresentação da **Página Home**. A partir desta tela inicial, o usuário pode optar por navegar para a **Página Sobre Nós** para conhecer mais informações sobre o sistema.
 
-### 3.2 Visualizar e Interagir com Postagens
-- Busca e filtragem de postagens.
-- Ações possíveis:
-  - **Iniciar Contato** (Dono da Empresa, Vice-Dono, Gestor de Contratos).
-  - **Seguir Empresa** (Dono da Empresa, Vice-Dono, Usuário Comum).
-  - **Salvar Postagem** para visualização posterior.
+**Processo de Autenticação e Cadastro:**
 
-### 3.3 Gerenciar Minhas Postagens
-- Acesso às postagens da empresa.
-- Ações possíveis:
-  - Editar, excluir ou marcar postagem como resolvida.
+* **Verificação de Cadastro:**  
+   O sistema verifica se o usuário já possui cadastro.  
+* **Usuário sem cadastro:**  
+   O usuário é direcionado para a **Tela de Cadastro**, onde pode realizar a criação de uma conta. Durante este processo, é realizada a validação dos dados inseridos e verificado se o usuário deseja estabelecer um vínculo com uma empresa.  
+* **Usuário com cadastro:**  
+   O fluxo avança para o **login**, onde as credenciais fornecidas são validadas.
 
-## 4. Gerenciamento de Empresas e Usuários Internos
-### 4.1 Cadastrar Nova Empresa
-- Preenchimento de dados e criação do perfil.
+**Pós-Autenticação: Home com ou sem Vínculo:**
 
-### 4.2 Editar Perfil da Empresa
-- Atualização de informações cadastrais.
+Após a validação das credenciais, o diagrama destaca uma nova decisão baseada no vínculo do usuário:
 
-### 4.3 Gerenciar Usuários da Empresa
-- Ações incluem convite, criação de cargos e remoção de usuários.
+* **Usuário com vínculo empresarial:**  
+   Caso o usuário esteja vinculado a uma empresa, ele é direcionado para a **Home com vínculo**. Nesta interface, além de acessar seu perfil pessoal, o usuário pode interagir com recursos específicos do perfil empresarial.  
+* **Usuário sem vínculo:**  
+   Se não houver vínculo, o usuário permanece na interface padrão, a **Home**.
 
-### 4.4 Excluir Empresa
-- Solicitação de remoção do perfil da empresa.
+**Funcionalidades Específicas do Perfil Empresarial:**
 
-## 5. Fluxo de Contratos e Relacionamentos
-### 5.1 Gerenciar Contatos Iniciados
-- Visualização e acompanhamento das conversas iniciadas.
+Dentro da **Home com vínculo**, o fluxo detalha as funcionalidades disponíveis conforme o tipo de perfil empresarial:
 
-### 5.2 Gerenciar Contratos
-- Registro e atualização de acordos de reaproveitamento.
-
-## 6. Administração do Sistema EcoNet
-- Gestão de usuários e empresas.
-- Configuração do sistema e monitoramento de logs.
-
-## 7. Decisões e Permissões
-- O papel do usuário define suas ações permitidas.
-- O Dono da Empresa tem controle administrativo sobre sua empresa.
-- O Administrador do Sistema tem controle global.
+* **Usuário Dono:**  
+   Possui acesso às **Configurações da empresa** para gerenciar e definir parâmetros essenciais.  
+* **Vice Dono:**  
+   Tem a capacidade de **Editar empresa**, permitindo atualizações e ajustes nas informações corporativas.  
+* **Gestor de Contratos:**  
+   Responsável pelo **Gerenciamento de Contratos**, podendo acessar e controlar os acordos firmados.  
+* **Comunicador:**  
+   Acessa a **Área de mensagens** e tem a permissão para **Criar postagem**, facilitando a comunicação interna e externa.

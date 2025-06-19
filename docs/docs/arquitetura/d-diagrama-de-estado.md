@@ -4,6 +4,54 @@ sidebar_position: 6
 ---
 # Diagrama de estado  
 
-![Representação Visual da Arquitetura](../../static/img/image3.png)
+![Representação Visual da Arquitetura](../../static/img/diagrama_estado.png) 
 
-Esse é um diagrama que demonstra apenas o início do WebSite, onde vai ter um sistema de Login e Cadastro tanto de pessoas físicas quanto jurídicas ou nesse caso as empresas. A partir do funcionamento dessas funcionalidades a função do site pode ser exercida.
+Figura 4: Diagrama de estados
+
+### **Descrição Geral do Diagrama de Estados**
+
+O diagrama representa o fluxo de navegação de um sistema web desde o acesso inicial até as diferentes telas conforme o tipo de usuário e seu vínculo com empresas.
+
+1. **Acesso Inicial:**
+
+    - O usuário acessa o site e é direcionado para a **Tela Home**.
+
+    - Da Home, pode ir para a **Tela Sobre Nós**, **Login**, ou recuperar a senha.
+
+2. **Login e Cadastro:**
+
+    - O usuário tenta fazer login.
+
+    - Se não for cadastrado, é direcionado para a **Tela Cadastrar**.
+
+    - Após o cadastro e validação, retorna ao login.
+
+    - Caso esqueça a senha, pode usar **Recuperar Senha**, acessando por token e chegando até **Redefinir Senha** (e retorna ao login).
+
+3. **Pós-Login:**
+
+    - Se o login for bem-sucedido, verifica-se se o usuário possui vínculo com alguma empresa.
+
+    - **Se sim:** é direcionado à **Tela Home (com vínculo)**.
+
+    - **Se não:** vai para a **Tela Home (usuário)**.
+
+4. **Funcionalidades pós-login:**
+
+    - Usuários sem vínculo podem acessar:
+
+    - **Perfil do Usuário**
+
+    - **Página de Configurações (usuário)**
+
+    - Usuários com vínculo podem acessar:
+
+    - **Empresa**
+
+    - **Perfil Empresa**
+
+    - **Página de Configurações**
+
+    - **Página de Contratos**
+
+    - **Criação de Posts**
