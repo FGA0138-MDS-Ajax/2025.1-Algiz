@@ -28,6 +28,14 @@ export async function hashPassword(plainPassword) {
  */
 export async function comparePassword(plainPassword, hashedPassword) {
     try {
+        if (!plainPassword || !hashedPassword) {
+            console.error('Parâmetros inválidos para comparação de senha:', {
+                plainPassword,
+                hashedPassword,
+            });
+            throw new Error('Parâmetros inválidos para bcrypt.compare');
+        }
+
         return await bcrypt.compare(plainPassword, hashedPassword);
     } catch (error) {
         console.error('Error comparing passwords:', error);
