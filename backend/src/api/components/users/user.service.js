@@ -109,58 +109,85 @@ async function createUser(userData) {
     return { id: insertedUserId, email, nome, sobrenome };
 }
 async function findUserProfileById(userId) {
-   
+    // Buscar dados do usuário e físicos
     const userQuery = `
         SELECT
-            u.id,
-            u.name,
-            u.email,
-            u.telefone, -- Adicione estas colunas 
-            u.estado,   -- Adicione estas colunas 
-            u.foto_perfil_url, -- Adicione estas colunas
-            u.banner_url,      -- Adicione estas colunas
-            e.id as empresa_id,
-            e.nome as empresa_nome,
-            e.descricao as empresa_descricao
-        FROM usuarios u
-        LEFT JOIN empresas e ON u.empresa_id_associada = e.id -- Supondo que 'usuarios' tem uma FK para 'empresas'
-        WHERE u.id = ?;
+            u.idUsuario,
+            u.emailUsuario,
+            u.fotoPerfil,
+            u.bannerPerfil,
+            f.cpfFisico,
+            f.nomeFisico,
+            f.sobrenomeFisico,
+            f.telefoneFisico,
+            f.estadoFisico,
+            f.sexo,
+            f.dtNascimento,
+            vjf.cargo,
+            j.cnpjJuridico,
+            j.nomeComercial,
+            j.razaoSocial,
+            j.telefoneJuridico,
+            j.estadoJuridico,
+            j.enderecoJuridico,
+            j.areaAtuacao
+        FROM USUARIO u
+        INNER JOIN FISICO f ON u.idUsuario = f.idUsuario
+        LEFT JOIN VINCULO_JURIDICO_FISICO vjf ON f.cpfFisico = vjf.cpfFisico
+        LEFT JOIN JURIDICO j ON vjf.cnpjJuridico = j.cnpjJuridico
+        WHERE u.idUsuario = ?;
     `;
+
     const [userRows] = await db.query(userQuery, [userId]);
 
     if (userRows.length === 0) {
         return null;
     }
-    const userProfile = userRows[0];
 
-    const followedCompaniesQuery = `
+    const user = userRows[0];
+
+    // Buscar empresas seguidas
+    const followedQuery = `
         SELECT
-            e.id,
-            e.nome,
-            e.logo_url
-        FROM empresas e
-        INNER JOIN usuarios_seguem_empresas usf ON e.id = usf.empresa_id
-        WHERE usf.usuario_id = ?;
+            j.cnpjJuridico,
+            j.nomeComercial,
+            j.razaoSocial,
+            j.telefoneJuridico,
+            j.estadoJuridico,
+            j.enderecoJuridico,
+            j.areaAtuacao
+        FROM FISICO_SEGUE_JURIDICO fsj
+        INNER JOIN JURIDICO j ON fsj.cnpjJuridico = j.cnpjJuridico
+        WHERE fsj.cpfFisico = ?;
     `;
-    const [followedCompaniesRows] = await db.query(followedCompaniesQuery, [userId]);
+    const [followedRows] = await db.query(followedQuery, [user.cpfFisico]);
 
-    const finalResponse = {
-        nome: userProfile.name,
-        email: userProfile.email,
-        telefone: userProfile.telefone,
-        estado: userProfile.estado,
-        foto_perfil_url: userProfile.foto_perfil_url,
-        banner_url: userProfile.banner_url,
-        dados_empresa_associada: userProfile.empresa_id ? {
-            id: userProfile.empresa_id,
-            nome: userProfile.empresa_nome,
-            descricao: userProfile.empresa_descricao
+    // Montar o objeto final
+    const response = {
+        id: user.idUsuario,
+        email: user.emailUsuario,
+        nome: user.nomeFisico,
+        sobrenome: user.sobrenomeFisico,
+        telefone: user.telefoneFisico,
+        estado: user.estadoFisico,
+        sexo: user.sexo,
+        data_nascimento: user.dtNascimento,
+        fotoPerfil: user.fotoPerfil,
+        bannerPerfil: user.bannerPerfil,
+        cargo: user.cargo || null,
+        empresa_associada: user.cnpjJuridico ? {
+            cnpj: user.cnpjJuridico,
+            nomeComercial: user.nomeComercial,
+            razaoSocial: user.razaoSocial,
+            telefone: user.telefoneJuridico,
+            estado: user.estadoJuridico,
+            endereco: user.enderecoJuridico,
+            areaAtuacao: user.areaAtuacao
         } : null,
-        empresas_seguidas: followedCompaniesRows
+        empresas_seguidas: followedRows
     };
 
-    return finalResponse;
-
+    return response;
 }
 
 async function authenticateUser(email, password) {
@@ -174,6 +201,12 @@ async function authenticateUser(email, password) {
         }
 
         const user = userRows[0];
+
+        // Veja o objeto completo do usuário com dados retornados no log do backend
+        // console.log('Usuário encontrado:', user); 
+        // Veja o nome exato das propriedades
+        // console.log(Object.keys(user)); 
+        
         const senhaHash = user.senha;
 
         const senhaCorreta = await comparePassword(password, senhaHash);
