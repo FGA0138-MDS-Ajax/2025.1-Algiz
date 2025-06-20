@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # Visão de Casos de Uso 
 
-Os casos de uso do sistema EcoNet estão centrados na promoção de uma economia circular eficiente e segura entre empresas. O sistema possui diferentes perfis de usuários, cada um com permissões específicas, garantindo segurança e organização no uso da plataforma.
+Os casos de uso do sistema **EcoNet** estão centrados na promoção de uma economia circular eficiente e segura entre empresas. O sistema possui diferentes perfis de usuários, cada um com permissões específicas, garantindo segurança e organização no uso da plataforma.
 
 - **Administrador**: Responsável pela gestão técnica e completa da aplicação, podendo acessar logs, editar empresas e usuários, além de configurar o sistema.
 - **Dono de Empresa**: Tem autoridade legal para editar os dados da empresa, iniciar contatos, assinar contratos e distribuir cargos.
