@@ -1,5 +1,6 @@
 // backend/server.js
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
@@ -71,6 +72,9 @@ async function startServer() {
   app.get('/', (req, res) => {
   res.send('Backend da EcoNet no ar!');
   });
+  
+  // Serve arquivos estaticos da pasta public
+  app.use('/images', express.static(path.resolve('public/images')));
 
   // ✅ Remove rota duplicada /api/usuarios (já tratada em user.routes.js)
   // Garante usuário admin

@@ -6,32 +6,32 @@ module.exports = {
       {
         emailUsuario: 'joao.silva@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'joao.jpg',
-        bannerPerfil: 'banner_joao.jpg'
+        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
+        bannerPerfil: 'default/banner-padrao-1.png'
       },
       {
         emailUsuario: 'maria.souza@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'maria.jpg',
-        bannerPerfil: 'banner_maria.jpg'
+        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
+        bannerPerfil: 'default/banner-padrao-1.png'
       },
       {
         emailUsuario: 'carlos.pereira@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'carlos.jpg',
-        bannerPerfil: 'banner_carlos.jpg'
+        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
+        bannerPerfil: 'default/banner-padrao-1.png'
       },
       {
         emailUsuario: 'ana.oliveira@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'ana.jpg',
-        bannerPerfil: 'banner_ana.jpg'
+        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
+        bannerPerfil: 'default/banner-padrao-1.png'
       },
       {
         emailUsuario: 'lucas.santos@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'lucas.jpg',
-        bannerPerfil: 'banner_lucas.jpg'
+        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
+        bannerPerfil: 'default/banner-padrao-1.png'
       },
     ], {});
   },
