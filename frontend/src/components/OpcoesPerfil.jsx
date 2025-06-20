@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function OpcoesPerfil() {
   const [isOpen, setIsOpen] = useState(false);
-  const [fotoPerfil, setFotoPerfil] = useState("/default-profile.png"); 
+  const API_URL = "http://localhost:3001";
+  const [fotoPerfil, setFotoPerfil] = useState(`${API_URL}/images/default/foto-perfil-padrao-usuario-1.png`);
   const navigate = useNavigate();
 
   useEffect(() => {
