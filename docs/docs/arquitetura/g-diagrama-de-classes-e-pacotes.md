@@ -1,8 +1,8 @@
 ---
-sidebar_label: "Diagrama de classes e pacote"
-sidebar_position: 6
+sidebar_label: "Diagrama de classes"
+sidebar_position: 7
 ---
-# Diagrama de classes e pacote  
+# Diagrama de classes
 
 # Diagrama de Classes
 
@@ -23,8 +23,3 @@ As conexões entre as classes, representadas por linhas no diagrama, indicam com
 - Visualizar a dependência entre os módulos do sistema.
 - Identificar pontos de integração e interface entre componentes.
 - Assegurar que a implementação respeite as diretrizes da orientação a objetos, promovendo baixo acoplamento e alta coesão.
-
-## Diagrama de pacotes
-O EcoNet adota uma arquitetura baseada em três camadas principais: apresentação, negócio e persistência. Essa abordagem favorece a separação de responsabilidades, tornando o sistema mais modular e de fácil manutenção. A seguir, é apresentado um diagrama de pacotes representando as camadas do projeto e os pacotes que a compõem.
-
-![Diagrama de pacotes](../../static/img/image12.png)
