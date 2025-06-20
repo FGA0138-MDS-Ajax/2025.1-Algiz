@@ -84,10 +84,13 @@ async function createUser(userData) {
 
     // 1. Inserir em USUARIO
     const insertUserSql = `
-        INSERT INTO USUARIO (emailUsuario, senha)
-        VALUES (?, ?)
+        INSERT INTO USUARIO (emailUsuario, senha, fotoPerfil, bannerPerfil)
+        VALUES (?, ?, ?, ?)
     `;
-    const [userResult] = await db.query(insertUserSql, [email, hashedPassword]);
+
+    const defaultFotoPerfil = 'default/foto-perfil-padrao-usuario-1.png';
+    const defaultBannerPerfil = 'default/banner-padrao-1.png';
+    const [userResult] = await db.query(insertUserSql, [email, hashedPassword, defaultFotoPerfil, defaultBannerPerfil]);
     const insertedUserId = userResult.insertId;
 
     // 2. Inserir em FISICO
