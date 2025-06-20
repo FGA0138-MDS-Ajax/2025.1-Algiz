@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 export default function SidebarIntro() {
   return (
-    <aside className="w-1/4">
+    <aside>
       <div className="sticky top-20">
-        <div className="bg-white rounded-xl shadow p-4 pt-3 pb-6 text-left border border-gray-200">
-          <div className="text-[23px] leading-snug mb-6 break-words font-semibold">
+        <div className="bg-white rounded-xl shadow p-4 pt-3 pb-6 text-left border border-gray-200 max-w-sm mx-auto md:max-w-full">
+          <div className="text-lg md:text-[23px] leading-snug mb-6 break-words font-semibold">
             Desde 2025
             <br />
             Conectando empresas
