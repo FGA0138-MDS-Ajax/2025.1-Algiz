@@ -88,6 +88,7 @@ export default function HomePublica() {
           ))}
         </main>
 
+<<<<<<< Updated upstream
         {/* Sidebar direita */}
         <aside className="w-1/4 space-y-4">
           <SugestoesEmpresas
@@ -95,6 +96,15 @@ export default function HomePublica() {
             onVerTodas={() => setModalAberto(true)}
           />
         </aside>
+=======
+        {/* SugestoesEmpresas */}
+        <div className="order-2 md:order-3 w-full md:w-1/4 flex-shrink-0">
+          <SugestoesEmpresas
+            sugestoes={sugestoesEmpresas}
+            onVerTodas={() => setModalAberto(true)}
+          />
+        </div>
+>>>>>>> Stashed changes
       </div>
 
       {/* Modal */}
