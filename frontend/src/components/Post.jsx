@@ -15,7 +15,7 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
   // post completo (para serem usados na pagina de post)
   if (completo) {
     return (
-      <div className="bg-white rounded-2xl shadow-md p-8 pb-4 flex flex-col min-h-[500px]">
+      <div className="bg-white rounded-2xl shadow-md p-8 pb-4 flex flex-col min-h-[500px] w-full max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">

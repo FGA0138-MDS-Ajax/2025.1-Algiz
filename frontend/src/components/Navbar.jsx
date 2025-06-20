@@ -50,14 +50,6 @@ function Navbar() {
           Home
         </NavLink>
         <NavLink 
-          to="/Empresas" 
-          className={({isActive}) => 
-            isActive ? "text-green-800 font-bold" : "hover:text-green-600 hover:scale-105 transition-transform"
-          }
-        >
-          Empresas
-        </NavLink>
-        <NavLink 
           to="/Sobrenos" 
           className={({isActive}) => 
             isActive ? "text-green-800 font-bold" : "hover:text-green-600 hover:scale-105 transition-transform"
