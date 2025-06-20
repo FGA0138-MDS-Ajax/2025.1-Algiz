@@ -71,6 +71,6 @@ Em resumo, a combinação do processo ágil proporcionado pelo SCRUM com uma arq
 
 - O sistema deverá ser capaz de suportar pelo menos 10 acessos simultâneos de usuários, sem apresentar lentidão ou falhas.  
 - O sistema deve ter vida útil prolongada, sendo capaz de evoluir tecnologicamente.  
-- O site precisa ser leve, responsivo e acessível, funcionando adequadamente em navegadores como, Google Chrome e Microsoft Edge.  
+- O site precisa ser responsivo, funcionando adequadamente em navegadores como, Google Chrome e Microsoft Edge.  
 - O sistema deve funcionar em rede local.  
 - O sistema deve ter criptografia de senhas.
