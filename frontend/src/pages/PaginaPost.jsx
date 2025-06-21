@@ -64,24 +64,28 @@ export default function PaginaPost() {
   }));
 
   return (
-    <div className="bg-green-50 min-h-screen py-2">
-      <div className="h-12" />
-      <main className="flex gap-6 max-w-6xl mx-auto mt-8">
+    <div className="bg-green-50 min-h-screen pt-16">
+      <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-1 flex-1">
         {/* Sidebar esquerda */}
-        <SidebarIntro />
+        <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
+          <div className="sticky top-20">
+            <SidebarIntro />
+          </div>
+        </div>
+
         {/* Conteúdo principal */}
-        <section className="flex-1 flex flex-col gap-6">
+        <section className="order-3 md:order-2 flex-1 flex flex-col max-w-[520px] mx-auto items-center gap-30">
           <Post post={post} completo comentarios={comentariosMock} />
         </section>
 
-        {/* Sidebar direita */}
-        <aside className="w-1/4 space-y-4">
+        {/* Menu de sugestões */}
+        <aside className="order-2 md:order-3 w-80 flex-shrink-0 md:block">
           <SugestoesEmpresas
             sugestoes={sugestoesEmpresas}
             onVerTodas={() => setModalOpen(true)}
           />
         </aside>
-      </main>
+      </div>
       <EmpresasModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
