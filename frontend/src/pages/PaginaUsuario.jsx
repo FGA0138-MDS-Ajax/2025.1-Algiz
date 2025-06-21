@@ -5,10 +5,11 @@ import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import Salvos from "../components/Salvos";
 import EmpresasModal from "../components/EmpresasModal";
+import PossuiEmpresa from "../components/PossuiEmpresa";
+import MinhasConexoes from "../components/MinhasConexoes";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
-  console.log("idUsuario:", idUsuario);
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +21,6 @@ export default function PaginaUsuario() {
       setLoading(true);
       setError(null);
       try {
-        // Pegue o token do localStorage/sessionStorage/cookie conforme seu login
         const token = sessionStorage.getItem("authToken");
         const res = await fetch(
           `http://localhost:3001/api/usuarios/${idUsuario}`,
@@ -29,7 +29,7 @@ export default function PaginaUsuario() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            credentials: "include", // se usar cookies/sessão
+            credentials: "include",
           }
         );
         if (!res.ok) {
@@ -83,25 +83,44 @@ export default function PaginaUsuario() {
     { id: "6", nome: "Kactus", desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.", img: "/lacta.png" },
   ];
 
+  // Verifica se é o usuário logado
+  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  const isUsuarioLogado = usuarioLogado?.id === usuario.id;
+
   return (
     <div className="bg-green-50 min-h-screen py-2">
       <div className="h-12" />
-      <main className="flex gap-6 max-w-6xl mx-auto mt-8">
+      <main className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto mt-8">
         {/* Coluna principal */}
-        <section className="flex-1 flex flex-col gap-1">
+        <section className="flex-1 flex flex-col gap-2">
           {/* Header do perfil */}
           <PerfilUsuario usuario={usuario} />
 
-          {/* Empresas vinculadas */}
-          <EmpresasTrabalhando usuario={usuario} />
+          {/* Cards PossuiEmpresa e MinhasConexoes: empilhados em mobile */}
+          {isUsuarioLogado ? (
+            <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
+              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                <PossuiEmpresa usuario={usuario} cardClass="h-full" />
+              </div>
+              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                <MinhasConexoes usuario={usuario} cardClass="h-full" />
+              </div>
+            </div>
+          ) : (
+            // Se não for o usuário logado, mostra EmpresasTrabalhando normalmente
+            <EmpresasTrabalhando usuario={usuario} />
+          )}
 
           {/* Salvos */}
           <Salvos usuario={usuario} />
         </section>
 
-        {/* Sidebar de empresas sugeridas */}
-        <aside className="w-80">
-          <SugestoesEmpresas sugestoes={sugestoes} onVerTodas={() => setShowEmpresasModal(true)} />
+        {/* Sidebar de empresas sugeridas: empilhada em mobile */}
+        <aside className="w-full lg:w-80 mt-6 lg:mt-0">
+          <SugestoesEmpresas
+            sugestoes={sugestoes}
+            onVerTodas={() => setShowEmpresasModal(true)}
+          />
         </aside>
       </main>
       <EmpresasModal

@@ -13,15 +13,7 @@ import { seedFakeEmpresas } from "./utils/fakeEmpresas";
 import PaginaPost from './pages/PaginaPost';
 
 function App() {
-  useEffect(() => {
-    if (!sessionStorage.getItem("fakeUsers")) {
-      seedFakeUsers();
-    }
-    if (!sessionStorage.getItem("fakeEmpresas")) {
-      seedFakeEmpresas();
-    }
-  }, []);
-
+  
   return (
     <BrowserRouter>
       <Layout>
