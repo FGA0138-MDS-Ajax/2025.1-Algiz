@@ -8,6 +8,7 @@ import EmpresasModal from "../components/EmpresasModal";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
+  console.log("idUsuario:", idUsuario);
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,36 +16,36 @@ export default function PaginaUsuario() {
   const [tab, setTab] = useState("recomendadas");
 
   useEffect(() => {
-
-    // A funcao pra buscar o usuario esta comentada porque eu nao consegui rodar o servidor do backend, logo nao conseguia ver a pagina de usuario.
-    
-    // async function fetchUsuario() {
-    //   try {
-    //     const response = await fetch(`/api/usuarios/${idUsuario}`);
-    //     if (!response.ok) throw new Error("Erro ao buscar usuário");
-    //     const data = await response.json();
-    //     setUsuario(data);
-    //   } catch (err) {
-    //     console.error(err);
-    //     setError("Erro ao carregar usuário.");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-    // fetchUsuario();
-
-    // Essa busca fake no SessionStorage so esta sendo usada porque o servidor do backend nao estava rodando, logo nao consegui ver a pagina de usuario. Depois que o servidor estiver rodando, essa parte deve ser comentada e a funcao fetchUsuario deve ser descomentada.
-
-    try {
-      const users = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
-      const user = users.find((u) => u.id === idUsuario);
-      if (!user) throw new Error("Usuário não encontrado");
-      setUsuario(user);
-    } catch (err) {
-      setError("Erro ao carregar usuário.");
-    } finally {
-      setLoading(false);
+    async function fetchUsuario() {
+      setLoading(true);
+      setError(null);
+      try {
+        // Pegue o token do localStorage/sessionStorage/cookie conforme seu login
+        const token = sessionStorage.getItem("authToken");
+        const res = await fetch(
+          `http://localhost:3001/api/usuarios/${idUsuario}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include", // se usar cookies/sessão
+          }
+        );
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Status ${res.status}: ${errorText}`);
+        }
+        const data = await res.json();
+        setUsuario(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Erro ao buscar usuário:", err);
+      } finally {
+        setLoading(false);
+      }
     }
+    fetchUsuario();
   }, [idUsuario]);
 
   if (loading) {
@@ -73,38 +74,13 @@ export default function PaginaUsuario() {
     { id: "6", nome: "Kactus", logo: "/lacta.png" },
   ];
 
-  // Mesma coisa da de cima, dados fakes e estáticos para empresas recomendadas
   const empresasRecomendadas = [
-    { id: "1", 
-      nome: "Cacau Show",
-      desc: "É uma marca de chocolates nacional, fundada em 1988.",
-      img: "/cacau.png"
-    },
-    { id: "2", 
-      nome: "Nestle",
-      desc: "Nestlé S.A. é uma empresa transnacional suíça do setor de alimentos e bebidas",
-      img: "/nestle.png"
-    },
-    { id: "3",  
-      nome: "Lacta",
-      desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.",
-      img: "/lacta.png"
-    },
-    { id: "4", 
-      nome: "Coca Cola",
-      desc: "A marca é reconhecida mundialmente pela sua bebida icônica",
-      img: "/coca.png"
-    },
-    { id: "5",
-      nome: "Terra verde",
-      desc: "Terra Verde é uma empresa de alimentos orgânicos e naturais.",
-      img: "/coca.png"
-    },
-    { id: "6", 
-      nome: "Kactus",
-      desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.",
-      img: "/lacta.png"
-    },
+    { id: "1", nome: "Cacau Show", desc: "É uma marca de chocolates nacional, fundada em 1988.", img: "/cacau.png" },
+    { id: "2", nome: "Nestle", desc: "Nestlé S.A. é uma empresa transnacional suíça do setor de alimentos e bebidas", img: "/nestle.png" },
+    { id: "3", nome: "Lacta", desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.", img: "/lacta.png" },
+    { id: "4", nome: "Coca Cola", desc: "A marca é reconhecida mundialmente pela sua bebida icônica", img: "/coca.png" },
+    { id: "5", nome: "Terra verde", desc: "Terra Verde é uma empresa de alimentos orgânicos e naturais.", img: "/coca.png" },
+    { id: "6", nome: "Kactus", desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.", img: "/lacta.png" },
   ];
 
   return (

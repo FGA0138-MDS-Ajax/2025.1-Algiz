@@ -30,7 +30,7 @@ function Login() {
     // Armazena token e usuário no sessionStorage
     sessionStorage.setItem("authToken", data.token);
     sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
-    navigate("/home");
+    navigate("/");
   } catch (err) {
     setErro(err.message);
   }

@@ -67,13 +67,19 @@ export default function Cadastro() {
     } catch (err) {
       console.error('Full error:', err);
       if (err.response?.data?.details) {
-        const errorMessages = err.response.data.details.map(e => e.mensagem).join(', ');
-        setErro(`Erros encontrados: ${errorMessages}`);
+        // details pode ser array de objetos { field, message }
+        const details = err.response.data.details;
+        if (Array.isArray(details)) {
+          // Mostra cada mensagem em uma lista
+          setErro(details.map(e => e.mensagem || e.message || JSON.stringify(e)));
+        } else {
+          setErro([details.mensagem || details.message || JSON.stringify(details)]);
+        }
       } else if (err.response?.data?.erro) {
-        setErro(err.response.data.erro);
+        setErro([err.response.data.erro]);
         console.log("Erro backend completo:", err.response?.data);
       } else {
-        setErro("Erro ao conectar com o servidor");
+        setErro(["Erro ao conectar com o servidor"]);
       }
     }
   }
@@ -287,9 +293,23 @@ export default function Cadastro() {
             </button>
           </div>
         </div>
-        {erro && (
-          <p className="text-red-400 font-semibold text-sm mt-2">{erro}</p>
-        )}
+        {erro && Array.isArray(erro) ? (
+          <ul className="text-red-400 font-semibold text-sm mt-2">
+            {erro.map((msg, idx) => (
+              <li key={idx}>
+                {typeof msg === "object"
+                  ? msg.mensagem || msg.message || JSON.stringify(msg)
+                  : msg}
+              </li>
+            ))}
+          </ul>
+        ) : erro ? (
+          <p className="text-red-400 font-semibold text-sm mt-2">
+            {typeof erro === "object"
+              ? erro.mensagem || erro.message || JSON.stringify(erro)
+              : erro}
+          </p>
+        ) : null}
       </form>
     </div>
   );
