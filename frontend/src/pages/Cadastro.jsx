@@ -114,7 +114,7 @@ export default function Cadastro() {
             {/* Tipo de usuário */}
             <div>
               <label className="block text-white mb-1 font-medium text-base">Tipo de usuário</label>
-              <div className="flex gap-4">
+              <div className="flex gap-10">
                 <button
                   type="button"
                   className="px-6 py-2 rounded bg-green-600 text-white font-semibold shadow hover:bg-green-700 focus:outline-none text-base"
@@ -124,7 +124,7 @@ export default function Cadastro() {
                 </button>
                 <button
                   type="button"
-                  className="px-6 py-2 rounded bg-white/20 text-white font-semibold shadow border border-white/30 cursor-not-allowed text-base"
+                  className="px-6 py-1 rounded bg-white/20 text-white font-semibold shadow border border-white/30 cursor-not-allowed text-base"
                   disabled
                 >
                   Empresa

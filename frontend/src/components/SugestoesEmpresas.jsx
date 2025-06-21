@@ -29,10 +29,10 @@ export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
             </div>
             <button
               onClick={() => toggleSeguir(idx)}
-              className={`px-2 md:px-3 py-1 rounded-md cursor-pointer text-xs md:text-sm font-semibold flex-shrink-0 transition-colors
+              className={`px-2 md:px-3 py-1 rounded-xl cursor-pointer text-xs md:text-sm font-semibold flex-shrink-0 transition-colors
                 ${seguidos[idx]
-                  ? "bg-green-700 text-white"
-                  : "border border-green-400 text-green-700 hover:bg-green-100"}`}
+                  ? "bg-blue-600 text-white"
+                  : "border-2 rounded-4xl border-blue-300 text-blue-600 hover:bg-blue-100"}`}
               style={{ minWidth: "auto", width: "auto" }}
             >
               {seguidos[idx] ? "Seguindo" : "Seguir"}
@@ -42,7 +42,7 @@ export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
       </ul>
 
       <button
-        className="block cursor-pointer text-green-600 hover:text-green-900 hover:font-bold text-sm mt-9 text-center w-full group hover:bg-green-100 px-4 py-2 rounded-md transition-colors"
+        className="block font-semibold cursor-pointer text-blue-500 hover:text-blue-500 hover:font-bold text-sm mt-9 text-center w-full group hover:bg-blue-100 px-4 py-2 rounded-md transition-colors"
         onClick={onVerTodas}
       >
         Ver todas
