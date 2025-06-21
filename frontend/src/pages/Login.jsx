@@ -41,10 +41,10 @@ function Login() {
       className="min-h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat relative"
       style={{ backgroundImage: "url('/bg.png')" }}
     >
-      <div className="absolute inset-0 bg-green-950/80 z-0"></div>
+      <div className="absolute inset-0 bg-green-700/5 z-0"></div>
       <form
         onSubmit={handleLogin}
-        className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl p-8 w-[400px] flex flex-col items-center"
+        className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] flex flex-col items-center"
       >
         <Link
           to="/"
@@ -67,6 +67,7 @@ function Login() {
           <input
             type="email"
             className="input w-full"
+            placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -78,6 +79,7 @@ function Login() {
           <input
             type="password"
             className="input w-full"
+            placeholder="Digite sua senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
@@ -85,7 +87,7 @@ function Login() {
         </div>
 
         <div className="w-full text-right mb-4">
-          <Link to="/esqueci-senha" className="text-sm text-blue-600 hover:underline">
+          <Link to="/esqueci-senha" className="text-sm text-blue-300 hover:underline">
             Esqueci minha senha
           </Link>
         </div>
