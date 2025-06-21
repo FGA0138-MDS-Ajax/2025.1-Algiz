@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Footer from "../components/Footer";
 
 
 function Sobrenos() {
@@ -133,11 +134,7 @@ function Sobrenos() {
       </section>
 
       {/* Footer */}
-      <footer className="container mx-auto px-6 py-8">
-        <div className="border-t border-gray-300 pt-8">
-          <p className="text-center text-gray-600 text-sm">©2025 EcoNet. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+       <Footer />
     </div>
   )
 }

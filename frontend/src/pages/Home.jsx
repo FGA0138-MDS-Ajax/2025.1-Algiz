@@ -109,6 +109,6 @@ export default function HomePublica() {
 
       {/* Rodapé */}
       <Footer />
-      </div>
+    </div>
   );
 }
