@@ -3,3 +3,17 @@
 .input {
   @apply px-4 py-2 rounded-lg border border-white/30 bg-white/90 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-400;
 }
+
+/* Removes default password reveal icon on Microsoft Edge */
+input::-ms-reveal {
+  display: none;
+}
+
+/* Removes Chrome's eye icon for password fields */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}

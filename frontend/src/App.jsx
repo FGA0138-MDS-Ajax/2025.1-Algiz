@@ -12,6 +12,8 @@ import { seedFakeUsers } from "./utils/fakeUsers";
 import { seedFakeEmpresas } from "./utils/fakeEmpresas";
 import PaginaPost from './pages/PaginaPost';
 import EsqueciSenha from './pages/EsqueciSenha';
+import CodigoAutenticacao from './pages/CodigoAutenticacao';
+import RedefinirSenha from './pages/RedefinirSenha';
 
 function App() {
   useEffect(() => {
@@ -37,6 +39,8 @@ function App() {
           <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
           <Route path="/login" element={<Login />} />
           <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+          <Route path="/codigo-autenticacao" element={<CodigoAutenticacao />} />
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           <Route path="/post" element={<PaginaPost />} />
         </Routes>
       </Layout>
