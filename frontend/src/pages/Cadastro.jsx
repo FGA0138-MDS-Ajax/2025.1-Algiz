@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados, generos } from "../utils/opcoes_form";
-import axios from 'axios'; 
+import axios from 'axios';
 
 export default function Cadastro() {
   const initialForm = {
@@ -83,13 +83,13 @@ export default function Cadastro() {
       {showPopup && (
         <PopupMessage action="Cadastro" onClose={() => setShowPopup(false)} />
       )}
-      <div className="absolute inset-0 bg-green-950/80 z-0"></div>
+      <div className="absolute inset-0 bg-green-700/5 z-0"></div>
       <form
-        className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl p-8 w-[700px] h-[700px] flex flex-col"
+        className="relative z-10 bg-green/5 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl px-8 py-5 w-full max-w-4xl flex flex-col gap-2"
         onSubmit={handleSubmit}
-        style={{ minWidth: 700, minHeight: 750, maxWidth: 700, maxHeight: 750 }}
       >
-        <div className="mb-2 flex flex-col items-center">
+        {/* Logo centralizada */}
+        <div className="flex justify-center mb-2">
           <Link
             to="/"
             onMouseEnter={() => setIsHovered(true)}
@@ -99,91 +99,99 @@ export default function Cadastro() {
             <img
               src={isHovered ? "/logo-4.png" : "/logo.png"}
               alt="Logo"
-              className="w-24 mx-auto mb-2 cursor-pointer"
+              className="w-20 mx-auto mb-2 cursor-pointer"
             />
           </Link>
         </div>
-        <h2 className="text-2xl font-semibold mb-2 text-white text-left w-full">
-          Cadastro
+        {/* Título alinhado à esquerda */}
+        <h2 className="text-2xl font-bold mb-4 text-white text-left w-full">
+          Cadastramento
         </h2>
-
-        <div className="flex w-full gap-12 flex-1">
-          {/* Coluna ESQUERDA */}
-          <div className="flex-1 flex flex-col gap-8 justify-start">
+        {/* Formulário em duas colunas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+          {/* Coluna 1 */}
+          <div className="flex flex-col gap-3">
+            {/* Tipo de usuário */}
             <div>
-              <label className="block text-white mb-1" htmlFor="nome">Nome*</label>
+              <label className="block text-white mb-1 font-medium text-base">Tipo de usuário</label>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  className="px-6 py-2 rounded bg-green-600 text-white font-semibold shadow hover:bg-green-700 focus:outline-none text-base"
+                  disabled
+                >
+                  Pessoal
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2 rounded bg-white/20 text-white font-semibold shadow border border-white/30 cursor-not-allowed text-base"
+                  disabled
+                >
+                  Empresa
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className="block text-white mb-1 text-base" htmlFor="nome">Nome</label>
               <input
                 id="nome"
                 name="nome"
-                placeholder="Digite seu nome"
+                placeholder="Primeiro nome"
                 value={form.nome}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               />
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="sobrenome">Sobrenome*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="sobrenome">Sobrenome</label>
               <input
                 id="sobrenome"
                 name="sobrenome"
-                placeholder="Digite seu sobrenome"
+                placeholder="Sobrenome"
                 value={form.sobrenome}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               />
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="cpfCnpj">CPF*</label>
-              <input
-                id="cpfCnpj"
-                name="cpfCnpj"
-                placeholder="Digite seu CPF"
-                value={form.cpfCnpj}
-                onChange={handleChange}
-                required
-                className="input w-full"
-              />
-            </div>
-            <div>
-              <label className="block text-white mb-1" htmlFor="celular">Celular*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="celular">Celular</label>
               <input
                 id="celular"
                 name="celular"
-                placeholder="Ex: (61)91234-5678"
+                placeholder="ex: 61 912345678"
                 value={form.celular}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               />
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="email">Email*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="email">Email</label>
               <input
                 id="email"
                 name="email"
-                placeholder="Ex: usuario@email.com"
+                placeholder="username@gmail.com"
                 value={form.email}
                 onChange={handleChange}
                 required
                 type="email"
-                className="input w-full"
+                className="input w-full text-base py-2"
               />
             </div>
           </div>
-
-          {/* Coluna DIREITA */}
-          <div className="flex-1 flex flex-col gap-8 justify-start">
+          {/* Coluna 2 */}
+          <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-white mb-1" htmlFor="estado">Estado*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="estado">Localização</label>
               <select
                 id="estado"
                 name="estado"
                 value={form.estado}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               >
                 {estados.map((e) => (
                   <option
@@ -198,14 +206,14 @@ export default function Cadastro() {
               </select>
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="genero">Gênero*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="genero">Gênero</label>
               <select
                 id="genero"
                 name="genero"
                 value={form.genero}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               >
                 {generos.map((g) => (
                   <option
@@ -220,7 +228,7 @@ export default function Cadastro() {
               </select>
             </div>
             <div>
-              <label className="block text-white mb-1" htmlFor="dtNascimento">Data de Nascimento*</label>
+              <label className="block text-white mb-1 text-base" htmlFor="dtNascimento">Data de Nascimento</label>
               <input
                 id="dtNascimento"
                 name="dtNascimento"
@@ -228,67 +236,48 @@ export default function Cadastro() {
                 value={form.dtNascimento}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full text-base py-2"
               />
             </div>
-            <div className="relative w-full">
-              <label className="block text-white mb-1" htmlFor="senha">Senha*</label>
+            <div>
+              <label className="block text-white mb-1 text-base" htmlFor="senha">Senha</label>
               <input
                 id="senha"
                 name="senha"
-                placeholder="Digite sua senha"
+                placeholder="Password"
                 value={form.senha}
                 onChange={handleChange}
                 required
                 type={showSenha ? "text" : "password"}
-                className="input pr-10 w-full"
+                className="input w-full text-base py-2"
               />
-              <span
-                className="absolute right-3 top-7 bottom-0 my-auto cursor-pointer text-green-900 flex items-center h-5"
-                onClick={() => setShowSenha((v) => !v)}
-                title="Mostrar/ocultar senha"
-              >
-                {showSenha ? (
-                  <img src="/eye-off.png" alt="Ocultar senha" className="w-5 h-5" />
-                ) : (
-                  <img src="/eye.png" alt="Mostrar senha" className="w-5 h-5" />
-                )}
-              </span>
             </div>
-            <div className="relative w-full">
-              <label className="block text-white mb-1" htmlFor="repetirSenha">Repetir Senha*</label>
+            <div>
+              <label className="block text-white mb-1 text-base" htmlFor="repetirSenha">Repetir senha</label>
               <input
                 id="repetirSenha"
                 name="repetirSenha"
-                placeholder="Repita sua senha"
+                placeholder="Password"
                 value={form.repetirSenha}
                 onChange={handleChange}
                 required
                 type={showRepetir ? "text" : "password"}
-                className="input pr-10 w-full"
+                className="input w-full text-base py-2"
               />
-              <span
-                className="absolute right-3 top-7 bottom-0 my-auto cursor-pointer text-green-900 flex items-center h-5"
-                onClick={() => setShowRepetir((v) => !v)}
-                title="Mostrar/ocultar senha"
-              >
-                {showRepetir ? (
-                  <img src="/eye-off.png" alt="Ocultar senha" className="w-5 h-5" />
-                ) : (
-                  <img src="/eye.png" alt="Mostrar senha" className="w-5 h-5" />
-                )}
-              </span>
             </div>
-            <button
-              className="bg-green-600 hover:bg-green-800 text-white font-bold cursor-pointer py-3 w-full rounded-full transition mb-6"
-              type="submit"
-            >
-              Cadastrar
-            </button>
           </div>
         </div>
+        {/* Botão cadastrar centralizado e largo */}
+        <div className="flex justify-center mt-6 col-span-2">
+          <button
+            className="bg-green-600 hover:bg-green-800 text-white font-bold cursor-pointer py-3 w-full rounded-lg transition text-lg max-w-xs"
+            type="submit"
+          >
+            Cadastrar
+          </button>
+        </div>
         {erro && (
-          <p className="text-red-400 font-semibold text-sm mt-2">{erro}</p>
+          <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
         )}
       </form>
     </div>

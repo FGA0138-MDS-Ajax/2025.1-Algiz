@@ -15,10 +15,10 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
   // post completo (para serem usados na pagina de post)
   if (completo) {
     return (
-      <div className="bg-white rounded-2xl shadow-md p-8 pb-4 flex flex-col min-h-[500px] w-full max-w-3xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-md p-4 pb-3 flex flex-col min-h-[400px] w-full max-w-2xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
             {/* <img
               src={post.empresaLogo}
               alt={post.empresaNome}
@@ -31,20 +31,20 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
             <img
               src={post?.empresaLogo || "/coca.png"}
               alt={post?.empresaNome || "Empresa"}
-              className="w-12 h-12 rounded-full"
+              className="h-10 w-10 rounded-full"
             />
             <div>
-              <div className="font-bold text-lg">{post?.empresaNome || "Relog"}</div>
-              <div className="text-gray-500 text-sm">contato@email.com</div>
+              <div className="font-semibold text-sm">{post?.empresaNome || "Relog"}</div>
+              <div className="text-gray-500 text-xs">contato@email.com</div>
             </div>
           </div>
-          <button className="bg-green-600 text-white px-4 py-1 rounded-full hover:bg-green-700 font-semibold text-sm">
+          <button className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 font-semibold text-sm">
             Seguir +
           </button>
         </div>
         {/* Título */}
         {/* <div className="font-bold mb-2">{post.titulo}</div> */}
-        <div className="font-bold text-2xl mb-2">{titulo}</div>
+        <div className="font-semibold text-base mb-2">{titulo}</div>
         {/* Imagem do post */}
         {/* {big && post.imagem && (
           <img
@@ -56,7 +56,7 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
         <img
           src={imagem}
           alt="Imagem do post"
-          className="rounded-xl w-full object-cover mb-4 max-h-72"
+          className="rounded-xl w-full object-cover mb-4 max-h-722"
           style={{ minHeight: "220px" }}
         />
         {/* Tags */}

@@ -41,10 +41,10 @@ function Login() {
       className="min-h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat relative"
       style={{ backgroundImage: "url('/bg.png')" }}
     >
-      <div className="absolute inset-0 bg-green-950/80 z-0"></div>
+      <div className="absolute inset-0 bg-green-700/5 z-0"></div>
       <form
         onSubmit={handleLogin}
-        className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl p-8 w-[400px] flex flex-col items-center"
+        className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] flex flex-col items-center"
       >
         <Link
           to="/"
