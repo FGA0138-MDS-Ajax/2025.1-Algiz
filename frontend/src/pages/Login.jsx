@@ -85,7 +85,7 @@ function Login() {
         </div>
 
         <div className="w-full text-right mb-4">
-          <Link to="/esqueci-senha" className="text-sm text-blue-600 hover:underline">
+          <Link to="/esqueci-senha" className="text-sm text-blue-300 hover:underline">
             Esqueci minha senha
           </Link>
         </div>

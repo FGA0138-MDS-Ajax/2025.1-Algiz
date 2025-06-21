@@ -11,6 +11,7 @@ import PaginaUsuario from './pages/PaginaUsuario';
 import { seedFakeUsers } from "./utils/fakeUsers";
 import { seedFakeEmpresas } from "./utils/fakeEmpresas";
 import PaginaPost from './pages/PaginaPost';
+import EsqueciSenha from './pages/EsqueciSenha';
 
 function App() {
   useEffect(() => {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/esqueci-senha" element={<EsqueciSenha />} />
           <Route path="/post" element={<PaginaPost />} />
         </Routes>
       </Layout>
