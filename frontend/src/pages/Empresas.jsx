@@ -128,8 +128,54 @@ function Empresas() {
           <div className="mt-8">
             <h3 className="font-bold text-lg mb-4">Postagens da empresa</h3>
             <hr className="mb-6 border-gray-800" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2, 3].map((i) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              {/* Card grande à esquerda ocupando duas linhas */}
+              <div className="md:row-span-2">
+                <div
+                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition"
+                  onClick={() => navigate("/post")}
+                  title="Ver post completo"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <img
+                      src="/empresa1.png"
+                      alt="Logo"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div>
+                      <div className="font-semibold text-sm">Relog</div>
+                      <div className="text-xs text-gray-400">Promovido</div>
+                    </div>
+                  </div>
+                  <div className="font-bold mb-2">Uso massivo de aparelhos eletrônicos</div>
+                  <img
+                    src="/post.png"
+                    alt="Post"
+                    className="rounded-xl mb-2"
+                  />
+                  <div className="text-gray-600 text-sm mb-2">
+                    Com o uso massivo de aparelhos eletrônicos simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's 
+                  </div>
+                  <div className="flex items-center justify-between mt-4 text-gray-600">
+                    <div className="flex items-center gap-4 text-xl">
+                      <button title="Curtir">
+                        <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                      </button>
+                      <button title="Comentar">
+                        <MessageSquare className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                      </button>
+                      <button title="Compartilhar">
+                        <Share2 className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                      </button>
+                    </div>
+                    <button title="Salvar">
+                      <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* Dois cards pequenos à direita, um embaixo do outro */}
+              {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
                   className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition"
@@ -148,18 +194,10 @@ function Empresas() {
                     </div>
                   </div>
                   <div className="font-bold mb-2">Uso massivo de aparelhos eletrônicos</div>
-                  {i === 1 && (
-                    <img
-                      src="/post.png"
-                      alt="Post"
-                      className="rounded-xl mb-2"
-                    />
-                  )}
                   <div className="text-gray-600 text-sm mb-2">
-                    Com o uso massivo de aparelhos eletrônicos simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a...
+                    Com o uso massivo de aparelhos eletrônicos simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy ... 
                   </div>
                   <div className="flex items-center justify-between mt-4 text-gray-600">
-                    {/* Left side icons */}
                     <div className="flex items-center gap-4 text-xl">
                       <button title="Curtir">
                         <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
@@ -171,8 +209,6 @@ function Empresas() {
                         <Share2 className="w-5 h-5 cursor-pointer hover:text-green-700" />
                       </button>
                     </div>
-
-                    {/* Right side: save icon */}
                     <button title="Salvar">
                       <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
                     </button>
@@ -200,6 +236,12 @@ function Empresas() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
+      {/* Footer */}
+      <footer className="container mx-auto px-45 py-8">
+        <div className="border-t border-gray-300 pt-8">
+          <p className="text-center text-gray-600 text-sm">©2025 EcoNet. Todos os direitos reservados.</p>
+        </div>
+      </footer>
     </div>
   );
 }
