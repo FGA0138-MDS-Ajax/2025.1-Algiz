@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function RedefinirSenha() {
   const [novaSenha, setNovaSenha] = useState("");
@@ -33,13 +33,18 @@ function RedefinirSenha() {
         onSubmit={handleSubmit}
         className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] min-h-[550px] flex flex-col items-center"
       >
-        <img
-          src={isHovered ? "/logo-4.png" : "/logo.png"}
-          alt="Logo"
-          className="w-24 mx-auto mb-6 cursor-pointer transition-transform transform hover:scale-110"
+        <Link
+          to="/"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-        />
+          className="transition-transform transform hover:scale-110"
+        >
+          <img
+            src={isHovered ? "/logo-4.png" : "/logo.png"}
+            alt="Logo"
+            className="w-24 mx-auto mb-6 cursor-pointer"
+          />
+        </Link>
 
         <h2 className="text-xl font-bold text-white mb-8 text-center">Redefinir senha</h2>
 

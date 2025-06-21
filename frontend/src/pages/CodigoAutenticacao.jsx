@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 function CodigoAutenticacao() {
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
-
+  const [isHovered, setIsHovered] = useState(false);
+  
     const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) return; // allow only a single digit
 
@@ -61,11 +62,18 @@ function CodigoAutenticacao() {
         onSubmit={handleSubmit}
         className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] min-h-[550px] flex flex-col items-center"
       >
-        <img
-          src="/logo.png"
-          alt="Logo"
-          className="w-24 mx-auto mb-6"
-        />
+        <Link
+          to="/"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="transition-transform transform hover:scale-110 self-center"
+        >
+          <img
+            src={isHovered ? "/logo-4.png" : "/logo.png"}
+            alt="Logo"
+            className="w-24 mb-6 cursor-pointer"
+          />
+        </Link>
 
         <h2 className="text-xl font-bold text-white text-center mt-8">
           Código de autenticação
