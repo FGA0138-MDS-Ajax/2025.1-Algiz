@@ -44,7 +44,7 @@ function Login() {
       <div className="absolute inset-0 bg-green-700/5 z-0"></div>
       <form
         onSubmit={handleLogin}
-        className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] flex flex-col items-center"
+        className="relative z-10 bg-green/5 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl p-8 w-[400px] min-h-[550px] flex flex-col items-center"
       >
         <Link
           to="/"
@@ -55,7 +55,7 @@ function Login() {
           <img
             src={isHovered ? "/logo-4.png" : "/logo.png"}
             alt="Logo"
-            className="w-24 mx-auto mb-2 cursor-pointer"
+            className="w-24 mx-auto mb-6 cursor-pointer"
           />
         </Link>
         <h2 className="text-2xl font-bold mb-6 text-white text-center">Login</h2>
@@ -94,7 +94,7 @@ function Login() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+          className="w-full bg-green-600 cursor-pointer text-white py-2 rounded hover:bg-green-700 transition"
         >
           Login
         </button>
