@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import { validateCadastro } from "../utils/validacao";
 import { estados, generos } from "../utils/opcoes_form";
+import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 
 export default function Cadastro() {
@@ -231,31 +232,49 @@ export default function Cadastro() {
                 className="input w-full text-base py-2"
               />
             </div>
-            <div>
+            <div className="relative">
               <label className="block text-white mb-1 text-base" htmlFor="senha">Senha</label>
               <input
                 id="senha"
                 name="senha"
-                placeholder="Password"
+                placeholder="Digite sua senha"
                 value={form.senha}
                 onChange={handleChange}
                 required
                 type={showSenha ? "text" : "password"}
-                className="input w-full text-base py-2"
+                className="input w-full text-base py-2 pr-10"
               />
+              {form.senha && (
+                <button
+                  type="button"
+                  onClick={() => setShowSenha(!showSenha)}
+                  className="absolute right-3 top-[37px] cursor-pointer text-gree-600 hover:text-gree-200"
+                >
+                  {showSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              )}
             </div>
-            <div>
+            <div className="relative">
               <label className="block text-white mb-1 text-base" htmlFor="repetirSenha">Repetir senha</label>
               <input
                 id="repetirSenha"
                 name="repetirSenha"
-                placeholder="Password"
+                placeholder="Digite sua senha novamente"
                 value={form.repetirSenha}
                 onChange={handleChange}
                 required
                 type={showRepetir ? "text" : "password"}
-                className="input w-full text-base py-2"
+                className="input w-full text-base py-2 pr-10"
               />
+              {form.repetirSenha && (
+                <button
+                  type="button"
+                  onClick={() => setShowRepetir(!showRepetir)}
+                  className="absolute right-3 top-[37px] cursor-pointer text-gree-600 hover:text-gree-200"
+                >
+                  {showRepetir ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              )}
             </div>
           </div>
         </div>

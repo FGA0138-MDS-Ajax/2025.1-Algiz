@@ -1,40 +1,41 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react"; // ✅ import icons
 
 function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false); // ✅ toggle state
   const [erro, setErro] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setErro("");
+    e.preventDefault();
+    setErro("");
 
-  try {
-    const response = await fetch("http://localhost:3001/api/usuarios/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password: senha })
-    });
+    try {
+      const response = await fetch("http://localhost:3001/api/usuarios/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password: senha })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.erro || "Erro ao fazer login.");
+      if (!response.ok) {
+        throw new Error(data.erro || "Erro ao fazer login.");
+      }
+
+      sessionStorage.setItem("authToken", data.token);
+      sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+      navigate("/home");
+    } catch (err) {
+      setErro(err.message);
     }
-
-    // Armazena token e usuário no sessionStorage
-    sessionStorage.setItem("authToken", data.token);
-    sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
-    navigate("/home");
-  } catch (err) {
-    setErro(err.message);
-  }
-};
+  };
 
   return (
     <div
@@ -58,6 +59,7 @@ function Login() {
             className="w-24 mx-auto mb-6 cursor-pointer"
           />
         </Link>
+
         <h2 className="text-2xl font-bold mb-6 text-white text-center">Login</h2>
 
         {erro && <div className="text-red-500 mb-4">{erro}</div>}
@@ -74,16 +76,26 @@ function Login() {
           />
         </div>
 
-        <div className="w-full mb-6">
+        {/* Senha + eye icon */}
+        <div className="w-full mb-6 relative">
           <label className="block mb-1 text-white font-medium">Senha</label>
           <input
-            type="password"
-            className="input w-full"
+            type={mostrarSenha ? "text" : "password"}
+            className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
             placeholder="Digite sua senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
           />
+          {senha && (
+            <button
+              type="button"
+              onClick={() => setMostrarSenha(!mostrarSenha)}
+              className="absolute right-2 top-[38px] cursor-pointer text-gree-600 hover:text-gree-200"
+            >
+              {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          )}
         </div>
 
         <div className="w-full text-right mb-4">

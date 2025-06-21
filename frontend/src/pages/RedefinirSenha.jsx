@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 function RedefinirSenha() {
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [erro, setErro] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [verNovaSenha, setVerNovaSenha] = useState(false);
+  const [verConfirmarSenha, setVerConfirmarSenha] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -48,31 +52,49 @@ function RedefinirSenha() {
 
         <h2 className="text-xl font-bold text-white mb-8 text-center">Redefinir senha</h2>
 
-        {erro && <p className="text-red-400 mb-4 text-sm">{erro}</p>}
+        {erro && <p className="text-red-500 mb-4 text-sm">{erro}</p>}
 
-        <div className="w-full mb-6">
-          <label className="block mb-1 text-white font-medium">Nova senha:</label>
-          <input
-            type="password"
-            className="input w-full"
-            placeholder="insira o código"
-            value={novaSenha}
-            onChange={(e) => setNovaSenha(e.target.value)}
-            required
-          />
-        </div>
+        <div className="relative w-full mb-6">
+        <label className="block mb-1 text-white font-medium">Nova senha:</label>
+            <input
+                type={verNovaSenha ? "text" : "password"}
+                className="input w-full"
+                placeholder="insira o código"
+                value={novaSenha}
+                onChange={(e) => setNovaSenha(e.target.value)}
+                required
+            />
+    {novaSenha && (
+    <button
+        type="button"
+        className="absolute right-2 top-[38px] cursor-pointer text-gree-600 hover:text-gree-200"
+        onClick={() => setVerNovaSenha(!verNovaSenha)}
+    >
+        {verNovaSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+    </button>
+    )}
+    </div>
 
-        <div className="w-full mb-6">
-          <label className="block mb-1 text-white font-medium">Repita a nova senha:</label>
-          <input
-            type="password"
-            className="input w-full"
-            placeholder="insira o código"
-            value={confirmarSenha}
-            onChange={(e) => setConfirmarSenha(e.target.value)}
-            required
-          />
-        </div>
+    <div className="relative w-full mb-6">
+    <label className="block mb-1 text-white font-medium">Repita a nova senha:</label>
+    <input
+        type={verConfirmarSenha ? "text" : "password"}
+        className="input w-full"
+        placeholder="insira o código"
+        value={confirmarSenha}
+        onChange={(e) => setConfirmarSenha(e.target.value)}
+        required
+    />
+    {confirmarSenha && (
+    <button
+        type="button"
+        className="absolute right-2 top-[38px] cursor-pointer text-gree-400 hover:text-gree-100"
+        onClick={() => setVerConfirmarSenha(!verConfirmarSenha)}
+    >
+        {verConfirmarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+    </button>
+    )}
+    </div>
 
         <button
           type="submit"
