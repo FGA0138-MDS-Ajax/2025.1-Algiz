@@ -67,6 +67,7 @@ function Login() {
           <input
             type="email"
             className="input w-full"
+            placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -78,6 +79,7 @@ function Login() {
           <input
             type="password"
             className="input w-full"
+            placeholder="Digite sua senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required

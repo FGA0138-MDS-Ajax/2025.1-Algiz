@@ -111,26 +111,6 @@ export default function Cadastro() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
           {/* Coluna 1 */}
           <div className="flex flex-col gap-3">
-            {/* Tipo de usuário */}
-            <div>
-              <label className="block text-white mb-1 font-medium text-base">Tipo de usuário</label>
-              <div className="flex gap-10">
-                <button
-                  type="button"
-                  className="px-6 py-2 rounded bg-green-600 text-white font-semibold shadow hover:bg-green-700 focus:outline-none text-base"
-                  disabled
-                >
-                  Pessoal
-                </button>
-                <button
-                  type="button"
-                  className="px-6 py-1 rounded bg-white/20 text-white font-semibold shadow border border-white/30 cursor-not-allowed text-base"
-                  disabled
-                >
-                  Empresa
-                </button>
-              </div>
-            </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="nome">Nome</label>
               <input
@@ -153,6 +133,18 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 className="input w-full text-base py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-1" htmlFor="cpfCnpj">CPF*</label>
+              <input
+                id="cpfCnpj"
+                name="cpfCnpj"
+                placeholder="Digite seu CPF"
+                value={form.cpfCnpj}
+                onChange={handleChange}
+                required
+                className="input w-full"
               />
             </div>
             <div>
@@ -184,7 +176,7 @@ export default function Cadastro() {
           {/* Coluna 2 */}
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-white mb-1 text-base" htmlFor="estado">Localização</label>
+              <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
               <select
                 id="estado"
                 name="estado"
