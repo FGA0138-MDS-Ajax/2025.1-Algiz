@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
+import Footer from "../components/Footer";
 
 // Lista fake de sugestões
 const sugestoesEmpresas = [
@@ -236,12 +237,9 @@ function Empresas() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
-      {/* Footer */}
-      <footer className="container mx-auto px-45 py-8">
-        <div className="border-t border-gray-300 pt-8">
-          <p className="text-center text-gray-600 text-sm">©2025 EcoNet. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+
+      {/* Rodapé */}
+      <Footer />
     </div>
   );
 }
