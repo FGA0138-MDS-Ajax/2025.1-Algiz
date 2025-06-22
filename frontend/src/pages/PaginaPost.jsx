@@ -4,6 +4,7 @@ import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
+import Footer from "../components/Footer";
 
 // fake empresas
 const sugestoesEmpresas = [
@@ -93,6 +94,8 @@ export default function PaginaPost() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
