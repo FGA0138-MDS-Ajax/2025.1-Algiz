@@ -15,7 +15,9 @@ export default function PaginaUsuario() {
   const [error, setError] = useState(null);
   const [showEmpresasModal, setShowEmpresasModal] = useState(false);
   const [tab, setTab] = useState("recomendadas");
+  const [visualizandoPublico, setVisualizandoPublico] = useState(false);
 
+  console.log(visualizandoPublico);
   useEffect(() => {
     async function fetchUsuario() {
       setLoading(true);
@@ -85,16 +87,27 @@ export default function PaginaUsuario() {
 
   // Verifica se é o usuário logado
   const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-  const isUsuarioLogado = usuarioLogado?.id === usuario.id;
+  // Se visualizando como público, força isUsuarioLogado para false
+  const isUsuarioLogado = !visualizandoPublico && usuarioLogado?.id === usuario.id;
+
+  // Função para alternar visualização pública e atualizar isUsuarioLogado corretamente
+  const handleToggleVisualizacaoPublica = () => {
+    setVisualizandoPublico((v) => !v);
+  };
 
   return (
-    <div className="bg-green-50 min-h-screen py-2">
+    <div className="bg-green-50 min-h-screen py-2 relative">
       <div className="h-12" />
       <main className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto mt-8">
         {/* Coluna principal */}
         <section className="flex-1 flex flex-col gap-2">
           {/* Header do perfil */}
-          <PerfilUsuario usuario={usuario} />
+          <PerfilUsuario
+            usuario={usuario}
+            isUsuarioLogado={isUsuarioLogado}
+            visualizandoPublico={visualizandoPublico}
+            onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
+          />
 
           {/* Cards PossuiEmpresa e MinhasConexoes: empilhados em mobile */}
           {isUsuarioLogado ? (
@@ -130,6 +143,16 @@ export default function PaginaUsuario() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
+
+      {/* Botão flutuante para sair do modo público */}
+      {visualizandoPublico && (
+        <button
+          onClick={handleToggleVisualizacaoPublica}
+          className="fixed bottom-6 right-6 z-50 bg-green-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition"
+        >
+          Sair do modo de visualização pública
+        </button>
+      )}
     </div>
   );
 }
