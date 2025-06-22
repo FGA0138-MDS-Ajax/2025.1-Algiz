@@ -87,7 +87,7 @@ function EsqueciSenha() {
         </div>
 
         {/* ✅ Custom CAPTCHA Component */}
-        <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+        
         <div className="mb-5 self-center">
           <MyReCAPTCHA onChange={handleCaptchaChange} />
         </div>
