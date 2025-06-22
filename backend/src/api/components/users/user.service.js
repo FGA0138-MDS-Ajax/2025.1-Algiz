@@ -239,8 +239,80 @@ async function authenticateUser(email, password) {
     }
 }
 
+
+
+// FUNCIONALIDADE DE CADASTRAR EMPRESA -------------------------
+async function criarEmpresa(JuridicoData) {
+    const { cnpjJuridico, razaoSocial, nomeComercial, telefoneJuridico, estadoJuridico, enderecoJuridico, areaAtuacao, idUsuario} = JuridicoData;
+    const erros = []; // Array de erros para verificação
+
+    // Validação do CNPJ --- ATUALMENTE INATIVA POIS ESTÁ DANDO CONFLITO
+    /* 
+    if (!cnpjJuridico || cnpjJuridico.trim() === "") {
+        erros.push({ campo: "cnpj", mensagem: "CNPJ é obrigatório." });
+    } else {
+        const valorLimpo = cnpjJuridico.replace(/\D/g, '');
+
+        if (valorLimpo.length !== 14) {
+            erros.push({ campo: "cnpj", mensagem: "CNPJ deve ter 14 dígitos." });
+        } else if (!cnpjJuridico.isValid(valorLimpo)) {
+            erros.push({ campo: "cnpj", mensagem: "CNPJ inválido (dígitos verificadores incorretos)." });
+        }
+    }
+    */
+
+    // Se houver erros de validação, lançar exceção
+    if (erros.length > 0) {
+        const error = new Error("Erro de validação");
+        error.name = 'ValidationError';
+        error.details = erros;
+        throw error;
+    }
+
+    // Inserindo no Banco de Dados
+    const result = await db.query(
+        `INSERT INTO JURIDICO 
+            (cnpjJuridico, razaoSocial, nomeComercial, telefoneJuridico, estadoJuridico, enderecoJuridico, areaAtuacao, idUsuario) 
+        VALUES 
+            (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+            cnpjJuridico, 
+            razaoSocial, 
+            nomeComercial, 
+            telefoneJuridico, 
+            estadoJuridico, 
+            enderecoJuridico, 
+            areaAtuacao,
+            idUsuario
+        ]
+    );
+
+    // Retornando o ID
+    const [rows] = await db.query('SELECT LAST_INSERT_ID() as id');
+    return { id: rows[0].id }
+    /* PARA TESTAR SIGA O PASSO A PASSO -->
+    0. Em um programa/app de verificação de rotas (Postman, Insomnia, etc.)    
+    1. Coloque a rota POST "http://localhost:3001/api/usuarios/company"
+    2. Insira um Body de cadastro --> Ex:
+    {
+        "cnpjJuridico": "98.765.432/0001-05",
+        "razaoSocial": "TECNOLOGIA INOVADORA SA",
+        "nomeComercial": "TechInova",
+        "telefoneJuridico": "(21) 99876-5432",
+        "estadoJuridico": "RJ",
+        "enderecoJuridico": "Rua da Inovação, 50 - Rio de Janeiro/RJ",
+        "areaAtuacao": "Desenvolvimento de Software",
+        "idUsuario": 15
+    }
+    3. Aperte SEND
+    4. Deve aparecer ""Empresa cadastrada com sucesso!"
+    5. No AdminJS o registro na tabela JURIDICO deve aparecer
+    */
+}
+
 export default {
     createUser,
     findUserProfileById,
-    authenticateUser
+    authenticateUser,
+    criarEmpresa
 };

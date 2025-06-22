@@ -5,6 +5,7 @@ import db from '../config/db.js'; // Now imports the connection pool
 
 const router = express.Router();
 
+router.post('/company', userController.registerCom);
 router.post('/register', userController.registerUser); // Remove verifyToken middleware
 router.get('/:id', verifyToken, userController.getUserProfile); // Keep protected
 router.post('/login', userController.loginUser);
