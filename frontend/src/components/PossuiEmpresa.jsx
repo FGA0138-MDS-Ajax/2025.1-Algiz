@@ -1,23 +1,34 @@
 import { useNavigate } from "react-router-dom";
 
-export default function PossuiEmpresa() {
+export default function PossuiEmpresa({ cardClass = "" }) {
   const navigate = useNavigate();
 
   const handleCadastroEmpresa = () => {
-    navigate("/cadastro?tipo=empresa"); 
+    navigate("/cadastro?tipo=empresa");
   };
 
   return (
-    <div className="rounded-3xl bg-gray-100 shadow p-6 flex flex-col gap-3">
-      <div className="font-bold text-lg">Você possui uma empresa?</div>
-      <div className="text-gray-700">Faça o cadastro da sua empresa no nosso sistema.</div>
+    <div
+      className={`rounded-xl bg-white border border-gray-200 shadow flex flex-col h-full justify-center items-start px-4 py-4 ${cardClass} min-w-0`}
+      style={{ maxWidth: "100%" }}
+    >
+      <div className="font-bold text-lg mb-1 text-left break-words w-full">
+        Você possui uma empresa?
+      </div>
+      <div className="text-gray-700 mb-3 text-sm text-left break-words w-full">
+        Faça o cadastro da sua empresa no <br />nosso sistema.
+      </div>
       <button
-        className="bg-green-600 text-white font-bold rounded-lg px-6 py-2 mt-2 hover:bg-green-700 transition"
+        className="bg-green-600 text-white font-bold rounded px-4 py-2 transition hover:bg-green-700 text-base flex justify-center items-center w-full sm:w-auto"
         onClick={handleCadastroEmpresa}
+        style={{
+          minWidth: 0,
+          maxWidth: "100%",
+          whiteSpace: "normal",
+        }}
       >
-        Cadastrar
+        Cadastrar empresa
       </button>
-      {/* <div className="text-xs text-gray-500 mt-1">Não possuo uma empresa</div> */}
     </div>
   );
 }

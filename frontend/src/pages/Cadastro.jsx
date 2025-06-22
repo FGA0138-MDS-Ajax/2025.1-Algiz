@@ -68,13 +68,19 @@ export default function Cadastro() {
     } catch (err) {
       console.error('Full error:', err);
       if (err.response?.data?.details) {
-        const errorMessages = err.response.data.details.map(e => e.mensagem).join(', ');
-        setErro(`Erros encontrados: ${errorMessages}`);
+        // details pode ser array de objetos { field, message }
+        const details = err.response.data.details;
+        if (Array.isArray(details)) {
+          // Mostra cada mensagem em uma lista
+          setErro(details.map(e => e.mensagem || e.message || JSON.stringify(e)));
+        } else {
+          setErro([details.mensagem || details.message || JSON.stringify(details)]);
+        }
       } else if (err.response?.data?.erro) {
-        setErro(err.response.data.erro);
+        setErro([err.response.data.erro]);
         console.log("Erro backend completo:", err.response?.data);
       } else {
-        setErro("Erro ao conectar com o servidor");
+        setErro(["Erro ao conectar com o servidor"]);
       }
     }
   }
@@ -278,6 +284,7 @@ export default function Cadastro() {
             </div>
           </div>
         </div>
+
         {/* Botão cadastrar centralizado e largo */}
         <div className="flex justify-center mt-6 col-span-2">
           <button

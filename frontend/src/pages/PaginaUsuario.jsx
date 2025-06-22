@@ -5,6 +5,8 @@ import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import Salvos from "../components/Salvos";
 import EmpresasModal from "../components/EmpresasModal";
+import PossuiEmpresa from "../components/PossuiEmpresa";
+import MinhasConexoes from "../components/MinhasConexoes";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -15,36 +17,35 @@ export default function PaginaUsuario() {
   const [tab, setTab] = useState("recomendadas");
 
   useEffect(() => {
-
-    // A funcao pra buscar o usuario esta comentada porque eu nao consegui rodar o servidor do backend, logo nao conseguia ver a pagina de usuario.
-    
-    // async function fetchUsuario() {
-    //   try {
-    //     const response = await fetch(`/api/usuarios/${idUsuario}`);
-    //     if (!response.ok) throw new Error("Erro ao buscar usuário");
-    //     const data = await response.json();
-    //     setUsuario(data);
-    //   } catch (err) {
-    //     console.error(err);
-    //     setError("Erro ao carregar usuário.");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }
-    // fetchUsuario();
-
-    // Essa busca fake no SessionStorage so esta sendo usada porque o servidor do backend nao estava rodando, logo nao consegui ver a pagina de usuario. Depois que o servidor estiver rodando, essa parte deve ser comentada e a funcao fetchUsuario deve ser descomentada.
-
-    try {
-      const users = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
-      const user = users.find((u) => u.id === idUsuario);
-      if (!user) throw new Error("Usuário não encontrado");
-      setUsuario(user);
-    } catch (err) {
-      setError("Erro ao carregar usuário.");
-    } finally {
-      setLoading(false);
+    async function fetchUsuario() {
+      setLoading(true);
+      setError(null);
+      try {
+        const token = sessionStorage.getItem("authToken");
+        const res = await fetch(
+          `http://localhost:3001/api/usuarios/${idUsuario}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Status ${res.status}: ${errorText}`);
+        }
+        const data = await res.json();
+        setUsuario(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Erro ao buscar usuário:", err);
+      } finally {
+        setLoading(false);
+      }
     }
+    fetchUsuario();
   }, [idUsuario]);
 
   if (loading) {
@@ -73,59 +74,53 @@ export default function PaginaUsuario() {
     { id: "6", nome: "Kactus", logo: "/lacta.png" },
   ];
 
-  // Mesma coisa da de cima, dados fakes e estáticos para empresas recomendadas
   const empresasRecomendadas = [
-    { id: "1", 
-      nome: "Cacau Show",
-      desc: "É uma marca de chocolates nacional, fundada em 1988.",
-      img: "/cacau.png"
-    },
-    { id: "2", 
-      nome: "Nestle",
-      desc: "Nestlé S.A. é uma empresa transnacional suíça do setor de alimentos e bebidas",
-      img: "/nestle.png"
-    },
-    { id: "3",  
-      nome: "Lacta",
-      desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.",
-      img: "/lacta.png"
-    },
-    { id: "4", 
-      nome: "Coca Cola",
-      desc: "A marca é reconhecida mundialmente pela sua bebida icônica",
-      img: "/coca.png"
-    },
-    { id: "5",
-      nome: "Terra verde",
-      desc: "Terra Verde é uma empresa de alimentos orgânicos e naturais.",
-      img: "/coca.png"
-    },
-    { id: "6", 
-      nome: "Kactus",
-      desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.",
-      img: "/lacta.png"
-    },
+    { id: "1", nome: "Cacau Show", desc: "É uma marca de chocolates nacional, fundada em 1988.", img: "/cacau.png" },
+    { id: "2", nome: "Nestle", desc: "Nestlé S.A. é uma empresa transnacional suíça do setor de alimentos e bebidas", img: "/nestle.png" },
+    { id: "3", nome: "Lacta", desc: "Lacta é uma empresa brasileira fabricante de chocolates fundada em 1912.", img: "/lacta.png" },
+    { id: "4", nome: "Coca Cola", desc: "A marca é reconhecida mundialmente pela sua bebida icônica", img: "/coca.png" },
+    { id: "5", nome: "Terra verde", desc: "Terra Verde é uma empresa de alimentos orgânicos e naturais.", img: "/coca.png" },
+    { id: "6", nome: "Kactus", desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.", img: "/lacta.png" },
   ];
+
+  // Verifica se é o usuário logado
+  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  const isUsuarioLogado = usuarioLogado?.id === usuario.id;
 
   return (
     <div className="bg-green-50 min-h-screen py-2">
       <div className="h-12" />
-      <main className="flex gap-6 max-w-6xl mx-auto mt-8">
+      <main className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto mt-8">
         {/* Coluna principal */}
-        <section className="flex-1 flex flex-col gap-1">
+        <section className="flex-1 flex flex-col gap-2">
           {/* Header do perfil */}
           <PerfilUsuario usuario={usuario} />
 
-          {/* Empresas vinculadas */}
-          <EmpresasTrabalhando usuario={usuario} />
+          {/* Cards PossuiEmpresa e MinhasConexoes: empilhados em mobile */}
+          {isUsuarioLogado ? (
+            <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
+              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                <PossuiEmpresa usuario={usuario} cardClass="h-full" />
+              </div>
+              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                <MinhasConexoes usuario={usuario} cardClass="h-full" />
+              </div>
+            </div>
+          ) : (
+            // Se não for o usuário logado, mostra EmpresasTrabalhando normalmente
+            <EmpresasTrabalhando usuario={usuario} />
+          )}
 
           {/* Salvos */}
           <Salvos usuario={usuario} />
         </section>
 
-        {/* Sidebar de empresas sugeridas */}
-        <aside className="w-80">
-          <SugestoesEmpresas sugestoes={sugestoes} onVerTodas={() => setShowEmpresasModal(true)} />
+        {/* Sidebar de empresas sugeridas: empilhada em mobile */}
+        <aside className="w-full lg:w-80 mt-6 lg:mt-0">
+          <SugestoesEmpresas
+            sugestoes={sugestoes}
+            onVerTodas={() => setShowEmpresasModal(true)}
+          />
         </aside>
       </main>
       <EmpresasModal
