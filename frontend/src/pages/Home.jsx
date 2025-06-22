@@ -1,15 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
+import SidebarUsuario from "../components/SidebarUsuario";
 import Footer from "../components/Footer";
+import Post from "../components/Post";
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const navigate = useNavigate();
+
+  // Usuário completo do backend
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    async function fetchUsuarioCompleto() {
+      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+      if (usuarioLogado && usuarioLogado.id) {
+        try {
+          const token = sessionStorage.getItem("authToken");
+          const res = await fetch(
+            `http://localhost:3001/api/usuarios/${usuarioLogado.id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setUsuario(data);
+          } else {
+            setUsuario(null);
+          }
+        } catch {
+          setUsuario(null);
+        }
+      } else {
+        setUsuario(null);
+      }
+    }
+    fetchUsuarioCompleto();
+  }, []);
 
   const sugestoesEmpresas = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -32,7 +69,11 @@ export default function HomePublica() {
         {/* Sidebar esquerda */}
         <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
           <div className="sticky top-20">
-            <SidebarIntro />
+            {usuario ? (
+              <SidebarUsuario usuario={usuario} />
+            ) : (
+              <SidebarIntro />
+            )}
           </div>
         </div>
 
@@ -54,7 +95,11 @@ export default function HomePublica() {
               title="Ver post completo"
             >
               <div className="flex items-center gap-2 mb-2">
-                <img src="/empresa1.png" className="h-10 w-10 rounded-full" />
+                <img
+                  src="/empresa1.png"
+                  className="h-10 w-10 rounded-full"
+                  alt="Logo empresa"
+                />
                 <div>
                   <p className="font-semibold text-sm">Relog</p>
                   <p className="text-xs text-gray-500">Promovido</p>
@@ -68,6 +113,7 @@ export default function HomePublica() {
               <img
                 src="/post.png"
                 className="w-full rounded-xl object-cover mb-3"
+                alt="Imagem do post"
               />
 
               <p className="text-sm text-gray-600 line-clamp-2 mb-2">
@@ -110,6 +156,7 @@ export default function HomePublica() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
+
       {/* Footer */}
       <Footer />
     </div>
