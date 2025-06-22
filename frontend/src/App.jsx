@@ -16,15 +16,7 @@ import CodigoAutenticacao from './pages/CodigoAutenticacao';
 import RedefinirSenha from './pages/RedefinirSenha';
 
 function App() {
-  useEffect(() => {
-    if (!sessionStorage.getItem("fakeUsers")) {
-      seedFakeUsers();
-    }
-    if (!sessionStorage.getItem("fakeEmpresas")) {
-      seedFakeEmpresas();
-    }
-  }, []);
-
+  
   return (
     <BrowserRouter>
       <Layout>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function OpcoesPerfil() {
@@ -6,6 +6,7 @@ export default function OpcoesPerfil() {
   const API_URL = "http://localhost:3001";
   const [fotoPerfil, setFotoPerfil] = useState(`${API_URL}/images/default/foto-perfil-padrao-usuario-1.png`);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     
@@ -15,13 +16,17 @@ export default function OpcoesPerfil() {
     }
   }, []);
 
-  const handleVerPerfil = () => {
-    const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado")); 
-    if (usuarioLogado && usuarioLogado.id) {
-      navigate(`/usuario/${usuarioLogado.id}`); 
+  // Fecha o dropdown ao clicar fora
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
     }
-    setIsOpen(false); 
-  };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("usuarioLogado"); 
@@ -30,7 +35,7 @@ export default function OpcoesPerfil() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       {/* Foto de perfil (botão para abrir o dropdown) */}
       <img
         src={fotoPerfil} 
@@ -39,23 +44,29 @@ export default function OpcoesPerfil() {
         onClick={() => setIsOpen(!isOpen)}
       />
 
-      {/* Dropdown menu */}
+       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
-          <button
-            onClick={handleVerPerfil}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            Ver Perfil
-          </button>
+        <div className="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
           <button
             onClick={handleLogout}
-            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="w-full text-left px-6 py-3 text-red-500 hover:bg-red-50 font-medium transition rounded-xl"
           >
             Logout
           </button>
         </div>
       )}
+      {/* Animation */}
+      <style>
+        {`
+          .animate-fade-in {
+            animation: fadeInDropdown 0.18s ease;
+          }
+          @keyframes fadeInDropdown {
+            from { opacity: 0; transform: translateY(-10px);}
+            to { opacity: 1; transform: translateY(0);}
+          }
+        `}
+      </style>
     </div>
   );
 }

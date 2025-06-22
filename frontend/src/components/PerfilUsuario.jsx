@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
+import ModalCropImagem from "./ModalCropImagem";
 
 export default function PerfilUsuario({ usuario }) {
+  // Verifica se é o usuário logado
   const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
   const isUsuarioLogado = usuarioLogado?.id === usuario.id;
 
+  // Estados para edição de dados do usuário
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     nome: usuario.nome,
@@ -15,16 +18,21 @@ export default function PerfilUsuario({ usuario }) {
   });
   const [erro, setErro] = useState("");
   const [banner, setBanner] = useState(usuario.banner || "/user/banner-padrao-1.png");
+  const [perfilPublico, setPerfilPublico] = useState(true);
 
-  // Empresas seguidas
-  const empresas = usuario.empresasSeguindo || [];
+  // Estados para crop de imagem (delegados ao ModalCropImagem)
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropModalType, setCropModalType] = useState("foto"); // "foto" ou "banner"
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  // Atualiza campos do formulário de edição
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErro("");
   };
 
+  // Salva dados editados do usuário
   const handleSave = () => {
     if (!formData.nome.trim()) {
       setErro("O nome é obrigatório.");
@@ -38,98 +46,89 @@ export default function PerfilUsuario({ usuario }) {
       setErro("O endereço é obrigatório.");
       return;
     }
-
-    const updatedUsuario = { ...usuario, ...formData };
-    const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
-    const updatedUsuarios = usuarios.map((u) =>
-      u.id === updatedUsuario.id ? updatedUsuario : u
-    );
-
-    sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
-    sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-
     setIsEditing(false);
     window.location.reload();
   };
 
+  // Ao selecionar nova foto de perfil, abre o modal de crop
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        const updatedUsuario = { ...usuario, foto: reader.result };
-        const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
-        const updatedUsuarios = usuarios.map((u) =>
-          u.id === updatedUsuario.id ? updatedUsuario : u
-        );
-
-        sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
-        sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-        window.location.reload();
+        setSelectedImage(reader.result);
+        setCropModalType("foto");
+        setCropModalOpen(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Ao selecionar novo banner, abre o modal de crop
   const handleBannerChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        const updatedUsuario = { ...usuario, banner: reader.result };
-        const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
-        const updatedUsuarios = usuarios.map((u) =>
-          u.id === updatedUsuario.id ? updatedUsuario : u
-        );
-
-        sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
-        sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-        setBanner(reader.result);
+        setSelectedImage(reader.result);
+        setCropModalType("banner");
+        setCropModalOpen(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Salva imagem cortada (foto ou banner) recebida do ModalCropImagem
+  const handleCropSave = (croppedImg) => {
+    if (cropModalType === "foto") {
+      // Atualiza foto de perfil
+      const updatedUsuario = { ...usuario, foto: croppedImg };
+      const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
+      const updatedUsuarios = usuarios.map((u) =>
+        u.id === updatedUsuario.id ? updatedUsuario : u
+      );
+      sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
+      sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      setCropModalOpen(false);
+      window.location.reload();
+    } else if (cropModalType === "banner") {
+      // Atualiza banner
+      const updatedUsuario = { ...usuario, banner: croppedImg };
+      const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
+      const updatedUsuarios = usuarios.map((u) =>
+        u.id === updatedUsuario.id ? updatedUsuario : u
+      );
+      sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
+      sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      setBanner(croppedImg);
+      setCropModalOpen(false);
+      window.location.reload();
+    }
+  };
+
+  // Exibe telefone mascarado
+  const telefoneFormatado = usuario.telefone
+    ? usuario.telefone.replace(/(\d{2})\d{5}(\d{4})/, "($1) 9 ####-$2")
+    : "";
+
   return (
-    <div className="bg-white rounded-xl shadow p-0 overflow-hidden mb-6">
+    <div className="bg-white rounded-xl shadow p-0 overflow-hidden mb-6 relative w-full">
       {/* Banner */}
-      <div className="relative">
+      <div className="relative group w-full">
         <img
           src={banner}
           alt="Banner do perfil"
           className="w-full h-40 object-cover"
         />
-        {/* Foto de perfil  */}
-        <div className="absolute left-8 -bottom-16 z-10">
-          <img
-            src={usuario.foto || "/user/foto-perfil-padrao-1.png"}
-            alt="Foto de perfil"
-            className="w-32 h-32 rounded-full border-4 border-white shadow bg-white object-cover"
-          />
-          {isUsuarioLogado && (
-            <label
-              htmlFor="upload-photo"
-              className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-              style={{ width: "128px", height: "128px" }}
-            >
-              <img src="/icone-camera.png" alt="Alterar foto" className="w-8 h-8" />
-              <input
-                type="file"
-                id="upload-photo"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoChange}
-              />
-            </label>
-          )}
-        </div>
+        {/* Botão de editar banner, sempre visível em mobile */}
         {isUsuarioLogado && (
           <label
             htmlFor="upload-banner"
-            className="absolute top-2 right-2 bg-black/50 text-white px-3 py-1 rounded cursor-pointer hover:bg-black/70 flex items-center justify-center"
+            className="absolute top-2 right-2 rounded-full p-2 cursor-pointer  hover:bg-black transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-30 pointer-events-auto"
             title="Alterar banner"
+            style={{ zIndex: 30 }}
           >
-            <img src="/icone-camera.png" alt="Alterar banner" className="w-8 h-8" />
+            <img src="/icone-camera.png" alt="Alterar banner" className="w-6 h-6" />
             <input
               type="file"
               id="upload-banner"
@@ -139,58 +138,82 @@ export default function PerfilUsuario({ usuario }) {
             />
           </label>
         )}
-      </div>
-      {/* Card */}
-      <div className="flex flex-row justify-between items-end pt-20 pb-6 px-6 relative">
-        <div>
-          {isUsuarioLogado && !isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="absolute top-4 right-4"
-              title="Editar informações"
-            >
-              <img
-                src="/icone-pincel.png"
-                alt="Editar informações"
-                className="w-6 h-6 hover:opacity-80"
-              />
-            </button>
-          )}
-          <h2 className="text-3xl font-bold">{usuario.nome}</h2>
-          <p className="text-gray-600">Email: {usuario.email}</p>
-          <p className="text-gray-600">
-            Contato: {usuario.telefone.replace(/(\d{2})\d{5}(\d{4})/, "($1) 9*****-$2")}
-          </p>
-          <p className="text-gray-500">{getEstadoCompleto(usuario.endereco)}</p>
-        </div>
-        {/* Conexões */}
-        <div className="flex flex-col items-start justify-end min-w-[220px]">
-          <span className="font-bold text-2xl">Conexões</span>
-          <span className="text-gray-500 text-sm mt-1">Empresas que estou seguindo</span>
-          <div className="flex items-center -space-x-3 mt-3">
-            {empresas.slice(0, 3).map((empresa, idx) => (
-              <img
-                key={empresa.id}
-                src={empresa.logo}
-                alt={empresa.nome}
-                className="w-10 h-10 rounded-full border-2 border-white shadow"
-                style={{ zIndex: 10 - idx }}
-              />
-            ))}
-            <span className="ml-4 text-gray-700 font-bold text-lg">
-              {empresas.length > 3 ? `${empresas.length}+` : empresas.length}
-            </span>
-            <a
-              href="#"
-              className="text-green-700 text-sm font-semibold ml-6 hover:underline"
-              style={{ whiteSpace: "nowrap" }}
-            >
-              Ver todos
-            </a>
+        {/* Foto de perfil */}
+        <div className="absolute left-1/2 sm:left-8 -bottom-16 z-20 transform -translate-x-1/2 sm:translate-x-0">
+          <div className="relative">
+            <img
+              src={usuario.foto || "/user/foto-perfil-padrao-1.png"}
+              alt="Foto de perfil"
+              className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover"
+            />
+            {isUsuarioLogado && (
+              <label
+                htmlFor="upload-photo"
+                className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                style={{ width: "100%", height: "100%" }}
+              >
+                <img src="/icone-camera.png" alt="Alterar foto" className="w-8 h-8" />
+                <input
+                  type="file"
+                  id="upload-photo"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoChange}
+                />
+              </label>
+            )}
           </div>
         </div>
       </div>
-      {/* Modal de edição */}
+      {/* Card de dados do usuário */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end pt-24 sm:pt-20 pb-6 px-4 sm:px-6 relative gap-4 w-full">
+        {/* Botão de editar perfil */}
+        {isUsuarioLogado && !isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 z-30 group"
+            title="Editar informações"
+            style={{ zIndex: 30 }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6 text-green-600 group-hover:text-black transition"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+              />
+            </svg>
+          </button>
+        )}
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{usuario.nome}</h2>
+          <p className="text-gray-600 break-words">{getEstadoCompleto(usuario.estado)}</p>
+          <p className="text-gray-600 break-words">Email: {usuario.email}</p>
+          <p className="text-gray-600 break-words">Contato: {telefoneFormatado}</p>
+        </div>
+        {/* Botão Perfil público/privado */}
+        {isUsuarioLogado && (
+          <button
+            className="flex items-center gap-2 bg-green-200 hover:bg-green-300 text-green-900 font-semibold px-4 sm:px-6 py-2 rounded-lg shadow transition w-auto"
+            style={{ minWidth: 0, maxWidth: "100%" }}
+            onClick={() => setPerfilPublico((v) => !v)}
+          >
+            <img
+              src={perfilPublico ? "/eye.png" : "/eye-off.png"}
+              alt={perfilPublico ? "Perfil público" : "Perfil privado"}
+              className="w-5 h-5"
+            />
+            <span className="truncate">{perfilPublico ? "Perfil público" : "Perfil privado"}</span>
+          </button>
+        )}
+      </div>
+      {/* Modal de edição de dados */}
       {isEditing && (
         <FormEditarUsuario
           formData={formData}
@@ -200,6 +223,18 @@ export default function PerfilUsuario({ usuario }) {
           onClose={() => setIsEditing(false)}
         />
       )}
+      {/* Modal de crop para foto e banner */}
+      <ModalCropImagem
+        open={cropModalOpen}
+        image={selectedImage}
+        onClose={() => setCropModalOpen(false)}
+        onCropSave={handleCropSave}
+        aspect={cropModalType === "foto" ? 1 : 3.5}
+        cropShape={cropModalType === "foto" ? "round" : "rect"}
+        outputWidth={cropModalType === "foto" ? 160 : 1050}
+        outputHeight={cropModalType === "foto" ? 160 : 300}
+        label="Salvar"
+      />
     </div>
   );
 }

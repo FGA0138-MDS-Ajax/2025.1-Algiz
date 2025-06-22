@@ -29,13 +29,15 @@ function Login() {
         throw new Error(data.erro || "Erro ao fazer login.");
       }
 
-      sessionStorage.setItem("authToken", data.token);
-      sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
-      navigate("/home");
-    } catch (err) {
-      setErro(err.message);
-    }
-  };
+    // Armazena token e usuário no sessionStorage
+    sessionStorage.setItem("authToken", data.token);
+    sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+    navigate("/");
+  } catch (err) {
+    setErro(err.message);
+  }
+};
+
 
   return (
     <div

@@ -70,6 +70,7 @@ function NavbarLogado({ usuario }) {
         >
           Home
         </NavLink>
+        {/*
         <NavLink
           to="/Empresas"
           className={({ isActive }) =>
@@ -80,6 +81,7 @@ function NavbarLogado({ usuario }) {
         >
           Empresas
         </NavLink>
+        */}
         <NavLink
           to="/Sobrenos"
           className={({ isActive }) =>
