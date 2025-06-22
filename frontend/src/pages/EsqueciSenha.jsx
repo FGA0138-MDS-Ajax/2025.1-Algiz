@@ -1,17 +1,28 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import MyReCAPTCHA from "../components/MyReCAPTCHA"; // ✅ Import your component
 
 function EsqueciSenha() {
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
+  const [captchaValue, setCaptchaValue] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+
+  const handleCaptchaChange = (value) => {
+    setCaptchaValue(value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+
+    if (!captchaValue) {
+      setError("Por favor, confirme que você não é um robô.");
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:3001/api/usuarios/forgot-password", {
@@ -19,7 +30,7 @@ function EsqueciSenha() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email, captcha: captchaValue })
       });
 
       const data = await response.json();
@@ -29,17 +40,13 @@ function EsqueciSenha() {
       }
 
       setSuccessMessage("Um código foi enviado para o seu email.");
-      
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: "url('/bg.png')" }}
-    >
+    <div className="min-h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat relative">
       <div className="absolute inset-0 bg-green-700/5 z-0"></div>
       <form
         onSubmit={handleSubmit}
@@ -58,9 +65,7 @@ function EsqueciSenha() {
           />
         </Link>
 
-        <h2 className="text-xl font-bold text-white text-center mt-8">
-          Problemas para entrar?
-        </h2>
+        <h2 className="text-xl font-bold text-white text-center mt-8">Problemas para entrar?</h2>
 
         <p className="text-white text-sm text-center mt-2 mb-5">
           Insira o seu email e te enviaremos um código para você redefinir sua senha e voltar a acessar a sua conta.
@@ -79,6 +84,12 @@ function EsqueciSenha() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+        </div>
+
+        {/* ✅ Custom CAPTCHA Component */}
+        
+        <div className="mb-5 self-center">
+          <MyReCAPTCHA onChange={handleCaptchaChange} />
         </div>
 
         <button

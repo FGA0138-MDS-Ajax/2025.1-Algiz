@@ -63,8 +63,6 @@ function Sobrenos() {
             </p>
           </div>
         </div>
-
-
       </section>
       {/* Seção Valores */}
       <section className="container mx-auto px-6 py-16 pt-50 bg-green-50">
@@ -134,7 +132,7 @@ function Sobrenos() {
       </section>
 
       {/* Footer */}
-       <Footer />
+      <Footer />
     </div>
   )
 }
