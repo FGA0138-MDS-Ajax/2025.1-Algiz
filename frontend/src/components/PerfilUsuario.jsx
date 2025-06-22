@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalCropImagem from "./ModalCropImagem";
+import ModalFotoPerfil from "./ModalFotoPerfil";
 
-export default function PerfilUsuario({ usuario }) {
+export default function PerfilUsuario({
+  usuario,
+  isUsuarioLogado,
+  visualizandoPublico = false,
+  onToggleVisualizacaoPublica,
+}) {
   // Verifica se é o usuário logado
-  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-  const isUsuarioLogado = usuarioLogado?.id === usuario.id;
+  //const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  //const isUsuarioLogado = usuarioLogado?.id === usuario.id;
 
   // Estados para edição de dados do usuário
   const [isEditing, setIsEditing] = useState(false);
@@ -24,6 +30,11 @@ export default function PerfilUsuario({ usuario }) {
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropModalType, setCropModalType] = useState("foto"); // "foto" ou "banner"
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Estado para modal de foto de perfil
+  const [modalFotoOpen, setModalFotoOpen] = useState(false);
+  // Estado para modal de banner
+  const [modalBannerOpen, setModalBannerOpen] = useState(false);
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -106,6 +117,58 @@ export default function PerfilUsuario({ usuario }) {
     }
   };
 
+  // Trocar foto
+  const handleTrocarFoto = (file) => {
+    setModalFotoOpen(false);
+    // Aqui você pode chamar handlePhotoChange ou lógica de crop
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+      setCropModalType("foto");
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remover foto
+  const handleRemoverFoto = () => {
+    setModalFotoOpen(false);
+    // Atualize para a foto padrão
+    const updatedUsuario = { ...usuario, foto: "/user/foto-perfil-padrao-1.png" };
+    const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
+    const updatedUsuarios = usuarios.map((u) =>
+      u.id === updatedUsuario.id ? updatedUsuario : u
+    );
+    sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
+    sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+    window.location.reload();
+  };
+
+  // Trocar banner
+  const handleTrocarBanner = (file) => {
+    setModalBannerOpen(false);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+      setCropModalType("banner");
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remover banner
+  const handleRemoverBanner = () => {
+    setModalBannerOpen(false);
+    const updatedUsuario = { ...usuario, banner: "/user/banner-padrao-1.png" };
+    const usuarios = JSON.parse(sessionStorage.getItem("fakeUsers")) || [];
+    const updatedUsuarios = usuarios.map((u) =>
+      u.id === updatedUsuario.id ? updatedUsuario : u
+    );
+    sessionStorage.setItem("fakeUsers", JSON.stringify(updatedUsuarios));
+    sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+    window.location.reload();
+  };
+
   // Exibe telefone mascarado
   const telefoneFormatado = usuario.telefone
     ? usuario.telefone.replace(/(\d{2})\d{5}(\d{4})/, "($1) 9 ####-$2")
@@ -122,21 +185,15 @@ export default function PerfilUsuario({ usuario }) {
         />
         {/* Botão de editar banner, sempre visível em mobile */}
         {isUsuarioLogado && (
-          <label
-            htmlFor="upload-banner"
-            className="absolute top-2 right-2 rounded-full p-2 cursor-pointer  hover:bg-black transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-30 pointer-events-auto"
+          <button
+            type="button"
+            className="absolute top-2 right-2 rounded-full p-2 cursor-pointer hover:bg-black transition opacity-100 sm:opacity-0 sm:group-hover:opacity-100 z-30 pointer-events-auto"
             title="Alterar banner"
             style={{ zIndex: 30 }}
+            onClick={() => setModalBannerOpen(true)}
           >
             <img src="/icone-camera.png" alt="Alterar banner" className="w-6 h-6" />
-            <input
-              type="file"
-              id="upload-banner"
-              accept="image/*"
-              className="hidden"
-              onChange={handleBannerChange}
-            />
-          </label>
+          </button>
         )}
         {/* Foto de perfil */}
         <div className="absolute left-1/2 sm:left-8 -bottom-16 z-20 transform -translate-x-1/2 sm:translate-x-0">
@@ -147,20 +204,15 @@ export default function PerfilUsuario({ usuario }) {
               className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover"
             />
             {isUsuarioLogado && (
-              <label
-                htmlFor="upload-photo"
+              <button
+                type="button"
                 className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                 style={{ width: "100%", height: "100%" }}
+                onClick={() => setModalFotoOpen(true)}
+                aria-label="Editar foto de perfil"
               >
                 <img src="/icone-camera.png" alt="Alterar foto" className="w-8 h-8" />
-                <input
-                  type="file"
-                  id="upload-photo"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handlePhotoChange}
-                />
-              </label>
+              </button>
             )}
           </div>
         </div>
@@ -197,19 +249,20 @@ export default function PerfilUsuario({ usuario }) {
           <p className="text-gray-600 break-words">Email: {usuario.email}</p>
           <p className="text-gray-600 break-words">Contato: {telefoneFormatado}</p>
         </div>
-        {/* Botão Perfil público/privado */}
-        {isUsuarioLogado && (
+        {/* Botão Visualizar como público */}
+        {isUsuarioLogado && !visualizandoPublico && (
           <button
             className="flex items-center gap-2 bg-green-200 hover:bg-green-300 text-green-900 font-semibold px-4 sm:px-6 py-2 rounded-lg shadow transition w-auto"
             style={{ minWidth: 0, maxWidth: "100%" }}
-            onClick={() => setPerfilPublico((v) => !v)}
+            onClick={onToggleVisualizacaoPublica}
+            title="Visualizar como público"
           >
             <img
-              src={perfilPublico ? "/eye.png" : "/eye-off.png"}
-              alt={perfilPublico ? "Perfil público" : "Perfil privado"}
+              src="/eye.png"
+              alt="Visualizar como público"
               className="w-5 h-5"
             />
-            <span className="truncate">{perfilPublico ? "Perfil público" : "Perfil privado"}</span>
+            <span className="truncate">Perfil público</span>
           </button>
         )}
       </div>
@@ -234,6 +287,24 @@ export default function PerfilUsuario({ usuario }) {
         outputWidth={cropModalType === "foto" ? 160 : 1050}
         outputHeight={cropModalType === "foto" ? 160 : 300}
         label="Salvar"
+      />
+      {/* Modal para trocar/remover foto de perfil */}
+      <ModalFotoPerfil
+        open={modalFotoOpen}
+        onClose={() => setModalFotoOpen(false)}
+        onTrocar={handleTrocarFoto}
+        onRemover={handleRemoverFoto}
+        fotoAtual={usuario.foto || "/user/foto-perfil-padrao-1.png"}
+        tipo="foto"
+      />
+      {/* Modal para trocar/remover banner */}
+      <ModalFotoPerfil
+        open={modalBannerOpen}
+        onClose={() => setModalBannerOpen(false)}
+        onTrocar={handleTrocarBanner}
+        onRemover={handleRemoverBanner}
+        fotoAtual={banner}
+        tipo="banner"
       />
     </div>
   );
