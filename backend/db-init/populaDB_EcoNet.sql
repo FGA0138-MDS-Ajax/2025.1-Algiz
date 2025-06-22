@@ -132,5 +132,12 @@ INSERT INTO CONTRATO (cnpjFornecedor, cnpjReceptor, tituloContrato, descricao, a
 ('98.765.432/0001-02', '45.678.901/0001-03', 'Parceria Logística', 'Acordo de apoio logístico.', 'contrato4.pdf'),
 ('65.432.198/0001-04', '78.901.234/0001-05', 'Aço e Plástico', 'Integração na cadeia de reciclagem.', 'contrato5.pdf');
 
+-- Áreas de atuações
+INSERT INTO AREA_ATUACAO (nomeAreaAtuacao) VALUES
+('Alimentícia'),
+('Indústria de bebidas'),
+('Setor de papel'),
+('Sustentabilidade'),
+
 -- Confirma inserções
 COMMIT;
