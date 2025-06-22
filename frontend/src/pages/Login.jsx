@@ -15,7 +15,7 @@ function Login() {
     setErro("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/usuarios/login", {
+      const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -35,6 +35,7 @@ function Login() {
     navigate("/");
   } catch (err) {
     setErro(err.message);
+    throw new Error("Erro inesperado no servidor. Verifique o backend.");
   }
 };
 

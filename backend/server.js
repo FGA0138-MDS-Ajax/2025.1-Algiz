@@ -47,6 +47,32 @@ async function startServer() {
   }));
 
   app.use(express.json());
+  
+  app.use((req, res, next) => {
+  if (req.headers['content-type']?.includes('application/json') && !req.body) {
+      let body = '';
+      req.on('data', chunk => (body += chunk));
+      req.on('end', () => {
+        try {
+          req.body = JSON.parse(body);
+          next();
+        } catch {
+          req.body = {};
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  });
+
+  app.use((req, res, next) => {
+    // console.log('📥 Incoming request:', req.method, req.url);
+    // console.log('📦 Content-Type:', req.headers['content-type']);
+    next();
+  });
+  // ✅ Usa as rotas definidas no user.routes.js
+  app.use('/api', userRoutes);
 
   app.use(
     session({
@@ -61,9 +87,6 @@ async function startServer() {
    })
   );
   await sessionStore.sync();
-
-  // ✅ Usa as rotas definidas no user.routes.js
-  app.use('/api/usuarios', userRoutes);
 
   // AdminJS
   app.use(admin.options.rootPath, adminRouter);

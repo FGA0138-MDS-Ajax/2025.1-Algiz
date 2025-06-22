@@ -1,14 +1,22 @@
+// backend/src/api/routes/user.routes.js
 import express from 'express';
 import userController from '../components/users/user.controller.js';
 import verifyToken from '../../middleware/auth.middleware.js';
-import db from '../config/db.js'; // Now imports the connection pool
+import db from '../config/db.js';
 
 const router = express.Router();
 
-router.post('/register', userController.registerUser); // Remove verifyToken middleware
-router.get('/:id', verifyToken, userController.getUserProfile); // Keep protected
+// 📢 PUBLIC ROUTES (no token needed)
+router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
+router.post('/usuarios/forgot-password', userController.forgotPassword);
+router.post('/usuarios/verify-code', userController.verifyResetCode);
+router.post('/usuarios/reset-password', userController.resetPassword);
 
+// 🔐 PROTECTED ROUTES (need valid token)
+router.get('/:id', verifyToken, userController.getUserProfile);
+
+// 🔧 DEBUG/UTILITY: List all users (keep protected if needed)
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM USUARIO');
@@ -20,3 +28,4 @@ router.get('/', async (req, res) => {
 });
 
 export default router;
+

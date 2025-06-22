@@ -1,13 +1,15 @@
 CREATE DATABASE IF NOT EXISTS EcoNet_DB;
 
 CREATE TABLE IF NOT EXISTS USUARIO (
-    idUsuario       INT         NOT NULL    AUTO_INCREMENT,
-    emailUsuario    VARCHAR(255)NOT NULL    UNIQUE,
-    senha           VARCHAR(255)NOT NULL,
-    fotoPerfil      VARCHAR(255)    NULL,
-    bannerPerfil    VARCHAR(255)    NULL,
+    idUsuario           INT             NOT NULL    AUTO_INCREMENT,
+    emailUsuario        VARCHAR(255)    NOT NULL    UNIQUE,
+    senha               VARCHAR(255)    NOT NULL,
+    fotoPerfil          VARCHAR(255),
+    bannerPerfil        VARCHAR(255),
+    reset_code          VARCHAR(6),
+    reset_code_expires_at DATETIME NULL,
     PRIMARY KEY (idUsuario)
-)ENGINE=INNODB;
+) ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS FISICO (
     cpfFisico       VARCHAR(14)     NOT NULL,
