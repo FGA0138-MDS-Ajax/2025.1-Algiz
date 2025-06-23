@@ -22,10 +22,10 @@ dotenv.config();
 
 console.log('🔍 Verificando serviços opcionais:');
 if (!process.env.RESEND_API_KEY) {
-  console.warn('⚠️ Serviço de email DESATIVADO - RESEND_API_KEY não configurada');
+  console.warn('⚠️  Serviço de email DESATIVADO - RESEND_API_KEY não configurada');
 }
 if (!process.env.RECAPTCHA_SECRET_KEY) {
-  console.warn('⚠️ reCAPTCHA DESATIVADO - RECAPTCHA_SECRET_KEY não configurada');
+  console.warn('⚠️  reCAPTCHA DESATIVADO - RECAPTCHA_SECRET_KEY não configurada');
 }
 const app = express();
 const PORT = 3001;

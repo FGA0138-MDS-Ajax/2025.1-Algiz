@@ -85,7 +85,7 @@ export const forgotPassword = async (req, res) => {
         return res.status(403).json({ message: 'Falha na verificação do reCAPTCHA' });
       }
     } else {
-      console.warn('⚠️ reCAPTCHA não verificado (serviço desativado)');
+      console.warn('⚠️  reCAPTCHA não verificado (serviço desativado)');
     }
 
     const user = await userService.getUserByEmail(email);
@@ -104,7 +104,7 @@ export const forgotPassword = async (req, res) => {
     } else {
       // Modo fallback - retorna o código diretamente (apenas para desenvolvimento)
       if (process.env.NODE_ENV === 'development') {
-        console.warn(`⚠️ Serviço de email desativado - Código de recuperação: ${code}`);
+        console.warn(`⚠️  Serviço de email desativado - Código de recuperação: ${code}`);
         return res.status(200).json({ 
           message: "Serviço de email desativado - Código gerado (apenas para desenvolvimento)",
           code: code
