@@ -5,56 +5,40 @@ sidebar_label: "23/06/2025"
 # Ata de Reunião
 
 **Data:** 23/06/2025  
-**Horário de Início:** [Hora de Início]  
-**Horário de Término:** [Hora de Término]  
-**Duração:**  [Tempo de duração]
+**Horário de Início:** 20:12
+**Horário de Término:** 20:34
+**Duração:**  22 minutos
 **Local:** Microsoft Teams
 
 ## Participantes
-1. Ana Beatriz Cunha Wirthmann
-2. Arthur de Lima Sobreira
-3. Caua Nicolas Pereira de Oliveira
-4. Diogo Oliveira Ferreira
-5. Gabriel Augusto Vilarinho Viana Rocha
-6. Gabriel Pereira da Silva
-7. João Victor Sousa Soares e Silva
-8. João Pedro Sampaio Maciel
-9. Julia Oliveira Patricio
-10. Mariana Ribeiro Santana Gonzaga
-11. Rafael Siqueira Soares
-12. Tiago Scherrer Tavares de Lyra
+1. Arthur de Lima Sobreira
+2. Caua Nicolas Pereira de Oliveira
+3. Diogo Oliveira Ferreira
+4. Gabriel Augusto Vilarinho Viana Rocha
+5. Gabriel Pereira da Silva
+6. João Victor Sousa Soares e Silva
+7. João Pedro Sampaio Maciel
+8. Rafael Siqueira Soares
+9. Tiago Scherrer Tavares de Lyra
 
 ## Objetivos
-[Espaço para quaisquer observações adicionais]
+Continuidade da Sprint passada e atualizações sobre o progresso da issues e funcionalidades
 
 ## Discussões e Decisões
 
-### 1. [Item 1]
+### 1. Discussão sobre Issues da Sprint Atual
 **Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
+- Acompanhamento do progresso da Issue #59 -> Conectar página de perfil de usuários 
+- Discussão sobre a função de senhas -> Falta de verificação de senhas 
+- Acompanhamento de algumas issues e reorganização de programadores 
 **Decisões:**
-- [Descrição da decisão tomada]
+- Marcar desenvolvedores nas issues e relembrar a importância dessas funcionalidades na reunião
 
 **Responsáveis:**
-- [Nome dos responsáveis pela ação]
+- Gabriel Augusto Vilarinho Viana Rocha
 
-### 2. [Item 2]
-**Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
-
-**Decisões:**
-- [Descrição da decisão tomada]
-
-**Responsáveis:**
-- [Nome dos responsáveis pela ação]
 
 ## Próxima Reunião
 **Data:** 25/06/2025  
 **Local:** Microsoft Teams  
 **Horário:** 14:00
-
-## Observações
-[Espaço para quaisquer observações adicionais]
