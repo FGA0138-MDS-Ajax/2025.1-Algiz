@@ -20,6 +20,16 @@ const Usuario = (sequelize) => sequelize.define('Usuario', {
   },
   fotoPerfil: { type: DataTypes.STRING, allowNull: true },
   bannerPerfil: { type: DataTypes.STRING, allowNull: true },
+  reset_code: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'reset_code'
+  },
+  reset_code_expires_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'reset_code_expires_at'
+  }
 }, {
   tableName: 'USUARIO',
   freezeTableName: true,

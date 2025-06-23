@@ -30,16 +30,35 @@ function EsqueciSenha() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, captcha: captchaValue })
+        body: JSON.stringify({ email, recaptchaToken: captchaValue })
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("Resposta inválida do servidor.");
+      }
 
       if (!response.ok) {
-        throw new Error(data.erro || "Erro ao enviar o código.");
+        // Verifica se é o caso de serviço indisponível (status 503)
+        if (response.status === 503) {
+          throw new Error("Serviço de recuperação de senha indisponível no momento. Por favor, tente novamente mais tarde.");
+        }
+        throw new Error(data.message || "Erro ao enviar o código.");
       }
 
       setSuccessMessage("Um código foi enviado para o seu email.");
+
+      // Redirecionar para próxima página
+      navigate("/codigo-autenticacao", {
+        state: { email },
+      });
+      {email && (
+        <p className="text-white text-sm text-center mb-4">
+          Código enviado para: <strong>{email}</strong>
+        </p>
+      )}
     } catch (err) {
       setError(err.message);
     }

@@ -1,5 +1,13 @@
 // backend/src/api/components/users/user.controller.js
 import userService from './user.service.js';  // Make sure user.service.js also uses ES Modules
+import * as hashUtil from '../../utils/hash.util.js';
+import axios from 'axios';
+import { sendCodeEmail, isEmailServiceEnabled } from '../../utils/email.util.js';  // Ensure this path is correct
+
+const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY;
+if (!recaptchaEnabled) {
+  console.warn('⚠️ reCAPTCHA desativado - RECAPTCHA_SECRET_KEY não configurada');
+}
 
 async function registerUser(req, res) {
     try {
@@ -56,9 +64,125 @@ async function getUserProfile(req, res) {
     }
 }
 
+export const forgotPassword = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ message: 'Corpo da requisição ausente ou inválido.' });
+  }
+  
+  const { email, recaptchaToken } = req.body;
+  
+  try {
+    // Verificação opcional de reCAPTCHA
+    if (recaptchaEnabled) {
+      const { data } = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken
+        }
+      });
+
+      if (!data.success) {
+        return res.status(403).json({ message: 'Falha na verificação do reCAPTCHA' });
+      }
+    } else {
+      console.warn('⚠️  reCAPTCHA não verificado (serviço desativado)');
+    }
+
+    const user = await userService.getUserByEmail(email);
+    if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    await userService.saveResetCode(user.idUsuario, code);
+    
+    // Verifica se o serviço de email está disponível antes de tentar enviar
+    if (isEmailServiceEnabled()) {
+      await sendCodeEmail(email, code);
+      return res.status(200).json({ 
+        message: "Código enviado com sucesso!",
+        code: process.env.NODE_ENV === 'development' ? code : undefined // Só retorna o código em desenvolvimento
+      });
+    } else {
+      // Modo fallback - retorna o código diretamente (apenas para desenvolvimento)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`⚠️  Serviço de email desativado - Código de recuperação: ${code}`);
+        return res.status(200).json({ 
+          message: "Serviço de email desativado - Código gerado (apenas para desenvolvimento)",
+          code: code
+        });
+      } else {
+        return res.status(503).json({ 
+          message: "Serviço de recuperação de senha temporariamente indisponível",
+          serviceUnavailable: true // Flag adicional para identificar esse caso
+        });
+      }
+    }
+  } catch (err) {
+    console.error("❌ Erro completo no forgotPassword:", err);
+    res.status(500).json({ message: "Erro ao processar solicitação", error: err.message });
+  }
+};
+
+// Verifica se o código enviado corresponde ao código armazenado no usuário
+export const verifyResetCode = async (req, res) => {
+  const { email, code } = req.body;
+
+  try {
+    const usuario = await userService.getUserByEmail(email);
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    if (usuario.reset_code !== code) {
+      return res.status(400).json({ message: 'Código inválido.' });
+    }
+
+    const now = new Date();
+    const expiresAt = new Date(usuario.reset_code_expires_at);
+    if (expiresAt < now) {
+      return res.status(410).json({ message: 'Código expirado.' });
+    }
+
+    return res.status(200).json({ message: 'Código válido.' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao verificar o código.', error: error.message });
+  }
+};
+
+// Atualiza a senha do usuário após validação
+export const resetPassword = async (req, res) => {
+  const { email, newPassword, code } = req.body;
+
+  try {
+    const usuario = await userService.getUserByEmail(email);
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    if (usuario.reset_code !== code) {
+      return res.status(400).json({ message: 'Código inválido.' });
+    }
+
+    const hashedPassword = await hashUtil.hashPassword(newPassword);
+    await usuario.update({
+        senha: hashedPassword,
+        reset_code: null,
+        reset_code_expires_at: null
+    });
+
+    return res.status(200).json({ message: 'Senha redefinida com sucesso.' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro ao redefinir senha.', error: error.message });
+  }
+};
+
+
+
 // ✅ Use ES Modules export (instead of module.exports)
 export default {
     registerUser,
     loginUser,
-    getUserProfile
+    getUserProfile,
+    forgotPassword,
+    verifyResetCode,
+    resetPassword
 };

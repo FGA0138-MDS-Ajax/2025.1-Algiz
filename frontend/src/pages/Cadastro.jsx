@@ -44,7 +44,7 @@ export default function Cadastro() {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/usuarios/register',
+        'http://localhost:3001/api/register',
         {
           nome: form.nome,
           sobrenome: form.sobrenome,

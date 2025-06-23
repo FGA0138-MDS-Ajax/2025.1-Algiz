@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 function RedefinirSenha() {
@@ -11,8 +11,18 @@ function RedefinirSenha() {
   const [verConfirmarSenha, setVerConfirmarSenha] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = async (e) => {
+  const email = location.state?.email;
+  const code = location.state?.code;
+
+  useEffect(() => {
+    if (!email || !code) {
+      navigate("/login");
+    }
+  }, [email, code, navigate]);
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setErro("");
 
@@ -21,10 +31,29 @@ function RedefinirSenha() {
       return;
     }
 
-    // Em breve: lógica para enviar nova senha ao backend
+    try {
+      const response = await fetch("http://localhost:3001/api/usuarios/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          code,
+          newPassword: novaSenha
+        })
+      });
 
-    console.log("Nova senha definida:", novaSenha);
-    navigate("/login"); // Redireciona após redefinir
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Erro ao redefinir senha.");
+      }
+
+      navigate("/login");
+    } catch (err) {
+      setErro(err.message);
+    }
   };
 
   return (

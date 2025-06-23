@@ -2,9 +2,10 @@ import db from '../../config/db.js';
 import { hashPassword } from '../../utils/hash.util.js';
 //import { cpf, cnpj } from 'cpf-cnpj-validator';
 import jwt from 'jsonwebtoken';
+import models from '../../../../models/index.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
 import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
-
+const { Usuario } = models;
 async function createUser(userData) {
     const { nome, sobrenome, email, senha, telefone, estado, sexo, dtNascimento, cpfCnpj } = userData;
     const erros = [];
@@ -239,8 +240,32 @@ async function authenticateUser(email, password) {
     }
 }
 
+export const getUserByEmail = async (email) => {
+  return await Usuario.findOne({ where: { emailUsuario: email } });
+};
+
+export const updateUserPasswordAndClearCode = async (email, hashedPassword) => {
+  await Usuario.update(
+    { senha: hashedPassword, reset_code: null },
+    { where: { emailUsuario: email } }
+  );
+};
+
+export async function saveResetCode(userId, code) {
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
+  await db.query(
+    'UPDATE USUARIO SET reset_code = ?, reset_code_expires_at = ? WHERE idUsuario = ?',
+    [code, expiresAt, userId]
+  );
+}
+
+
+
 export default {
     createUser,
     findUserProfileById,
-    authenticateUser
+    authenticateUser,
+    getUserByEmail,
+    updateUserPasswordAndClearCode,
+    saveResetCode
 };
