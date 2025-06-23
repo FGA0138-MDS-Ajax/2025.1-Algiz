@@ -2,7 +2,12 @@
 import userService from './user.service.js';  // Make sure user.service.js also uses ES Modules
 import * as hashUtil from '../../utils/hash.util.js';
 import axios from 'axios';
-import { sendCodeEmail } from '../../utils/email.util.js';  // Ensure this path is correct
+import { sendCodeEmail, isEmailServiceEnabled } from '../../utils/email.util.js';  // Ensure this path is correct
+
+const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY;
+if (!recaptchaEnabled) {
+  console.warn('⚠️ reCAPTCHA desativado - RECAPTCHA_SECRET_KEY não configurada');
+}
 
 async function registerUser(req, res) {
     try {
@@ -59,35 +64,61 @@ async function getUserProfile(req, res) {
     }
 }
 
-
 export const forgotPassword = async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ message: 'Corpo da requisição ausente ou inválido.' });
   }
+  
   const { email, recaptchaToken } = req.body;
+  
   try {
-    // 🔒 Verify reCAPTCHA with Google
-    const { data } = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
-      params: {
-        secret: process.env.RECAPTCHA_SECRET_KEY,
-        response: recaptchaToken
-      }
-    });
+    // Verificação opcional de reCAPTCHA
+    if (recaptchaEnabled) {
+      const { data } = await axios.post(`https://www.google.com/recaptcha/api/siteverify`, null, {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: recaptchaToken
+        }
+      });
 
-    if (!data.success) {
-      return res.status(403).json({ message: 'Falha na verificação do reCAPTCHA' });
+      if (!data.success) {
+        return res.status(403).json({ message: 'Falha na verificação do reCAPTCHA' });
+      }
+    } else {
+      console.warn('⚠️ reCAPTCHA não verificado (serviço desativado)');
     }
 
     const user = await userService.getUserByEmail(email);
     if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
 
-    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
     await userService.saveResetCode(user.idUsuario, code);
-    await sendCodeEmail(email, code);
-    res.status(200).json({ message: "Código enviado com sucesso!" });
+    
+    // Verifica se o serviço de email está disponível antes de tentar enviar
+    if (isEmailServiceEnabled()) {
+      await sendCodeEmail(email, code);
+      return res.status(200).json({ 
+        message: "Código enviado com sucesso!",
+        code: process.env.NODE_ENV === 'development' ? code : undefined // Só retorna o código em desenvolvimento
+      });
+    } else {
+      // Modo fallback - retorna o código diretamente (apenas para desenvolvimento)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`⚠️ Serviço de email desativado - Código de recuperação: ${code}`);
+        return res.status(200).json({ 
+          message: "Serviço de email desativado - Código gerado (apenas para desenvolvimento)",
+          code: code
+        });
+      } else {
+        return res.status(503).json({ 
+          message: "Serviço de recuperação de senha temporariamente indisponível",
+          serviceUnavailable: true // Flag adicional para identificar esse caso
+        });
+      }
+    }
   } catch (err) {
     console.error("❌ Erro completo no forgotPassword:", err);
-    res.status(500).json({ message: "Erro ao enviar o código", error: err.message });
+    res.status(500).json({ message: "Erro ao processar solicitação", error: err.message });
   }
 };
 
