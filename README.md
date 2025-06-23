@@ -46,6 +46,31 @@ Copie `.env.example` para `.env` na pasta backend:
 cd backend
 cp .env.example .env
 ```
+### Configuração de chaves opcionais  
+O projeto possui funcionalidades que utilizam serviços externos opcionais. Você pode configurá-los editando o arquivo `.env`:
+
+```bash
+nano .env  # ou use seu editor preferido
+```
+### Chaves necessárias para funcionalidades completas:
+1. Resend API Key (para envio de emails):
+    - Necessário para: Recuperação de senha via email
+    - Como obter: Crie uma conta em [Resend](Resend.com)
+    - Adicione no `.env`:
+      ```bash
+      RESEND_API_KEY=sua_chave_aqui
+      ```
+    
+2. reCAPTCHA Secret Key (para verificação de humanos):
+    - Necessário para: Proteção contra bots no formulário de recuperação de senha
+    - Como obter: Registre seu site em [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
+    - Adicione no `.env`:
+      ```bash
+      RECAPTCHA_SECRET_KEY=sua_chave_aqui
+      ```
+### Modo de operação sem chaves:
+O projeto pode rodar sem essas chaves, com as seguintes limitações:  
+A funcionalidade de recuperação de senha mostrará "Serviço indisponível"  
 
 ---
 ## Passo 3: Instalar dependências
