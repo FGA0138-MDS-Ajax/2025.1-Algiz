@@ -55,7 +55,7 @@ nano .env  # ou use seu editor preferido
 ### Chaves necessárias para funcionalidades completas:
 1. Resend API Key (para envio de emails):
     - Necessário para: Recuperação de senha via email
-    - Como obter: Crie uma conta em [Resend](Resend.com)
+    - Como obter: Obtenha a chave com o `manager` do projeto ou crie uma conta em [Resend](Resend.com)
     - Adicione no `.env`:
       ```bash
       RESEND_API_KEY=sua_chave_aqui
@@ -63,7 +63,7 @@ nano .env  # ou use seu editor preferido
     
 2. reCAPTCHA Secret Key (para verificação de humanos):
     - Necessário para: Proteção contra bots no formulário de recuperação de senha
-    - Como obter: Registre seu site em [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
+    - Como obter:Obtenha a chave com o `manager` do projeto ou registre seu site em [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
     - Adicione no `.env`:
       ```bash
       RECAPTCHA_SECRET_KEY=sua_chave_aqui
