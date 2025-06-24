@@ -14,10 +14,10 @@ router.post('/usuarios/verify-code', userController.verifyResetCode);
 router.post('/usuarios/reset-password', userController.resetPassword);
 
 // 🔐 PROTECTED ROUTES (need valid token)
-router.get('/:id', verifyToken, userController.getUserProfile);
+router.get('/usuario/:id', verifyToken, userController.getUserProfile);
 
 // 🔧 DEBUG/UTILITY: List all users (keep protected if needed)
-router.get('/', async (req, res) => {
+router.get('/usuarios', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM USUARIO');
     res.json(rows);

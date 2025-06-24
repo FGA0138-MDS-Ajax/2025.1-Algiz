@@ -25,7 +25,7 @@ export default function PaginaUsuario() {
       try {
         const token = sessionStorage.getItem("authToken");
         const res = await fetch(
-          `http://localhost:3001/api/usuarios/${idUsuario}`,
+          `http://localhost:3001/api/usuario/${idUsuario}`,
           {
             headers: {
               "Content-Type": "application/json",

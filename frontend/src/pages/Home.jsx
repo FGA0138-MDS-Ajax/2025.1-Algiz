@@ -23,7 +23,7 @@ export default function HomePublica() {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
-            `http://localhost:3001/api/usuarios/${usuarioLogado.id}`,
+            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
             {
               headers: {
                 "Content-Type": "application/json",
