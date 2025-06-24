@@ -2,7 +2,7 @@ import db from '../../config/db.js';
 import { hashPassword } from '../../utils/hash.util.js';
 //import { cpf, cnpj } from 'cpf-cnpj-validator';
 import jwt from 'jsonwebtoken';
-import models from '../../../../models/index.js';
+import models from '../../../models/index.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
 import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
 const { Usuario } = models;
