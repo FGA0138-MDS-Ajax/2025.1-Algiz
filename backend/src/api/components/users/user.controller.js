@@ -64,7 +64,6 @@ async function getUserProfile(req, res) {
     }
 }
 
-<<<<<<< HEAD
 export const forgotPassword = async (req, res) => {
   if (!req.body) {
     return res.status(400).json({ message: 'Corpo da requisição ausente ou inválido.' });
@@ -177,48 +176,13 @@ export const resetPassword = async (req, res) => {
 };
 
 
-=======
-// FUNÇÃO PARA REGISTRAR EMPRESA --------------------------------
-async function registerCompany(req, res) {
-    try {
-        const companyData = req.body;
-        
-        const newCompany = await userService.criarEmpresa(companyData);
-        return res.status(201).json({
-            mensagem: "Empresa cadastrada com sucesso!",
-            empresaId: newCompany.id
-        });
-    } catch (error) {
-        // Tratamento específico para CNPJ duplicado
-        if (error.message === 'CNPJ já cadastrado') { 
-            return res.status(409).json({ erro: error.message });
-        }
-        // Tratamento para erros de validação
-        if (error.name === 'ValidationError') { 
-            return res.status(400).json({ 
-                erro: "Erro de validação", 
-                detalhes: error.details 
-            });
-        }
-        // Erro genérico do servidor
-        console.error("Erro no controller ao registrar empresa:", error);
-        return res.status(500).json({ 
-            erro: "Ocorreu um erro interno no servidor." 
-        });
-    }
-}
->>>>>>> a43021b2f420bb338d93a1b3050a9ff42a169904
 
 // ✅ Use ES Modules export (instead of module.exports)
 export default {
     registerUser,
     loginUser,
     getUserProfile,
-<<<<<<< HEAD
     forgotPassword,
     verifyResetCode,
     resetPassword
-=======
-    registerCompany
->>>>>>> a43021b2f420bb338d93a1b3050a9ff42a169904
 };

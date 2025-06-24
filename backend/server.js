@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
 
+
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
 import models, { sequelize } from './models/index.js';
 import { admin, adminRouter } from './admin.js';
