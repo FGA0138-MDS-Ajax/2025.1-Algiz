@@ -6,7 +6,7 @@ import db from '../config/db.js';
 
 const router = express.Router();
 
-// 📢 PUBLIC ROUTES (no token needed)
+// 📢 PUBLIC POST ROUTES (no token needed)
 router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 router.post('/usuarios/forgot-password', userController.forgotPassword);
@@ -26,6 +26,9 @@ router.get('/usuarios', async (req, res) => {
     res.status(500).json({ error: 'Internal server error fetching users' });
   }
 });
+
+// 📢 PUBLIC GET ROUTES (no token needed)
+router.get('/usuarios/:id/publico', userController.getPublicUserProfile);
 
 export default router;
 

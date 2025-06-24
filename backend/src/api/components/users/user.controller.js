@@ -175,6 +175,33 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+async function getPublicUserProfile(req, res) {
+    try {
+        const userId = req.params.id;
+        const fullProfile = await userService.findUserProfileById(userId);
+
+        if (!fullProfile) {
+            return res.status(404).json({ erro: "Usuário não encontrado." });
+        }
+
+        // Seleciona apenas os campos públicos
+        const publicProfile = {
+            id: fullProfile.id,
+            nome: fullProfile.nome,
+            sobrenome: fullProfile.sobrenome,
+            fotoPerfil: fullProfile.fotoPerfil,
+            bannerPerfil: fullProfile.bannerPerfil,
+            cargo: fullProfile.cargo,
+            empresa_associada: fullProfile.empresa_associada,
+            empresas_seguidas: fullProfile.empresas_seguidas
+        };
+
+        return res.json(publicProfile);
+    } catch (error) {
+        console.error("Erro ao buscar perfil público:", error);
+        res.status(500).json({ erro: "Erro interno ao buscar perfil público." });
+    }
+}
 
 
 // ✅ Use ES Modules export (instead of module.exports)
@@ -184,5 +211,6 @@ export default {
     getUserProfile,
     forgotPassword,
     verifyResetCode,
-    resetPassword
+    resetPassword,
+    getPublicUserProfile
 };
