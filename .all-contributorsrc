@@ -54,6 +54,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "bielg7",
+      "name": "Gabriel Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150948362?v=4",
+      "profile": "https://github.com/bielg7",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
