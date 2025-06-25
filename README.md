@@ -1,6 +1,6 @@
 # EcoNet
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Node.js, React e JavaScript. Neste arquivo README, você encontrará um guia passo a passo para executar o projeto em seu ambiente local.
@@ -228,6 +228,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jopesmp"><img src="https://avatars.githubusercontent.com/u/113356974?v=4?s=100" width="100px;" alt="João Pedro Sampaio"/><br /><sub><b>João Pedro Sampaio</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=jopesmp" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/juliapat18"><img src="https://avatars.githubusercontent.com/u/204951019?v=4?s=100" width="100px;" alt="juliapat18"/><br /><sub><b>juliapat18</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=juliapat18" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
