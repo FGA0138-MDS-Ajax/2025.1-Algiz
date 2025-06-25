@@ -1,6 +1,3 @@
-// src/api/utils/validation.util.js
-import { cpf, cnpj } from 'cpf-cnpj-validator';
-
 export function isValidDocument(documento) {
   if (!documento || typeof documento !== 'string') return false;
 

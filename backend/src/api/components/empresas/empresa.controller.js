@@ -1,11 +1,11 @@
-import enterpriseService from './empresa.service.js';
+import empresaService from './empresa.service.js';
 
 export async function registerEmpresa(req, res) {
      try {
          const idUsuario = req.user.id;  
          const dadosEmpresa = req.body;
 
-         const novaEmpresa = await enterpriseService.createEmpresa(idUsuario, dadosEmpresa);
+         const novaEmpresa = await empresaService.createEmpresa(idUsuario, dadosEmpresa);
 
          res.status(201).json({
              mensagem: "Empresa cadastrada com sucesso!",
@@ -23,7 +23,7 @@ export async function registerEmpresa(req, res) {
 
  export async function getAllEmpresas(req, res) {
      try {
-         const empresas = await enterpriseService.findAllEmpresas();
+         const empresas = await empresaService.findAllEmpresas();
          res.status(200).json(empresas);
      } catch (error) {
          console.error("Erro no controller ao buscar empresas:", error);
@@ -35,7 +35,7 @@ export async function registerEmpresa(req, res) {
  export async function getEmpresaById(req, res) {
      try {
          const { cnpj } = req.params;
-         const empresa = await enterpriseService.findEmpresaByPk(cnpj);
+         const empresa = await empresaService.findEmpresaByPk(cnpj);
 
          if (empresa) {
              res.status(200).json(empresa);

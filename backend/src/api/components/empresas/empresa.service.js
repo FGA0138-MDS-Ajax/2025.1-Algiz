@@ -1,8 +1,30 @@
 import { Juridico } from '../../../models/index.js';
 
-import { isValidDocument } from '../../utils/validation.util.js';
+// --- Lógica de Validação (agora dentro do service para evitar problemas de import) ---
+function validateCNPJ(cnpj) {
+  if (typeof cnpj !== 'string') return false;
+  const cnpjLimpo = cnpj.replace(/\D/g, '');
+  if (cnpjLimpo.length !== 14 || /^(\d)\1{13}$/.test(cnpjLimpo)) return false;
+  let tamanho = 12, soma = 0, pos = 5;
+  for (let i = 0; i < tamanho; i++) {
+    soma += parseInt(cnpjLimpo.charAt(i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== parseInt(cnpjLimpo.charAt(12))) return false;
+  tamanho = 13;
+  soma = 0;
+  pos = 6;
+  for (let i = 0; i < tamanho; i++) {
+    soma += parseInt(cnpjLimpo.charAt(i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== parseInt(cnpjLimpo.charAt(13))) return false;
+  return true;
+}
 
-
+// --- Função para criar uma nova empresa ---
 async function createEmpresa(idUsuario, dadosEmpresa) {
     const {
         cnpjJuridico,
@@ -14,8 +36,8 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         areaAtuacao
     } = dadosEmpresa;
 
-
-    if (!isValidDocument(cnpjJuridico)) {
+    // Validação de entrada
+    if (!validateCNPJ(cnpjJuridico)) {
         throw { name: 'ValidationError', message: 'CNPJ inválido ou não fornecido.' };
     }
     if (!razaoSocial) {
@@ -24,11 +46,11 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
     if (!nomeComercial) {
         throw { name: 'ValidationError', message: 'Nome Comercial é obrigatório.' };
     }
-
+    // Adicione aqui as outras validações...
 
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
 
-
+    // Verificar duplicidade
     const existingCnpj = await Juridico.findByPk(cnpjLimpo);
     if (existingCnpj) {
         throw { name: 'ConflictError', message: 'Este CNPJ já está cadastrado.' };
@@ -37,8 +59,8 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
     if (existingNome) {
         throw { name: 'ConflictError', message: 'Este Nome Comercial já está em uso.' };
     }
-
-
+    
+    // Inserir no banco de dados
     try {
         const novaEmpresa = await Juridico.create({
             cnpjJuridico: cnpjLimpo,
@@ -57,7 +79,7 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
     }
 }
 
-
+// --- Função para buscar todas as empresas ---
 async function findAllEmpresas() {
     try {
         return await Juridico.findAll();
@@ -67,7 +89,7 @@ async function findAllEmpresas() {
     }
 }
 
-
+// --- Função para buscar uma empresa pela Chave Primária (CNPJ) ---
 async function findEmpresaByPk(cnpj) {
     try {
         const cnpjLimpo = cnpj.replace(/\D/g, '');
@@ -78,7 +100,7 @@ async function findEmpresaByPk(cnpj) {
     }
 }
 
-
+// Exporta um objeto com todas as funções do serviço.
 export default {
     createEmpresa,
     findAllEmpresas,
