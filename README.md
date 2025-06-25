@@ -218,6 +218,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/arthor13"><img src="https://avatars.githubusercontent.com/u/112632734?v=4?s=100" width="100px;" alt="Arthur de Lima Sobreira"/><br /><sub><b>Arthur de Lima Sobreira</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=arthor13" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/CauaNicolas"><img src="https://avatars.githubusercontent.com/u/79241219?v=4?s=100" width="100px;" alt="CauaNicolas"/><br /><sub><b>CauaNicolas</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=CauaNicolas" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SDC-Diih"><img src="https://avatars.githubusercontent.com/u/48413982?v=4?s=100" width="100px;" alt="Diogo"/><br /><sub><b>Diogo</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=SDC-Diih" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gabrielaugusto23"><img src="https://avatars.githubusercontent.com/u/103151217?v=4?s=100" width="100px;" alt="Gabriel Augusto"/><br /><sub><b>Gabriel Augusto</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=gabrielaugusto23" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
