@@ -9,7 +9,122 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "gitmoji",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "anawirthmann",
+      "name": "Ana Beatriz C Wirthmann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91133974?v=4",
+      "profile": "https://github.com/anawirthmann",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "arthor13",
+      "name": "Arthur de Lima Sobreira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/112632734?v=4",
+      "profile": "https://github.com/arthor13",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "CauaNicolas",
+      "name": "CauaNicolas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79241219?v=4",
+      "profile": "https://github.com/CauaNicolas",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SDC-Diih",
+      "name": "Diogo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48413982?v=4",
+      "profile": "https://github.com/SDC-Diih",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gabrielaugusto23",
+      "name": "Gabriel Augusto",
+      "avatar_url": "https://avatars.githubusercontent.com/u/103151217?v=4",
+      "profile": "https://github.com/gabrielaugusto23",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "test"
+      ]
+    },
+    {
+      "login": "bielg7",
+      "name": "Gabriel Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150948362?v=4",
+      "profile": "https://github.com/bielg7",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Discicle",
+      "name": "João Victor Sousa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117182979?v=4",
+      "profile": "https://lattes.cnpq.br/3832259830250068",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jopesmp",
+      "name": "João Pedro Sampaio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/113356974?v=4",
+      "profile": "https://github.com/jopesmp",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "juliapat18",
+      "name": "juliapat18",
+      "avatar_url": "https://avatars.githubusercontent.com/u/204951019?v=4",
+      "profile": "https://github.com/juliapat18",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "marianagonzaga0",
+      "name": "marianagonzaga0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/193804034?v=4",
+      "profile": "https://github.com/marianagonzaga0",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "rFaelxs",
+      "name": "Rafael Siqueira Soares",
+      "avatar_url": "https://avatars.githubusercontent.com/u/176593068?v=4",
+      "profile": "https://github.com/rFaelxs",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "TiagoSTdeLyra",
+      "name": "TiagoSTdeLyra",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56367136?v=4",
+      "profile": "https://github.com/TiagoSTdeLyra",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "linkToUsage": false
 }

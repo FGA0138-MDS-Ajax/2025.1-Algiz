@@ -1,35 +1,25 @@
-# EcoNet
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+# 🌱 EcoNet – Plataforma de Sustentabilidade Corporativa
 
-Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Node.js, React e JavaScript. Neste arquivo README, você encontrará um guia passo a passo para executar o projeto em seu ambiente local.
+> Conectando empresas por um futuro sustentável ♻️
 
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Issues](https://img.shields.io/github/issues/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Contributors](https://img.shields.io/github/contributors/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Stars](https://img.shields.io/github/stars/FGA0138-MDS-Ajax/2025.1-Algiz)
-![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=views)
-![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Last Commit](https://img.shields.io/github/last-commit/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=Views)
 
-## Sobre o projeto
+---
 
-EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
+## 📘 Visão Geral
 
-##### Autores:
+**EcoNet** é uma aplicação web que promove a **economia circular**, conectando empresas com excesso de materiais a outras que podem reaproveitá-los. Nosso foco é transformar **descarte em oportunidade**, criando um ciclo produtivo e sustentável.
 
-<!-- Tabela com os nomes e fotos-->
-| <a href="https://github.com/anawirthmann"><img src="https://avatars.githubusercontent.com/u/91133974?v=4" width="150"></a> | <a href="https://github.com/arthor13"><img src="https://avatars.githubusercontent.com/u/112632734?v=4" width="150"></a> | <a href="https://github.com/CauaNicolas"><img src="https://avatars.githubusercontent.com/u/79241219?v=4" width="150"></a> | <a href="https://github.com/SDC-Diih"><img src="https://avatars.githubusercontent.com/u/48413982?v=4" width="150"></a> | <a href="https://github.com/gabrielaugusto23"><img src="https://avatars.githubusercontent.com/u/103151217?v=4" width="150"></a> | <a href="https://github.com/bielg7"><img src="https://avatars.githubusercontent.com/u/150948362?v=4" width="150"></a> |
-|----------|----------|----------|----------|----------|----------|
-| [Ana Beatriz C. Wirthmann](https://github.com/anawirthmann) | [Arthur de Lima Sobreira](https://github.com/arthor13) | [Caua Nicolas](https://github.com/CauaNicolas) | [Diogo Oliveira Ferreira](https://github.com/SDC-Diih) | [Gabriel Augusto](https://github.com/gabrielaugusto23) | [Gabriel Pereira](https://github.com/bielg7) |
+> 🌍 Alinhado ao ODS 12 da ONU – Produção e Consumo Responsáveis
 
-| <a href="https://github.com/Discicle"><img src="https://avatars.githubusercontent.com/u/117182979?v=4" width="150"></a> | <a href="https://github.com/jopesmp"><img src="https://avatars.githubusercontent.com/u/113356974?v=4" width="150"></a> | <a href="https://github.com/juliapat18"><img src="https://avatars.githubusercontent.com/u/204951019?v=4" width="150"></a> | <a href="https://github.com/marianagonzaga0"><img src="https://avatars.githubusercontent.com/u/193804034?v=4" width="150"></a> | <a href="https://github.com/rFaelxs"><img src="https://avatars.githubusercontent.com/u/176593068?v=4" width="150"></a> | <a href="https://github.com/TiagoSTdeLyra"><img src="https://avatars.githubusercontent.com/u/56367136?v=4" width="150"></a> |
-|----------|----------|----------|----------|----------|----------|
-| [João Victor Sousa](https://github.com/Discicle) | [João Pedro Sampaio](https://github.com/jopesmp) | [Julia Oliveira Patricio](https://github.com/juliapat18) | [Mariana Ribeiro](https://github.com/marianagonzaga0) | [Rafael Siqueira Soares](https://github.com/rFaelxs) | [Tiago Scherrer](https://github.com/TiagoSTdeLyra) |
+---
 
-
-## 🚀 Tecnologias Utilizadas
+**Tecnologias utilizadas para o desenvolvimento do projeto:**
 
 ![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
@@ -43,7 +33,8 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=flat&logo=github&logoColor=white)
 ![Docusaurus](https://img.shields.io/badge/docusaurus-%230A0A0A.svg?style=flat&logo=docusaurus&logoColor=white)
 
-## Pré-requisitos
+## 🔃 Como Rodar Localmente:
+### Pré-requisitos
 
 Antes de começar, recomendamos que você utilize o sistema operacional **Linux ou Linux WSL (Ubuntu)**, 
 verifique também se você possui as seguintes ferramentas instaladas em sua máquina:
@@ -52,8 +43,7 @@ verifique também se você possui as seguintes ferramentas instaladas em sua má
 - [npm](https://www.npmjs.com/) (gerenciador de pacotes do Node.js)
 - [Docker](https://www.docker.com/)
 
----
-
+## 🪜 Passo a Passo:
 ## Passo 1: Clonar o repositório
 
 Clone este repositório em uma pasta da sua máquina local:
@@ -218,16 +208,32 @@ Relacionado a #5678 (substitua pelo número da issue, use caso o PR não resolve
 📌 Observações: (opcional)
    - Algum detalhe extra?
 ```
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
+## Contribuidores ✨
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/anawirthmann"><img src="https://avatars.githubusercontent.com/u/91133974?v=4?s=100" width="100px;" alt="Ana Beatriz C Wirthmann"/><br /><sub><b>Ana Beatriz C Wirthmann</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=anawirthmann" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/arthor13"><img src="https://avatars.githubusercontent.com/u/112632734?v=4?s=100" width="100px;" alt="Arthur de Lima Sobreira"/><br /><sub><b>Arthur de Lima Sobreira</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=arthor13" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/CauaNicolas"><img src="https://avatars.githubusercontent.com/u/79241219?v=4?s=100" width="100px;" alt="CauaNicolas"/><br /><sub><b>CauaNicolas</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=CauaNicolas" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/SDC-Diih"><img src="https://avatars.githubusercontent.com/u/48413982?v=4?s=100" width="100px;" alt="Diogo"/><br /><sub><b>Diogo</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=SDC-Diih" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/gabrielaugusto23"><img src="https://avatars.githubusercontent.com/u/103151217?v=4?s=100" width="100px;" alt="Gabriel Augusto"/><br /><sub><b>Gabriel Augusto</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=gabrielaugusto23" title="Code">💻</a> <a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=gabrielaugusto23" title="Documentation">📖</a> <a href="#design-gabrielaugusto23" title="Design">🎨</a> <a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=gabrielaugusto23" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/bielg7"><img src="https://avatars.githubusercontent.com/u/150948362?v=4?s=100" width="100px;" alt="Gabriel Pereira"/><br /><sub><b>Gabriel Pereira</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=bielg7" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://lattes.cnpq.br/3832259830250068"><img src="https://avatars.githubusercontent.com/u/117182979?v=4?s=100" width="100px;" alt="João Victor Sousa"/><br /><sub><b>João Victor Sousa</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=Discicle" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/jopesmp"><img src="https://avatars.githubusercontent.com/u/113356974?v=4?s=100" width="100px;" alt="João Pedro Sampaio"/><br /><sub><b>João Pedro Sampaio</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=jopesmp" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/juliapat18"><img src="https://avatars.githubusercontent.com/u/204951019?v=4?s=100" width="100px;" alt="juliapat18"/><br /><sub><b>juliapat18</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=juliapat18" title="Code">💻</a> <a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=juliapat18" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/marianagonzaga0"><img src="https://avatars.githubusercontent.com/u/193804034?v=4?s=100" width="100px;" alt="marianagonzaga0"/><br /><sub><b>marianagonzaga0</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=marianagonzaga0" title="Documentation">📖</a> <a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=marianagonzaga0" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/rFaelxs"><img src="https://avatars.githubusercontent.com/u/176593068?v=4?s=100" width="100px;" alt="Rafael Siqueira Soares"/><br /><sub><b>Rafael Siqueira Soares</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=rFaelxs" title="Code">💻</a> <a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=rFaelxs" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/TiagoSTdeLyra"><img src="https://avatars.githubusercontent.com/u/56367136?v=4?s=100" width="100px;" alt="TiagoSTdeLyra"/><br /><sub><b>TiagoSTdeLyra</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=TiagoSTdeLyra" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+<!-- ALL-CONTRIBUTORS-LIST:END -->
