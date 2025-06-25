@@ -6,6 +6,14 @@ Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Nod
 
 EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
 
+![License](https://img.shields.io/badge/license-MIT-green)
+![Issues](https://img.shields.io/github/issues/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Contributors](https://img.shields.io/github/contributors/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Stars](https://img.shields.io/github/stars/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=views)
+![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Last Commit](https://img.shields.io/github/last-commit/FGA0138-MDS-Ajax/2025.1-Algiz)
+
 ##### Autores:
 
 <!-- Tabela com os nomes e fotos-->
@@ -17,6 +25,20 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 |----------|----------|----------|----------|----------|----------|
 | [João Victor Sousa](https://github.com/Discicle) | [João Pedro Sampaio](https://github.com/jopesmp) | [Julia Oliveira Patricio](https://github.com/juliapat18) | [Mariana Ribeiro](https://github.com/marianagonzaga0) | [Rafael Siqueira Soares](https://github.com/rFaelxs) | [Tiago Scherrer](https://github.com/TiagoSTdeLyra) |
 
+
+## 🚀 Tecnologias Utilizadas
+
+![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![React](https://img.shields.io/badge/react-%2361DAFB.svg?style=flat&logo=react&logoColor=black)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=flat&logo=css3&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=flat&logo=tailwind-css&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=flat&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
+![AdminJS](https://img.shields.io/badge/adminjs-%23D35848.svg?style=flat&logo=adminjs&logoColor=white) <!-- custom -->
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=flat&logo=github&logoColor=white)
+![Docusaurus](https://img.shields.io/badge/docusaurus-%230A0A0A.svg?style=flat&logo=docusaurus&logoColor=white)
 
 ## Pré-requisitos
 
