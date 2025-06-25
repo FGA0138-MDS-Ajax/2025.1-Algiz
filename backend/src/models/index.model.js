@@ -2,12 +2,12 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
 
-import UsuarioDef from './usuario.js';
-import FisicoDef from './fisico.js';
-import EmpresaDef from './empresa.js';
-import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.js';
-import setupAssociations from './associacoes.js';
-import MensagemDef from './mensagem.js';
+import UsuarioDef from './usuario.model.js';
+import FisicoDef from './fisico.model.js';
+import EmpresaDef from './empresa.model.js';
+import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.model.js';
+import setupAssociations from './associacoes.model.js';
+import MensagemDef from './mensagem.model.js';
 
 dotenv.config();
 
