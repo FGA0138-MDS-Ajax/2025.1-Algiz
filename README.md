@@ -2,10 +2,6 @@
 
 Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Node.js, React e JavaScript. Neste arquivo README, você encontrará um guia passo a passo para executar o projeto em seu ambiente local.
 
-## Sobre o projeto
-
-EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
-
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Issues](https://img.shields.io/github/issues/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Contributors](https://img.shields.io/github/contributors/FGA0138-MDS-Ajax/2025.1-Algiz)
@@ -13,6 +9,10 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 ![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=views)
 ![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Last Commit](https://img.shields.io/github/last-commit/FGA0138-MDS-Ajax/2025.1-Algiz)
+
+## Sobre o projeto
+
+EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
 
 ##### Autores:
 
