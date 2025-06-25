@@ -6,7 +6,6 @@ import models from '../../../models/index.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
 import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
 const { Usuario } = models;
-
 async function createUser(userData) {
     const { nome, sobrenome, email, senha, telefone, estado, sexo, dtNascimento, cpfCnpj } = userData;
     const erros = [];
@@ -113,7 +112,6 @@ async function createUser(userData) {
 
     return { id: insertedUserId, email, nome, sobrenome };
 }
-
 async function findUserProfileById(userId) {
     // Buscar dados do usuário e físicos
     const userQuery = `
@@ -242,57 +240,6 @@ async function authenticateUser(email, password) {
     }
 }
 
-// user.service.js
-export async function updateUserProfile(userId, dadosAtualizados) {
-    const {
-        nome,
-        sobrenome,
-        telefone,
-        estado,
-        sexo,
-        dataNascimento
-    } = dadosAtualizados;
-
-    if (!nome || !sobrenome) {
-        const error = new Error("Nome e sobrenome são obrigatórios.");
-        error.name = 'ValidationError';
-        throw error;
-    }
-
-    const updateUserSql = `
-        UPDATE FISICO
-        SET nomeFisico = ?, sobrenomeFisico = ?, telefoneFisico = ?, estadoFisico = ?, sexo = ?, dtNascimento = ?
-        WHERE idUsuario = ?
-    `;
-
-    await db.query(updateUserSql, [nome, sobrenome, telefone, estado, sexo, dataNascimento, userId]);
-
-    return { message: "Dados do perfil atualizados com sucesso." };
-}
-
-export async function updateUserProfilePhoto(userId, fotoPerfil) {
-    if (!fotoPerfil || typeof fotoPerfil !== 'string') {
-        const error = new Error("URL da foto de perfil inválida.");
-        error.name = 'ValidationError';
-        throw error;
-    }
-
-    await db.query(`UPDATE USUARIO SET fotoPerfil = ? WHERE idUsuario = ?`, [fotoPerfil, userId]);
-    return { message: "Foto de perfil atualizada com sucesso." };
-}
-
-export async function updateUserBanner(userId, bannerPerfil) {
-    if (!bannerPerfil || typeof bannerPerfil !== 'string') {
-        const error = new Error("URL do banner inválida.");
-        error.name = 'ValidationError';
-        throw error;
-    }
-
-    await db.query(`UPDATE USUARIO SET bannerPerfil = ? WHERE idUsuario = ?`, [bannerPerfil, userId]);
-    return { message: "Banner de perfil atualizado com sucesso." };
-}
-
-
 export const getUserByEmail = async (email) => {
   return await Usuario.findOne({ where: { emailUsuario: email } });
 };
@@ -312,14 +259,13 @@ export async function saveResetCode(userId, code) {
   );
 }
 
+
+
 export default {
     createUser,
     findUserProfileById,
     authenticateUser,
     getUserByEmail,
     updateUserPasswordAndClearCode,
-    saveResetCode,
-    updateUserProfile,
-    updateUserProfilePhoto,
-    updateUserBanner
+    saveResetCode
 };

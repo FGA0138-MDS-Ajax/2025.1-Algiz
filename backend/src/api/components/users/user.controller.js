@@ -1,6 +1,5 @@
 // backend/src/api/components/users/user.controller.js
-import userService from './user.service.js';
-import { updateUserProfile } from './user.service.js';
+import userService from './user.service.js';  // Make sure user.service.js also uses ES Modules
 import * as hashUtil from '../../utils/hash.util.js';
 import axios from 'axios';
 import { sendCodeEmail, isEmailServiceEnabled } from '../../utils/email.util.js';  // Ensure this path is correct
@@ -204,59 +203,6 @@ async function getPublicUserProfile(req, res) {
     }
 }
 
-async function editUserProfile(req, res) {
-    try {
-        const userId = parseInt(req.params.id);
-        const authenticatedUserId = req.user.id;
-
-        if (userId !== authenticatedUserId) {
-            return res.status(403).json({ erro: "Você só pode editar seu próprio perfil." });
-        }
-
-        const resultado = await updateUserProfile(userId, req.body);
-        return res.status(200).json(resultado);
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            return res.status(400).json({ erro: error.message });
-        }
-        console.error("Erro ao editar perfil:", error);
-        return res.status(500).json({ erro: "Erro interno ao editar perfil." });
-    }
-}
-
-export async function editUserProfilePhoto(req, res) {
-    try {
-        const userId = parseInt(req.params.id);
-        const authenticatedUserId = req.user.id;
-
-        if (userId !== authenticatedUserId) {
-            return res.status(403).json({ erro: "Você só pode editar sua própria foto." });
-        }
-
-        const { fotoPerfil } = req.body;
-        const result = await updateUserProfilePhoto(userId, fotoPerfil);
-        return res.status(200).json(result);
-    } catch (error) {
-        return res.status(400).json({ erro: error.message });
-    }
-}
-
-export async function editUserBanner(req, res) {
-    try {
-        const userId = parseInt(req.params.id);
-        const authenticatedUserId = req.user.id;
-
-        if (userId !== authenticatedUserId) {
-            return res.status(403).json({ erro: "Você só pode editar seu próprio banner." });
-        }
-
-        const { bannerPerfil } = req.body;
-        const result = await updateUserBanner(userId, bannerPerfil);
-        return res.status(200).json(result);
-    } catch (error) {
-        return res.status(400).json({ erro: error.message });
-    }
-}
 
 // ✅ Use ES Modules export (instead of module.exports)
 export default {
@@ -266,8 +212,5 @@ export default {
     forgotPassword,
     verifyResetCode,
     resetPassword,
-    getPublicUserProfile,
-    editUserProfile,
-    editUserProfilePhoto,
-    editUserBanner
+    getPublicUserProfile
 };

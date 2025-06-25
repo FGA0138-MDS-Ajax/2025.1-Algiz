@@ -4,6 +4,25 @@ import { Op } from 'sequelize';
 
 async function createMessage(dadosMensagem) {
     const { idRemetente, idDestinatario, conteudo } = dadosMensagem;
+
+    if (!conteudo || conteudo.trim() === '') {
+        throw { name: 'ValidationError', message: 'O conteúdo da mensagem não pode estar vazio.' };
+    }
+    if (!idDestinatario) {
+        throw { name: 'ValidationError', message: 'É necessário especificar um destinatário.' };
+    }
+    const destinatario = await Usuario.findByPk(idDestinatario);
+    if (!destinatario) {
+        throw { name: 'NotFoundError', message: 'O usuário destinatário não foi encontrado.' };
+    }
+    const novaMensagem = await Mensagem.create({
+        idRemetente,
+        idDestinatario,
+        conteudo
+    });
+    return novaMensagem;
+async function createMessage(dadosMensagem) {
+    const { idRemetente, idDestinatario, conteudo } = dadosMensagem;
     if (!conteudo || conteudo.trim() === '') {
         throw { name: 'ValidationError', message: 'O conteúdo da mensagem não pode estar vazio.' };
     }
@@ -21,7 +40,7 @@ async function createMessage(dadosMensagem) {
     });
     return novaMensagem;
 
-}
+
 async function findMessages(idUsuario) {
     const messages = await Mensagem.findAll({
         where: {
@@ -37,9 +56,12 @@ async function findMessages(idUsuario) {
         order: [['enviada_em', 'ASC']]
     });
 
-    return mensagens;
-}
-export default{
-    createMessage,
-    findMessages
-};        
+//     return mensagens;
+// }
+// export default{
+//     createMessage,
+//     findMessages
+// };
+
+
+        
