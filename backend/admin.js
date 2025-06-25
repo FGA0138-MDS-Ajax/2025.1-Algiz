@@ -5,7 +5,7 @@ import expressSession from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
-import models from './src/models/index.js'; // Importa os modelos do Sequelize
+import models from './src/models/index.model.js'; // Importa os modelos do Sequelize
 const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem } = models;
 
 AdminJS.registerAdapter(AdminJSSequelize);

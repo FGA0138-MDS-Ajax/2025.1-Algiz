@@ -1,4 +1,4 @@
-import models from '../../../models/index.js';
+import models from '../../../models/index.model.js';
 const { Mensagem, Usuario } = models;
 import { Op } from 'sequelize';
 
