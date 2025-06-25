@@ -9,12 +9,12 @@ import connectSessionSequelize from 'connect-session-sequelize';
 
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
-import models, { sequelize } from './src/models/index.js';
+import models, { sequelize } from './models/index.js';
 import { admin, adminRouter } from './admin.js';
 
 // Importa as rotas de usuário
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
-// import messageRoutes from './src/api/routes/message.route.js';
+import messageRoutes from './src/api/routes/message.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
 
@@ -135,7 +135,7 @@ async function startServer() {
     console.error('❌ Não foi possível iniciar o servidor:', err);
     process.exit(1);
   }
-  // app.use('/api/mensagens', messageRoutes)
+  app.use('/api/mensagens', messageRoutes)
 }
 
 startServer();
