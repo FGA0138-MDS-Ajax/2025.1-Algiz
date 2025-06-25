@@ -1,10 +1,9 @@
 # EcoNet
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Node.js, React e JavaScript. Neste arquivo README, você encontrará um guia passo a passo para executar o projeto em seu ambiente local.
-
-## Sobre o projeto
-
-EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Issues](https://img.shields.io/github/issues/FGA0138-MDS-Ajax/2025.1-Algiz)
@@ -13,6 +12,10 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 ![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=views)
 ![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Last Commit](https://img.shields.io/github/last-commit/FGA0138-MDS-Ajax/2025.1-Algiz)
+
+## Sobre o projeto
+
+EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
 
 ##### Autores:
 
@@ -215,3 +218,16 @@ Relacionado a #5678 (substitua pelo número da issue, use caso o PR não resolve
 📌 Observações: (opcional)
    - Algum detalhe extra?
 ```
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
