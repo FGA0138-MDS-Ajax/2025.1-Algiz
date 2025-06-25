@@ -9,7 +9,17 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "gitmoji",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "anawirthmann",
+      "name": "Ana Beatriz C Wirthmann",
+      "avatar_url": "https://avatars.githubusercontent.com/u/91133974?v=4",
+      "profile": "https://github.com/anawirthmann",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "linkToUsage": false
 }
