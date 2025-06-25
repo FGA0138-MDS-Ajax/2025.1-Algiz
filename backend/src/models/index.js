@@ -1,5 +1,5 @@
 // backend/models/index.js
-import { Sequelize } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
 
 import UsuarioDef from './usuario.js';
@@ -7,6 +7,7 @@ import FisicoDef from './fisico.js';
 import EmpresaDef from './empresa.js';
 import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.js';
 import setupAssociations from './associacoes.js';
+import MensagemDef from './mensagem.js';
 
 dotenv.config();
 
@@ -28,10 +29,11 @@ const sequelize = new Sequelize(
 
 // Define todos os modelos
 const models = {
-  Usuario: UsuarioDef(sequelize),
-  Fisico: FisicoDef(sequelize),
-  Empresa: EmpresaDef(sequelize),
-  VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize),
+  Usuario: UsuarioDef(sequelize, DataTypes),
+  Fisico: FisicoDef(sequelize, DataTypes),
+  Empresa: EmpresaDef(sequelize, DataTypes),
+  VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize, DataTypes),
+  Mensagem: MensagemDef(sequelize, DataTypes), 
 };
 
 // Configura as associações entre os modelos
