@@ -63,6 +63,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Discicle",
+      "name": "João Victor Sousa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117182979?v=4",
+      "profile": "https://lattes.cnpq.br/3832259830250068",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
