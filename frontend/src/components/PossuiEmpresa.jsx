@@ -1,10 +1,21 @@
+import { useState } from "react";
+import ModalCadastroEmpresa from "./ModalCadastroEmpresa";
 import { useNavigate } from "react-router-dom";
 
 export default function PossuiEmpresa({ cardClass = "" }) {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const handleCadastroEmpresa = () => {
-    navigate("/cadastro?tipo=empresa");
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleSaveEmpresa = (dados) => {
+    // Aqui você pode fazer o POST para o backend
+    // Exemplo: await axios.post("/api/empresas", dados);
+    setShowModal(false);
   };
 
   return (
@@ -29,6 +40,12 @@ export default function PossuiEmpresa({ cardClass = "" }) {
       >
         Cadastrar empresa
       </button>
+      {showModal && (
+        <ModalCadastroEmpresa
+          onClose={handleCloseModal}
+          onSave={handleSaveEmpresa}
+        />
+      )}
     </div>
   );
 }
