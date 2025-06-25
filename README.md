@@ -215,6 +215,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/anawirthmann"><img src="https://avatars.githubusercontent.com/u/91133974?v=4?s=100" width="100px;" alt="Ana Beatriz C Wirthmann"/><br /><sub><b>Ana Beatriz C Wirthmann</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=anawirthmann" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arthor13"><img src="https://avatars.githubusercontent.com/u/112632734?v=4?s=100" width="100px;" alt="Arthur de Lima Sobreira"/><br /><sub><b>Arthur de Lima Sobreira</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=arthor13" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
