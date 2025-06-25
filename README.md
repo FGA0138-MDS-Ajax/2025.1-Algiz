@@ -1,21 +1,25 @@
-# EcoNet
+# 🌱 EcoNet – Plataforma de Sustentabilidade Corporativa
 
-Este repositório contém o projeto (EcoNet) do grupo ALGIZ desenvolvido com Node.js, React e JavaScript. Neste arquivo README, você encontrará um guia passo a passo para executar o projeto em seu ambiente local.
+> Conectando empresas por um futuro sustentável ♻️
 
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Issues](https://img.shields.io/github/issues/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Contributors](https://img.shields.io/github/contributors/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Stars](https://img.shields.io/github/stars/FGA0138-MDS-Ajax/2025.1-Algiz)
-![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=views)
-![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
 ![Last Commit](https://img.shields.io/github/last-commit/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Forks](https://img.shields.io/github/forks/FGA0138-MDS-Ajax/2025.1-Algiz)
+![Views](https://komarev.com/ghpvc/?username=FGA0138-MDS-Ajax&label=Views)
 
-## Sobre o projeto
+---
 
-EcoNet é um site que possibilita que empresas se conectem para firmar parcerias na área de reaproveitamento de matéria-prima, onde teremos empresas atuando como fornecedoras ou como consumidoras, criando um ciclo sustentável de reaproveitamento de matéria-prima. 
+## 📘 Visão Geral
 
+**EcoNet** é uma aplicação web que promove a **economia circular**, conectando empresas com excesso de materiais a outras que podem reaproveitá-los. Nosso foco é transformar **descarte em oportunidade**, criando um ciclo produtivo e sustentável.
 
-## 🚀 Tecnologias Utilizadas
+> 🌍 Alinhado ao ODS 12 da ONU – Produção e Consumo Responsáveis
+
+---
+
+**Tecnologias utilizadas para o desenvolvimento do projeto:**
 
 ![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
@@ -29,7 +33,8 @@ EcoNet é um site que possibilita que empresas se conectem para firmar parcerias
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=flat&logo=github&logoColor=white)
 ![Docusaurus](https://img.shields.io/badge/docusaurus-%230A0A0A.svg?style=flat&logo=docusaurus&logoColor=white)
 
-## Pré-requisitos
+## 🔃 Como Rodar Localmente:
+### Pré-requisitos
 
 Antes de começar, recomendamos que você utilize o sistema operacional **Linux ou Linux WSL (Ubuntu)**, 
 verifique também se você possui as seguintes ferramentas instaladas em sua máquina:
@@ -38,8 +43,7 @@ verifique também se você possui as seguintes ferramentas instaladas em sua má
 - [npm](https://www.npmjs.com/) (gerenciador de pacotes do Node.js)
 - [Docker](https://www.docker.com/)
 
----
-
+## 🪜 Passo a Passo:
 ## Passo 1: Clonar o repositório
 
 Clone este repositório em uma pasta da sua máquina local:
@@ -204,10 +208,7 @@ Relacionado a #5678 (substitua pelo número da issue, use caso o PR não resolve
 📌 Observações: (opcional)
    - Algum detalhe extra?
 ```
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
+## Contribuidores ✨
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -236,5 +237,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
