@@ -222,6 +222,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/bielg7"><img src="https://avatars.githubusercontent.com/u/150948362?v=4?s=100" width="100px;" alt="Gabriel Pereira"/><br /><sub><b>Gabriel Pereira</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=bielg7" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://lattes.cnpq.br/3832259830250068"><img src="https://avatars.githubusercontent.com/u/117182979?v=4?s=100" width="100px;" alt="João Victor Sousa"/><br /><sub><b>João Victor Sousa</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=Discicle" title="Code">💻</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jopesmp"><img src="https://avatars.githubusercontent.com/u/113356974?v=4?s=100" width="100px;" alt="João Pedro Sampaio"/><br /><sub><b>João Pedro Sampaio</b></sub></a><br /><a href="https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz/commits?author=jopesmp" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
