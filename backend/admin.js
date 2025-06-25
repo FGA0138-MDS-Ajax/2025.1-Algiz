@@ -6,7 +6,7 @@ import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
 import models from './src/models/index.js'; // Importa os modelos do Sequelize
-const { Usuario, Fisico, Empresa, VinculoEmpresaFisico } = models;
+const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem } = models;
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -83,26 +83,26 @@ const adminOptions = {
       }
     },
     {
-        resource: Empresa,
-        options: {
-            properties: {
-            idUsuario: {
-                reference: 'USUARIO'
-            },
-            fotoPerfil: {
-                type: 'string',
-                isVisible: {
-                list: false,
-                edit: true,
-                show: true,
-                filter: false
-                }
+      resource: Empresa,
+      options: {
+        properties: {
+          idUsuario: {
+            reference: 'USUARIO'
+          },
+          fotoPerfil: {
+            type: 'string',
+            isVisible: {
+              list: false,
+              edit: true,
+              show: true,
+              filter: false
             }
-            },
-            listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
-            showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
-            editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
-        }
+          }
+        },
+        listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+        showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
+        editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
+      }
     },
     {
       resource: VinculoEmpresaFisico,
@@ -124,6 +124,33 @@ const adminOptions = {
         listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
         showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
         editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo']
+      }
+    },
+    {
+      resource: Mensagem,
+      options: {
+        properties: {
+          idRemetente: {
+            reference: 'USUARIO',
+            isVisible: { list: true, show: true, edit: true, filter: true }
+          },
+          idDestinatario: {
+            reference: 'USUARIO',
+            isVisible: { list: true, show: true, edit: true, filter: true }
+          },
+          conteudo: {
+            type: 'textarea'
+          },
+          enviada_em: {
+            isVisible: { list: true, show: true, edit: false }
+          },
+          visualizada: {
+            type: 'boolean'
+          }
+        },
+        listProperties: ['idMensagem', 'idRemetente', 'idDestinatario', 'visualizada', 'enviada_em'],
+        showProperties: ['idMensagem', 'idRemetente', 'idDestinatario', 'conteudo', 'visualizada', 'enviada_em'],
+        editProperties: ['idRemetente', 'idDestinatario', 'conteudo', 'visualizada']
       }
     }
   ],
@@ -155,7 +182,6 @@ const sessionOptions = {
   }
 };
 
-// Authenticated admin panel
 const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
   admin,
   {
@@ -163,8 +189,8 @@ const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
       const user = await Usuario.findOne({ where: { emailUsuario: email } });
       if (user && await bcrypt.compare(password, user.senha)) {
         return {
-            email: user.emailUsuario,
-            name: 'Admin' 
+          email: user.emailUsuario,
+          name: 'Admin'
         };
       }
       return null;

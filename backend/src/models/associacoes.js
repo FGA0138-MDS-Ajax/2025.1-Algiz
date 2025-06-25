@@ -1,5 +1,5 @@
 export default function setupAssociations(models) {
-  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico } = models;
+  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem } = models;
 
   Usuario.hasOne(Fisico, {
     foreignKey: 'idUsuario',
@@ -35,5 +35,27 @@ export default function setupAssociations(models) {
     foreignKey: 'cnpjJuridico',
     otherKey: 'cpfFisico',
     as: 'funcionarios'
+  });
+  
+   // 🔗 NOVAS associações para Mensagem
+  Mensagem.belongsTo(Usuario, {
+    foreignKey: 'idRemetente',
+    as: 'remetente'
+  });
+
+  Mensagem.belongsTo(Usuario, {
+    foreignKey: 'idDestinatario',
+    as: 'destinatario'
+  });
+
+  // (Opcional) Se quiser relações reversas:
+  Usuario.hasMany(Mensagem, {
+    foreignKey: 'idRemetente',
+    as: 'mensagensEnviadas'
+  });
+
+  Usuario.hasMany(Mensagem, {
+    foreignKey: 'idDestinatario',
+    as: 'mensagensRecebidas'
   });
 }

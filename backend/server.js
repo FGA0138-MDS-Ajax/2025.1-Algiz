@@ -14,7 +14,7 @@ import { admin, adminRouter } from './admin.js';
 
 // Importa as rotas de usuário
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
-// import messageRoutes from './src/api/routes/message.route.js';
+import messageRoutes from './src/api/routes/message.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
 
@@ -80,6 +80,7 @@ async function startServer() {
     // console.log('📦 Content-Type:', req.headers['content-type']);
     next();
   });
+
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
 
@@ -135,7 +136,8 @@ async function startServer() {
     console.error('❌ Não foi possível iniciar o servidor:', err);
     process.exit(1);
   }
-  // app.use('/api/mensagens', messageRoutes)
+  // ✅ Usa as rotas definidas no message.routes.js
+  app.use('/api/mensagens', messageRoutes);
 }
 
 startServer();
