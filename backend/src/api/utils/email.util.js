@@ -8,9 +8,6 @@ let resend;
 if (process.env.RESEND_API_KEY) {
   resend = new Resend(process.env.RESEND_API_KEY);
   emailServiceEnabled = true;
-  console.log('✅ Serviço de email ativado');
-} else {
-  console.warn('⚠️ Serviço de email desativado - RESEND_API_KEY não configurada');
 }
 
 export const sendCodeEmail = async (email, code) => {

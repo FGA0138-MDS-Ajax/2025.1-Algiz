@@ -23,12 +23,23 @@ const { Usuario } = models;
 dotenv.config();
 
 console.log('🔍 Verificando serviços opcionais:');
+
 if (!process.env.RESEND_API_KEY) {
   console.warn('⚠️  Serviço de email DESATIVADO - RESEND_API_KEY não configurada');
+} else{
+  console.log('✅ Serviço de email ativado');
 }
+
 if (!process.env.RECAPTCHA_SECRET_KEY) {
   console.warn('⚠️  reCAPTCHA DESATIVADO - RECAPTCHA_SECRET_KEY não configurada');
+} else{
+  console.log('✅ reCAPTCHA ativado');
 }
+
+if (process.env.DEV_RECOVERY_MODE === 'true') {
+  console.log('📭 [DEV MODE] usando fallback.');
+}
+
 const app = express();
 const PORT = 3001;
 
@@ -109,15 +120,12 @@ async function startServer() {
   // Serve arquivos estaticos da pasta public
   app.use('/images', express.static(path.resolve('public/images')));
 
-  // ✅ Remove rota duplicada /api/usuarios (já tratada em user.routes.js)
   // Garante usuário admin
   const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
   const [adminUser, created] = await Usuario.findOrCreate({
   where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
     defaults: {
-      senha: hashedPassword,
-      telefoneUsuario: '0000000000',
-      estado: 'DF',
+      senha: hashedPassword
     },
   });
 
