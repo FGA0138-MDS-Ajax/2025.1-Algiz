@@ -33,6 +33,14 @@
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=flat&logo=github&logoColor=white)
 ![Docusaurus](https://img.shields.io/badge/docusaurus-%230A0A0A.svg?style=flat&logo=docusaurus&logoColor=white)
 
+## 🔗 Documentos importantes
+
+- [Contributing](./CONTRIBUTING.md) – Guia para colaboração  
+- [Visão do Projeto](https://fga0138-mds-ajax.github.io/2025.1-Algiz/assets/files/Visao-do-produto-EcoNet-2025.1-17f5bf097fd40a63f9d5966e5753bd98.pdf) – Documento de visão do projeto
+- [Arquitetura](https://fga0138-mds-ajax.github.io/2025.1-Algiz/assets/files/documento-de-arquitetura-algiz-2025-1-d32e0856a9cc7c85b2e6baee2c6a36f9.pdf) – Documento de arquitetura do projeto
+
+---
+
 ## Contribuidores ✨
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -63,8 +71,7 @@
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-
-## 🔃 Como Rodar Localmente:
+## 🔃 Como Rodar Localmente?
 ### Pré-requisitos
 
 Antes de começar, recomendamos que você utilize o sistema operacional **Linux ou Linux WSL (Ubuntu)**, 
@@ -74,8 +81,8 @@ verifique também se você possui as seguintes ferramentas instaladas em sua má
 - [npm](https://www.npmjs.com/) (gerenciador de pacotes do Node.js)
 - [Docker](https://www.docker.com/)
 
-## 🪜 Passo a Passo:
-## Passo 1: Clonar o repositório
+## Passo a Passo:
+## 1: Clonar o repositório
 
 Clone este repositório em uma pasta da sua máquina local:
 
@@ -84,7 +91,7 @@ git clone https://github.com/FGA0138-MDS-Ajax/2025.1-Algiz.git
 ```
 
 ---
-## Passo 2: Primeira configuração
+## 2: Primeira configuração
 
 Copie `.env.example` para `.env` na pasta backend:
 
@@ -98,28 +105,31 @@ O projeto possui funcionalidades que utilizam serviços externos opcionais. Voc�
 ```bash
 nano .env  # ou use seu editor preferido
 ```
-### Chaves necessárias para funcionalidades completas:
-1. Resend API Key (para envio de emails):
-    - Necessário para: Recuperação de senha via email
-    - Como obter: Obtenha a chave com o `manager` do projeto ou crie uma conta em [Resend](Resend.com)
-    - Adicione no `.env`:
-      ```bash
-      RESEND_API_KEY=sua_chave_aqui
-      ```
-    
-2. reCAPTCHA Secret Key (para verificação de humanos):
-    - Necessário para: Proteção contra bots no formulário de recuperação de senha
-    - Como obter:Obtenha a chave com o `manager` do projeto ou registre seu site em [Google reCAPTCHA](https://www.google.com/recaptcha/admin/create)
-    - Adicione no `.env`:
-      ```bash
-      RECAPTCHA_SECRET_KEY=sua_chave_aqui
-      ```
-### Modo de operação sem chaves:
-O projeto pode rodar sem essas chaves, com as seguintes limitações:  
-A funcionalidade de recuperação de senha mostrará "Serviço indisponível"  
+### ⚙️ Funcionalidades Opcionais:
+A aplicação suporta essas funcionalidades **somente se configuradas** no `.env` ou via CI/CD:
+
+| Variável | Descrição |
+|---------|-----------|
+| `RESEND_API_KEY` | Ativa envio de e-mail via Resend |
+| `RECAPTCHA_SECRET_KEY` | Ativa verificação reCAPTCHA |
+| `DEV_RECOVERY_MODE`    | Modo desenvolvimento |
+
+### 🧪 `DEV_RECOVERY_MODE`
+
+Modo **desenvolvimento** que permite:
+- Bypassar reCAPTCHA
+- Exibir o código de recuperação direto no log e na resposta da API
+- Use caso não consiga acesso as chaves secretas (`RESEND_API_KEY` e `RECAPTCHA_SECRET_KEY`)
+
+**⚠️ Não ative em produção!**
+
+Use no `.env`:
+```env
+DEV_PASSWORD_RECOVERY_MODE=true
+``` 
 
 ---
-## Passo 3: Instalar dependências
+## 3: Instalar dependências
 
 Navegue até a pasta do projeto e execute os seguintes comandos para instalar as dependências do Node.js:
 
@@ -138,7 +148,7 @@ npm install
 
 ---
 
-## Passo 4: Iniciar o servidor
+## 4: Iniciar o servidor
 
 ### Backend (usando Docker)
 
@@ -209,33 +219,3 @@ A documentação estará disponível em: [http://localhost:3000](http://localhos
   ```bash
   docker exec -it backend-db-1 mysql -u root -pyourpassword
   ```
-  
----
-### Regra de commit:
-Utilizar o [gitmoji](https://gitmoji.dev/) no começo de cada commit  
-Ex:  
-📝 Atualização da documentação
-
----
-
-### Template de Pull Request:
-```bash
-PR Title: [Descrição breve do que foi feito]
-
-🔗 Issues Relacionadas:
-
-Resolve #1234 (substitua pelo número da issue, se o pr resolve a issue)
-
-Relacionado a #5678 (substitua pelo número da issue, use caso o PR não resolver completamente a issue)
-
-✅ Alterações Realizadas:
-   - Item 1
-   - Item 2
-
-🛠 Como Testar: (opcional)
-   - Passo 1
-   - Passo 2
-
-📌 Observações: (opcional)
-   - Algum detalhe extra?
-```
