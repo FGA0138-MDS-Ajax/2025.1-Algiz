@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalCropImagem from "./ModalCropImagem";
 import ModalFotoPerfil from "./ModalFotoPerfil";
+import axios from "axios";
 
 export default function PerfilUsuario({
   usuario,
@@ -14,13 +15,17 @@ export default function PerfilUsuario({
   //const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
   //const isUsuarioLogado = usuarioLogado?.id === usuario.id;
 
+  //console.log("Dados do usuário:", usuario);
   // Estados para edição de dados do usuário
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     nome: usuario.nome,
+    sobrenome: usuario.sobrenome ,
     telefone: usuario.telefone,
+    estado: usuario.estado,
+    sexo: usuario.sexo,
+    dataNascimento: usuario.data_nascimento ,
     email: usuario.email,
-    endereco: usuario.endereco,
   });
   const [erro, setErro] = useState("");
   const [banner, setBanner] = useState(usuario.banner || "/user/banner-padrao-1.png");
@@ -43,22 +48,43 @@ export default function PerfilUsuario({
     setErro("");
   };
 
-  // Salva dados editados do usuário
-  const handleSave = () => {
-    if (!formData.nome.trim()) {
-      setErro("O nome é obrigatório.");
+  // Salva dados editados do usuário (agora via backend)
+  const handleSave = async () => {
+    if (!formData.nome.trim() || !formData.sobrenome.trim()) {
+      setErro("Nome e sobrenome são obrigatórios.");
       return;
     }
-    if (!formData.email.trim()) {
-      setErro("O email é obrigatório.");
-      return;
+    
+    try {
+      const token = sessionStorage.getItem("authToken");
+      console.log("Token de autenticação:", token);
+      await axios.post(
+        `http://localhost:3001/api/usuario/${usuario.id}/edit`,
+        {
+          nome: formData.nome,
+          sobrenome: formData.sobrenome,
+          telefone: formData.telefone,
+          estado: formData.estado,
+          sexo: formData.sexo,
+          dataNascimento: formData.dataNascimento,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: true,
+        }
+      );
+      setIsEditing(false);
+      window.location.reload();
+    } catch (err) {
+      setErro(
+        err.response?.data?.erro ||
+        err.response?.data?.message ||
+        "Erro ao atualizar usuário."
+      );
     }
-    if (!formData.endereco.trim()) {
-      setErro("O endereço é obrigatório.");
-      return;
-    }
-    setIsEditing(false);
-    window.location.reload();
   };
 
   // Ao selecionar nova foto de perfil, abre o modal de crop
@@ -174,6 +200,18 @@ export default function PerfilUsuario({
     ? usuario.telefone.replace(/(\d{2})\d{5}(\d{4})/, "($1) 9 ####-$2")
     : "";
 
+  useEffect(() => {
+    setFormData({
+      nome: usuario.nome || "",
+      sobrenome: usuario.sobrenome || "",
+      telefone: usuario.telefone || "",
+      estado: usuario.estado || "",
+      sexo: usuario.sexo || "",
+      dataNascimento: usuario.data_nascimento || "",
+      email: usuario.email || "",
+    });
+  }, [usuario]);
+
   return (
     <div className="bg-white rounded-xl shadow p-0 overflow-hidden mb-6 relative w-full">
       {/* Banner */}
@@ -243,12 +281,29 @@ export default function PerfilUsuario({
             </svg>
           </button>
         )}
+
+         {/* Dados do usuário logado */}        
+         {isUsuarioLogado && 
+        (
+         
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{usuario.nome}</h2>
           <p className="text-gray-600 break-words">{getEstadoCompleto(usuario.estado)}</p>
           <p className="text-gray-600 break-words">Email: {usuario.email}</p>
           <p className="text-gray-600 break-words">Contato: {telefoneFormatado}</p>
         </div>
+        )}
+        {/* Dados do usuário não logado */}
+         {!isUsuarioLogado && 
+        (
+         
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{usuario.nome}</h2>
+          
+        </div>
+        )}
+        
+
         {/* Botão Visualizar como público */}
         {isUsuarioLogado && !visualizandoPublico && (
           <button
