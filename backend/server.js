@@ -9,7 +9,7 @@ import connectSessionSequelize from 'connect-session-sequelize';
 
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
-import models, { sequelize } from './models/index.js';
+import models, { sequelize } from './src/models/index.model.js';
 import { admin, adminRouter } from './admin.js';
 
 // Importa as rotas de usuário
@@ -80,6 +80,7 @@ async function startServer() {
     // console.log('📦 Content-Type:', req.headers['content-type']);
     next();
   });
+
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
 

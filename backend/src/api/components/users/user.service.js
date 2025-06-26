@@ -5,7 +5,12 @@ import jwt from "jsonwebtoken";
 import models from "../../../models/index.model.js";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
 import { comparePassword } from "../../utils/hash.util.js"; // Fixed path
+import jwt from 'jsonwebtoken';
+import models from '../../../models/index.model.js';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
+import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
 const { Usuario } = models;
+
 async function createUser(userData) {
   const {
     nome,

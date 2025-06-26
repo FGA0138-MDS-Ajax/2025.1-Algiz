@@ -12,6 +12,12 @@ router.post("/login", userController.loginUser);
 router.post("/usuarios/forgot-password", userController.forgotPassword);
 router.post("/usuarios/verify-code", userController.verifyResetCode);
 router.post("/usuarios/reset-password", userController.resetPassword);
+// 📢 PUBLIC POST ROUTES (no token needed)
+router.post('/register', userController.registerUser);
+router.post('/login', userController.loginUser);
+router.post('/usuarios/forgot-password', userController.forgotPassword);
+router.post('/usuarios/verify-code', userController.verifyResetCode);
+router.post('/usuarios/reset-password', userController.resetPassword);
 
 // 🔐 PROTECTED ROUTES (need valid token)
 router.get("/usuario/:id", verifyToken, userController.getUserProfile);
