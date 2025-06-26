@@ -5,10 +5,6 @@ import jwt from "jsonwebtoken";
 import models from "../../../models/index.model.js";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
 import { comparePassword } from "../../utils/hash.util.js"; // Fixed path
-import jwt from 'jsonwebtoken';
-import models from '../../../models/index.model.js';
-import { JWT_SECRET, JWT_EXPIRES_IN } from '../../config/auth.config.js';
-import { comparePassword } from '../../utils/hash.util.js';  // Fixed path
 const { Usuario } = models;
 
 async function createUser(userData) {
@@ -307,43 +303,26 @@ export async function saveResetCode(userId, code) {
   );
 }
 
-// user.service.js
-
 export async function updateUserProfile(userId, dadosAtualizados) {
   const {
     nome,
-
     sobrenome,
-
     telefone,
-
     estado,
-
     sexo,
-
     dataNascimento,
   } = dadosAtualizados;
   console.log("Dados recebidos para atualização:", dadosAtualizados);
   if (!nome || !sobrenome) {
     const error = new Error("Nome e sobrenome são obrigatórios.");
-
     error.name = "ValidationError";
-
     throw error;
   }
 
   const updateUserSql = `
-
-
         UPDATE FISICO
-
-
         SET nomeFisico = ?, sobrenomeFisico = ?, telefoneFisico = ?, estadoFisico = ?, sexo = ?, dtNascimento = ?
-
-
         WHERE idUsuario = ?
-
-
     `;
 
   await db.query(updateUserSql, [
@@ -362,9 +341,7 @@ export async function updateUserProfile(userId, dadosAtualizados) {
 export async function updateUserProfilePhoto(userId, fotoPerfil) {
   if (!fotoPerfil || typeof fotoPerfil !== "string") {
     const error = new Error("URL da foto de perfil inválida.");
-
     error.name = "ValidationError";
-
     throw error;
   }
 
@@ -379,9 +356,7 @@ export async function updateUserProfilePhoto(userId, fotoPerfil) {
 export async function updateUserBanner(userId, bannerPerfil) {
   if (!bannerPerfil || typeof bannerPerfil !== "string") {
     const error = new Error("URL do banner inválida.");
-
     error.name = "ValidationError";
-
     throw error;
   }
 
@@ -389,7 +364,6 @@ export async function updateUserBanner(userId, bannerPerfil) {
     bannerPerfil,
     userId,
   ]);
-
   return { message: "Banner de perfil atualizado com sucesso." };
 }
 

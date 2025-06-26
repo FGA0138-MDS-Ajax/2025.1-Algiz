@@ -227,34 +227,76 @@ async function getPublicUserProfile(req, res) {
     res.status(500).json({ erro: "Erro interno ao buscar perfil público." });
   }
 }
-async function getPublicUserProfile(req, res) {
-    try {
-        const userId = req.params.id;
-        const fullProfile = await userService.findUserProfileById(userId);
 
-        if (!fullProfile) {
-            return res.status(404).json({ erro: "Usuário não encontrado." });
-        }
+async function editUserProfile(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
 
-        // Seleciona apenas os campos públicos
-        const publicProfile = {
-            id: fullProfile.id,
-            nome: fullProfile.nome,
-            sobrenome: fullProfile.sobrenome,
-            fotoPerfil: fullProfile.fotoPerfil,
-            bannerPerfil: fullProfile.bannerPerfil,
-            cargo: fullProfile.cargo,
-            empresa_associada: fullProfile.empresa_associada,
-            empresas_seguidas: fullProfile.empresas_seguidas
-        };
+    const authenticatedUserId = req.user.id;
 
-        return res.json(publicProfile);
-    } catch (error) {
-        console.error("Erro ao buscar perfil público:", error);
-        res.status(500).json({ erro: "Erro interno ao buscar perfil público." });
+    if (userId !== authenticatedUserId) {
+      return res
+        .status(403)
+        .json({ erro: "Você só pode editar seu próprio perfil." });
     }
+
+    const resultado = await  userService.updateUserProfile(userId, req.body);
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ erro: error.message });
+    }
+
+    console.error("Erro ao editar perfil:", error);
+
+    return res.status(500).json({ erro: "Erro interno ao editar perfil." });
+  }
 }
 
+export async function editUserProfilePhoto(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+
+    const authenticatedUserId = req.user.id;
+
+    if (userId !== authenticatedUserId) {
+      return res
+        .status(403)
+        .json({ erro: "Você só pode editar sua própria foto." });
+    }
+
+    const { fotoPerfil } = req.body;
+
+    const result = await userService.updateUserProfilePhoto(userId, fotoPerfil);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(400).json({ erro: error.message });
+  }
+}
+
+export async function editUserBanner(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+
+    const authenticatedUserId = req.user.id;
+
+    if (userId !== authenticatedUserId) {
+      return res
+        .status(403)
+        .json({ erro: "Você só pode editar seu próprio banner." });
+    }
+
+    const { bannerPerfil } = req.body;
+
+    const result = await userService.updateUserBanner(userId, bannerPerfil);
+
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(400).json({ erro: error.message });
+  }
+}
 
 // ✅ Use ES Modules export (instead of module.exports)
 export default {
@@ -267,12 +309,5 @@ export default {
   getPublicUserProfile,
   editUserProfile,
   editUserProfilePhoto,
-  editUserBanner,
-    registerUser,
-    loginUser,
-    getUserProfile,
-    forgotPassword,
-    verifyResetCode,
-    resetPassword,
-    getPublicUserProfile
+  editUserBanner
 };
