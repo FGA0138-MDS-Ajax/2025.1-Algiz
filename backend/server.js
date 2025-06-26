@@ -125,9 +125,7 @@ async function startServer() {
   const [adminUser, created] = await Usuario.findOrCreate({
   where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
     defaults: {
-      senha: hashedPassword,
-      telefoneUsuario: '0000000000',
-      estado: 'DF',
+      senha: hashedPassword
     },
   });
 
