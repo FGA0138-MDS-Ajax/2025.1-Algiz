@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
+import axios from "axios";
 
 /**
  * Utilitário para recortar a imagem usando canvas.
@@ -45,20 +46,70 @@ export default function ModalCropImagem({
   cropShape = "round",
   outputWidth = 160,
   outputHeight = 160,
-  label = "Salvar"
+  label = "Salvar",
+  tipo = "foto", // "foto" ou "banner"
+  usuarioId // Passe o id do usuário como prop!
 }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [erro, setErro] = useState("");
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+  // Função para enviar a imagem cortada ao backend
   const handleSave = async () => {
     if (!croppedAreaPixels) return;
     const croppedImg = await getCroppedImg(image, croppedAreaPixels, outputWidth, outputHeight);
-    onCropSave(croppedImg);
+
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (tipo === "foto") {
+        await axios.post(
+          `http://localhost:3001/api/usuario/${usuarioId}/foto`,
+          { fotoPerfil: croppedImg },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        // Atualize o sessionStorage
+        const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+        sessionStorage.setItem(
+          "usuarioLogado",
+          JSON.stringify({ ...usuarioLogado, fotoPerfil: croppedImg })
+        );
+      } else if (tipo === "banner") {
+        await axios.post(
+          `http://localhost:3001/api/usuario/${usuarioId}/banner`,
+          { bannerPerfil: croppedImg },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+        sessionStorage.setItem(
+          "usuarioLogado",
+          JSON.stringify({ ...usuarioLogado, bannerPerfil: croppedImg })
+        );
+      }
+      if (onCropSave) onCropSave(croppedImg); // callback opcional
+      onClose();
+      window.location.reload();
+    } catch (err) {
+      setErro(
+        err.response?.data?.erro ||
+        err.response?.data?.message ||
+        "Erro ao atualizar imagem."
+      );
+    }
   };
 
   if (!open) return null;
@@ -115,6 +166,8 @@ export default function ModalCropImagem({
               className="flex-1 accent-green-600"
             />
           </div>
+          {/* Erro */}
+          {erro && <div className="text-red-500 text-sm mb-2">{erro}</div>}
           {/* Botões */}
           <div className="flex gap-3 mt-4 w-full">
             <button
