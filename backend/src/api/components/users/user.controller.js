@@ -7,10 +7,8 @@ import {
   isEmailServiceEnabled,
 } from "../../utils/email.util.js"; // Ensure this path is correct
 
+const isDevRecoveryMode = process.env.DEV_RECOVERY_MODE === "true";
 const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY;
-if (!recaptchaEnabled) {
-  console.warn('⚠️ reCAPTCHA desativado - RECAPTCHA_SECRET_KEY não configurada');
-}
 
 async function registerUser(req, res) {
     try {
@@ -94,12 +92,16 @@ export const forgotPassword = async (req, res) => {
       );
 
       if (!data.success) {
-        return res
-          .status(403)
-          .json({ message: "Falha na verificação do reCAPTCHA" });
+        if (isDevRecoveryMode) {
+          console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
+        } else {
+          return res.status(403).json({ message: "Falha na verificação do reCAPTCHA" });
+        }
       }
     } else {
-      console.warn("⚠️  reCAPTCHA não verificado (serviço desativado)");
+      if (!isDevRecoveryMode) {
+        console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
+      }
     }
 
     const user = await userService.getUserByEmail(email);
@@ -114,24 +116,21 @@ export const forgotPassword = async (req, res) => {
       await sendCodeEmail(email, code);
       return res.status(200).json({
         message: "Código enviado com sucesso!",
-        code: process.env.NODE_ENV === "development" ? code : undefined, // Só retorna o código em desenvolvimento
+        code: isDevRecoveryMode ? code : undefined,
       });
     } else {
-      // Modo fallback - retorna o código diretamente (apenas para desenvolvimento)
-      if (process.env.NODE_ENV === "development") {
+      if (isDevRecoveryMode) {
         console.warn(
-          `⚠️  Serviço de email desativado - Código de recuperação: ${code}`
+          `⚠️  [DEV MODE] Código de recuperação gerado: ${code}`
         );
         return res.status(200).json({
-          message:
-            "Serviço de email desativado - Código gerado (apenas para desenvolvimento)",
+          message: "Código gerado em modo desenvolvimento.",
           code: code,
         });
       } else {
         return res.status(503).json({
-          message:
-            "Serviço de recuperação de senha temporariamente indisponível",
-          serviceUnavailable: true, // Flag adicional para identificar esse caso
+          message: "Serviço de recuperação de senha temporariamente indisponível",
+          serviceUnavailable: true,
         });
       }
     }
@@ -298,7 +297,6 @@ export async function editUserBanner(req, res) {
   }
 }
 
-// ✅ Use ES Modules export (instead of module.exports)
 export default {
   registerUser,
   loginUser,
