@@ -1,11 +1,9 @@
 // backend/src/api/components/users/user.controller.js
-import userService from "./user.service.js"; // Make sure user.service.js also uses ES Modules
+import userService from "./user.service.js";
 import * as hashUtil from "../../utils/hash.util.js";
 import axios from "axios";
-import {
-  sendCodeEmail,
-  isEmailServiceEnabled,
-} from "../../utils/email.util.js"; // Ensure this path is correct
+import {  sendCodeEmail,  isEmailServiceEnabled } from "../../utils/email.util.js"; 
+import cloudinary from "../../utils/cloudinary.util.js";
 
 const isDevRecoveryMode = process.env.DEV_RECOVERY_MODE === "true";
 const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY;
@@ -32,13 +30,13 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
   try {
-    const { email, password } = req.body; // Fix typo: 'passoword' → 'password'
+    const { email, password } = req.body; 
     const { token, user } = await userService.authenticateUser(email, password);
     res.json({ token, user });
   } catch (error) {
     if (error.name === "AuthenticationError") {
-      // Fix typo: 'AutenticationError' → 'AuthenticationError'
-      return res.status(401).json({ erro: error.message }); // Fix typo: 'massage' → 'message'
+      console.error("Erro de autenticação:", error);
+      return res.status(401).json({ erro: error.message });
     }
     res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
   }
@@ -46,7 +44,7 @@ async function loginUser(req, res) {
 
 async function getUserProfile(req, res) {
   try {
-    const requestedUserId = req.params.id; // Fix: 'req.param.id' → 'req.params.id'
+    const requestedUserId = req.params.id; 
     const authenticatedUserId = req.user.id;
 
     if (parseInt(requestedUserId) !== authenticatedUserId) {
@@ -68,6 +66,57 @@ async function getUserProfile(req, res) {
   }
 }
 
+// Helper to verify reCAPTCHA
+async function verifyRecaptcha(recaptchaToken) {
+  if (!recaptchaEnabled) {
+    if (!isDevRecoveryMode) {
+      console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
+    }
+    return true;
+  }
+  const { data } = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    null,
+    {
+      params: {
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: recaptchaToken,
+      },
+    }
+  );
+  if (!data.success) {
+    if (isDevRecoveryMode) {
+      console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+// Helper to handle sending code or dev mode
+function handleSendCodeResponse(res, email, code) {
+  if (isEmailServiceEnabled()) {
+    return sendCodeEmail(email, code).then(() =>
+      res.status(200).json({
+        message: "Código enviado com sucesso!",
+        code: isDevRecoveryMode ? code : undefined,
+      })
+    );
+  } else if (isDevRecoveryMode) {
+    console.warn(`⚠️  [DEV MODE] Código de recuperação gerado: ${code}`);
+    return res.status(200).json({
+      message: "Código gerado em modo desenvolvimento.",
+      code: code,
+    });
+  } else {
+    return res.status(503).json({
+      message: "Serviço de recuperação de senha temporariamente indisponível",
+      serviceUnavailable: true,
+    });
+  }
+}
+
 export const forgotPassword = async (req, res) => {
   if (!req.body) {
     return res
@@ -78,62 +127,20 @@ export const forgotPassword = async (req, res) => {
   const { email, recaptchaToken } = req.body;
 
   try {
-    // Verificação opcional de reCAPTCHA
-    if (recaptchaEnabled) {
-      const { data } = await axios.post(
-        `https://www.google.com/recaptcha/api/siteverify`,
-        null,
-        {
-          params: {
-            secret: process.env.RECAPTCHA_SECRET_KEY,
-            response: recaptchaToken,
-          },
-        }
-      );
-
-      if (!data.success) {
-        if (isDevRecoveryMode) {
-          console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
-        } else {
-          return res.status(403).json({ message: "Falha na verificação do reCAPTCHA" });
-        }
-      }
-    } else {
-      if (!isDevRecoveryMode) {
-        console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
-      }
+    const recaptchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaOk) {
+      return res.status(403).json({ message: "Falha na verificação do reCAPTCHA" });
     }
 
     const user = await userService.getUserByEmail(email);
-    if (!user)
+    if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });
+    }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     await userService.saveResetCode(user.idUsuario, code);
 
-    // Verifica se o serviço de email está disponível antes de tentar enviar
-    if (isEmailServiceEnabled()) {
-      await sendCodeEmail(email, code);
-      return res.status(200).json({
-        message: "Código enviado com sucesso!",
-        code: isDevRecoveryMode ? code : undefined,
-      });
-    } else {
-      if (isDevRecoveryMode) {
-        console.warn(
-          `⚠️  [DEV MODE] Código de recuperação gerado: ${code}`
-        );
-        return res.status(200).json({
-          message: "Código gerado em modo desenvolvimento.",
-          code: code,
-        });
-      } else {
-        return res.status(503).json({
-          message: "Serviço de recuperação de senha temporariamente indisponível",
-          serviceUnavailable: true,
-        });
-      }
-    }
+    return handleSendCodeResponse(res, email, code);
   } catch (err) {
     console.error("❌ Erro completo no forgotPassword:", err);
     res
@@ -256,20 +263,30 @@ async function editUserProfile(req, res) {
 export async function editUserProfilePhoto(req, res) {
   try {
     const userId = parseInt(req.params.id);
-
-    const authenticatedUserId = req.user.id;
-
-    if (userId !== authenticatedUserId) {
-      return res
-        .status(403)
-        .json({ erro: "Você só pode editar sua própria foto." });
+    if (userId !== req.user.id) {
+      return res.status(403).json({ erro: "Você só pode editar sua própria foto." });
     }
 
-    const { fotoPerfil } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ erro: "Nenhuma imagem enviada." });
+    }
 
-    const result = await userService.updateUserProfilePhoto(userId, fotoPerfil);
+    const uploadResult = cloudinary.uploader.upload_stream(
+      {
+        folder: "fotos_perfil",
+        public_id: `perfil_${userId}`,
+        overwrite: true,
+      },
+      async (error, result) => {
+        if (error) return res.status(500).json({ erro: "Erro ao enviar imagem para Cloudinary" });
 
-    return res.status(200).json(result);
+        const fotoPerfil = result.secure_url;
+        const updateResult = await userService.updateUserProfilePhoto(userId, fotoPerfil);
+        return res.status(200).json({ ...updateResult, fotoPerfil });
+      }
+    );
+
+    uploadResult.end(req.file.buffer); // envia o buffer
   } catch (error) {
     return res.status(400).json({ erro: error.message });
   }
@@ -278,20 +295,30 @@ export async function editUserProfilePhoto(req, res) {
 export async function editUserBanner(req, res) {
   try {
     const userId = parseInt(req.params.id);
-
-    const authenticatedUserId = req.user.id;
-
-    if (userId !== authenticatedUserId) {
-      return res
-        .status(403)
-        .json({ erro: "Você só pode editar seu próprio banner." });
+    if (userId !== req.user.id) {
+      return res.status(403).json({ erro: "Você só pode editar seu próprio banner." });
     }
 
-    const { bannerPerfil } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ erro: "Nenhuma imagem enviada." });
+    }
 
-    const result = await userService.updateUserBanner(userId, bannerPerfil);
+    const uploadResult = cloudinary.uploader.upload_stream(
+      {
+        folder: "banners",
+        public_id: `banner_${userId}`,
+        overwrite: true,
+      },
+      async (error, result) => {
+        if (error) return res.status(500).json({ erro: "Erro ao enviar imagem para Cloudinary" });
 
-    return res.status(200).json(result);
+        const bannerPerfil = result.secure_url;
+        const updateResult = await userService.updateUserBanner(userId, bannerPerfil);
+        return res.status(200).json({ ...updateResult, bannerPerfil });
+      }
+    );
+
+    uploadResult.end(req.file.buffer);
   } catch (error) {
     return res.status(400).json({ erro: error.message });
   }
