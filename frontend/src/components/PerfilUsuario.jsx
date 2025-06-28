@@ -23,12 +23,13 @@ export default function PerfilUsuario({
     email: usuario.email,
   });
   const [erro, setErro] = useState("");
-  const [banner, setBanner] = useState(usuario.bannerPerfil || "/user/banner-padrao-1.png");
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropModalType, setCropModalType] = useState("foto");
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
+  const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png");
+  const [banner, setBanner] = useState(usuario.bannerPerfil || "/user/banner-padrao-1.png");
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -124,6 +125,7 @@ export default function PerfilUsuario({
       sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
       window.location.reload();
     } catch (err) {
+      console.error("Erro ao remover foto de perfil:", err);
       setErro("Erro ao remover foto de perfil.");
     }
   };
@@ -148,6 +150,7 @@ export default function PerfilUsuario({
       setBanner("/user/banner-padrao-1.png");
       window.location.reload();
     } catch (err) {
+      console.error("Erro ao remover banner:", err);
       setErro("Erro ao remover banner.");
     }
   };
@@ -168,6 +171,7 @@ export default function PerfilUsuario({
       email: usuario.email || "",
     });
     setBanner(usuario.bannerPerfil || "/user/banner-padrao-1.png");
+    setFotoPerfil(usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png");
   }, [usuario]);
 
   return (
@@ -194,7 +198,7 @@ export default function PerfilUsuario({
         <div className="absolute left-1/2 sm:left-8 -bottom-16 z-20 transform -translate-x-1/2 sm:translate-x-0">
           <div className="relative">
             <img
-              src={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
+              src={fotoPerfil}
               alt="Foto de perfil"
               className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover"
             />
@@ -300,8 +304,15 @@ export default function PerfilUsuario({
         label="Salvar"
         tipo={cropModalType}
         usuarioId={usuario.id}
-        // Passe as funções de update para o ModalCropImagem se necessário
+        onCropSave={(url) => {
+          if (cropModalType === "foto") {
+            setFotoPerfil(url);
+          } else {
+            setBanner(url);
+          }
+        }}
       />
+
       {/* Modal para trocar/remover foto de perfil */}
       <ModalFotoPerfil
         open={modalFotoOpen}
@@ -323,3 +334,23 @@ export default function PerfilUsuario({
     </div>
   );
 }
+
+import PropTypes from "prop-types";
+
+PerfilUsuario.propTypes = {
+  usuario: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    nome: PropTypes.string,
+    sobrenome: PropTypes.string,
+    telefone: PropTypes.string,
+    estado: PropTypes.string,
+    sexo: PropTypes.string,
+    data_nascimento: PropTypes.string,
+    email: PropTypes.string,
+    fotoPerfil: PropTypes.string,
+    bannerPerfil: PropTypes.string,
+  }).isRequired,
+  isUsuarioLogado: PropTypes.bool.isRequired,
+  visualizandoPublico: PropTypes.bool,
+  onToggleVisualizacaoPublica: PropTypes.func,
+};
