@@ -9,10 +9,11 @@ export default function OpcoesPerfil() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    
     const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-    if (usuarioLogado && usuarioLogado.foto) {
-      setFotoPerfil(usuarioLogado.foto); 
+    if (usuarioLogado && usuarioLogado.fotoPerfil) {
+      setFotoPerfil(usuarioLogado.fotoPerfil);
+    } else {
+      setFotoPerfil(`${API_URL}/images/default/foto-perfil-padrao-usuario-1.png`);
     }
   }, []);
 
@@ -38,13 +39,13 @@ export default function OpcoesPerfil() {
     <div className="relative" ref={dropdownRef}>
       {/* Foto de perfil (botão para abrir o dropdown) */}
       <img
-        src={fotoPerfil} 
+        src={fotoPerfil}
         alt="Foto de perfil"
         className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       />
 
-       {/* Dropdown menu */}
+      {/* Dropdown menu */}
       {isOpen && (
         <div className="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
           <button

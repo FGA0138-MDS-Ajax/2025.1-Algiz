@@ -13,14 +13,14 @@ export default function SidebarUsuario({ usuario }) {
         {/* Banner */}
         <div className="relative w-full h-20 bg-gray-200">
           <img
-            src={usuario.banner || "/user/banner-padrao-1.png"}
+            src={usuario.bannerPerfil || "/user/banner-padrao-1.png"}
             alt="Banner do perfil"
             className="w-full h-full object-cover"
           />
           {/* Foto de perfil à frente, como no PerfilUsuario */}
           <div className="absolute left-4 -bottom-8 z-20">
             <img
-              src={usuario.foto || "/user/foto-perfil-padrao-1.png"}
+              src={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
               alt="Foto de perfil"
               className="w-16 h-16 rounded-full shadow bg-white object-cover"
             />
@@ -30,7 +30,7 @@ export default function SidebarUsuario({ usuario }) {
         <div className="flex flex-row items-end gap-3 px-4 pt-2 pb-4 w-full">
           <div className="w-16" /> {/* Espaço para a foto */}
           <div className="flex flex-col min-w-0">
-            <div className="font-bold text-base break-words">{usuario.nome}</div>
+            <div className="font-bold text-base break-words">{usuario.nome} {usuario.sobrenome}</div>
             <div className="text-gray-500 text-xs break-words">{usuario.email}</div>
             <div className="text-gray-500 text-xs break-words">{telefoneFormatado}</div>
             
