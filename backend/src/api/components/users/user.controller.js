@@ -66,6 +66,57 @@ async function getUserProfile(req, res) {
   }
 }
 
+// Helper to verify reCAPTCHA
+async function verifyRecaptcha(recaptchaToken) {
+  if (!recaptchaEnabled) {
+    if (!isDevRecoveryMode) {
+      console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
+    }
+    return true;
+  }
+  const { data } = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    null,
+    {
+      params: {
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: recaptchaToken,
+      },
+    }
+  );
+  if (!data.success) {
+    if (isDevRecoveryMode) {
+      console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
+      return true;
+    }
+    return false;
+  }
+  return true;
+}
+
+// Helper to handle sending code or dev mode
+function handleSendCodeResponse(res, email, code) {
+  if (isEmailServiceEnabled()) {
+    return sendCodeEmail(email, code).then(() =>
+      res.status(200).json({
+        message: "Código enviado com sucesso!",
+        code: isDevRecoveryMode ? code : undefined,
+      })
+    );
+  } else if (isDevRecoveryMode) {
+    console.warn(`⚠️  [DEV MODE] Código de recuperação gerado: ${code}`);
+    return res.status(200).json({
+      message: "Código gerado em modo desenvolvimento.",
+      code: code,
+    });
+  } else {
+    return res.status(503).json({
+      message: "Serviço de recuperação de senha temporariamente indisponível",
+      serviceUnavailable: true,
+    });
+  }
+}
+
 export const forgotPassword = async (req, res) => {
   if (!req.body) {
     return res
@@ -76,62 +127,20 @@ export const forgotPassword = async (req, res) => {
   const { email, recaptchaToken } = req.body;
 
   try {
-    // Verificação opcional de reCAPTCHA
-    if (recaptchaEnabled) {
-      const { data } = await axios.post(
-        `https://www.google.com/recaptcha/api/siteverify`,
-        null,
-        {
-          params: {
-            secret: process.env.RECAPTCHA_SECRET_KEY,
-            response: recaptchaToken,
-          },
-        }
-      );
-
-      if (!data.success) {
-        if (isDevRecoveryMode) {
-          console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
-        } else {
-          return res.status(403).json({ message: "Falha na verificação do reCAPTCHA" });
-        }
-      }
-    } else {
-      if (!isDevRecoveryMode) {
-        console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
-      }
+    const recaptchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaOk) {
+      return res.status(403).json({ message: "Falha na verificação do reCAPTCHA" });
     }
 
     const user = await userService.getUserByEmail(email);
-    if (!user)
+    if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });
+    }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     await userService.saveResetCode(user.idUsuario, code);
 
-    // Verifica se o serviço de email está disponível antes de tentar enviar
-    if (isEmailServiceEnabled()) {
-      await sendCodeEmail(email, code);
-      return res.status(200).json({
-        message: "Código enviado com sucesso!",
-        code: isDevRecoveryMode ? code : undefined,
-      });
-    } else {
-      if (isDevRecoveryMode) {
-        console.warn(
-          `⚠️  [DEV MODE] Código de recuperação gerado: ${code}`
-        );
-        return res.status(200).json({
-          message: "Código gerado em modo desenvolvimento.",
-          code: code,
-        });
-      } else {
-        return res.status(503).json({
-          message: "Serviço de recuperação de senha temporariamente indisponível",
-          serviceUnavailable: true,
-        });
-      }
-    }
+    return handleSendCodeResponse(res, email, code);
   } catch (err) {
     console.error("❌ Erro completo no forgotPassword:", err);
     res
