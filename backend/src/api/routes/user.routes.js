@@ -3,6 +3,7 @@ import express from "express";
 import userController from "../components/users/user.controller.js";
 import verifyToken from "../../middleware/auth.middleware.js";
 import db from "../config/db.js";
+import { upload } from "../../middleware/upload.middleware.js";
 
 const router = express.Router();
 
@@ -16,12 +17,17 @@ router.post("/usuarios/reset-password", userController.resetPassword);
 // 🔐 PROTECTED ROUTES (need valid token)
 router.get("/usuario/:id", verifyToken, userController.getUserProfile);
 router.post("/usuario/:id/edit", verifyToken, userController.editUserProfile);
-router.post(
-  "/usuario/:id/foto",
+router.post("/usuario/:id/foto",
   verifyToken,
+  upload.single('fotoPerfil'),  // multer
   userController.editUserProfilePhoto
 );
-router.post("/usuario/:id/banner", verifyToken, userController.editUserBanner);
+
+router.post("/usuario/:id/banner",
+  verifyToken,
+  upload.single('bannerPerfil'),
+  userController.editUserBanner
+);
 
 // 🔧 DEBUG/UTILITY: List all users (keep protected if needed)
 router.get("/usuarios", async (req, res) => {
