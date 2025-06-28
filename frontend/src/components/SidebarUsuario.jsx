@@ -62,7 +62,7 @@ export default function SidebarUsuario({ usuario }) {
             <span className="text-base">Itens salvos</span>
           </Link>
           <Link
-            to="/configuracoes"
+            to="/configuracoesusuario"
             className="flex items-center gap-2 px-6 py-4 hover:bg-green-50 transition font-medium text-gray-700"
           >
             {/* Heroicons User */}
