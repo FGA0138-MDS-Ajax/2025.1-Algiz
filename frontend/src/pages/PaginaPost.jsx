@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
 import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
