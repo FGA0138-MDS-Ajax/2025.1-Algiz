@@ -68,8 +68,9 @@ function Login() {
         {erro && <div className="text-red-500 mb-4">{erro}</div>}
 
         <div className="w-full mb-6">
-          <label className="block mb-1 text-white font-medium">Email</label>
+          <label htmlFor="email" className="block mb-1 text-white font-medium">Email</label>
           <input
+            id="email"
             type="email"
             className="input w-full"
             placeholder="Digite seu email"
@@ -81,8 +82,9 @@ function Login() {
 
         {/* Senha + eye icon */}
         <div className="w-full mb-6 relative">
-          <label className="block mb-1 text-white font-medium">Senha</label>
+          <label htmlFor="senha" className="block mb-1 text-white font-medium">Senha</label>
           <input
+            id="senha"
             type={mostrarSenha ? "text" : "password"}
             className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
             placeholder="Digite sua senha"
