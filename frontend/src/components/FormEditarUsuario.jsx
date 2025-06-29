@@ -1,5 +1,5 @@
-import React from "react";
-import { estados, generos } from "../utils/opcoes_form";
+import { generos } from "../utils/opcoes_form";
+import PropTypes from "prop-types";
 
 export default function FormEditarUsuario({
   formData,
@@ -29,10 +29,11 @@ export default function FormEditarUsuario({
         <div className="px-8 py-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="nome" className="block text-gray-700 font-semibold mb-1">
                 Nome
               </label>
               <input
+                id="nome"
                 type="text"
                 name="nome"
                 placeholder="Primeiro nome"
@@ -42,10 +43,11 @@ export default function FormEditarUsuario({
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="sobrenome" className="block text-gray-700 font-semibold mb-1">
                 Sobrenome
               </label>
               <input
+                id="sobrenome"
                 type="text"
                 name="sobrenome"
                 placeholder="Sobrenome"
@@ -55,10 +57,11 @@ export default function FormEditarUsuario({
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="telefone" className="block text-gray-700 font-semibold mb-1">
                 Contato
               </label>
               <input
+                id="telefone"
                 type="text"
                 name="telefone"
                 placeholder="ex: 61 912345678"
@@ -109,10 +112,11 @@ export default function FormEditarUsuario({
               </div>
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="endereco" className="block text-gray-700 font-semibold mb-1">
                 Endereço
               </label>
               <input
+                id="endereco"
                 type="text"
                 name="endereco"
                 placeholder="ex: Qr ## Cnj ###"
@@ -122,10 +126,11 @@ export default function FormEditarUsuario({
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="genero" className="block text-gray-700 font-semibold mb-1">
                 Gênero
               </label>
               <select
+                id="genero"
                 name="genero"
                 value={formData.genero}
                 onChange={onChange}
@@ -160,3 +165,19 @@ export default function FormEditarUsuario({
     </div>
   );
 }
+
+FormEditarUsuario.propTypes = {
+  formData: PropTypes.shape({
+    nome: PropTypes.string,
+    sobrenome: PropTypes.string,
+    telefone: PropTypes.string,
+    email: PropTypes.string,
+    endereco: PropTypes.string,
+    genero: PropTypes.string,
+  }).isRequired,
+  erro: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onEditEmail: PropTypes.func,
+}; 
