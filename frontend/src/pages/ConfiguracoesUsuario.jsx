@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+
 import SidebarUsuarioConfiguracoes from "../components/SidebarUsuarioConfiguracoes";
 import SidebarIntro from "../components/SidebarIntro";
 import Footer from "../components/Footer";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import PropTypes from "prop-types";
 
 // Switch customizado com Tailwind
 function TailwindSwitch({ checked, onChange }) {
@@ -28,6 +29,11 @@ function TailwindSwitch({ checked, onChange }) {
     </button>
   );
 }
+
+TailwindSwitch.propTypes = {
+  checked: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 // Campo de senha com botão de olho
 function PasswordInput({ placeholder, ...props }) {
@@ -64,6 +70,10 @@ function PasswordInput({ placeholder, ...props }) {
   );
 }
 
+PasswordInput.propTypes = {
+  placeholder: PropTypes.string,
+};
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -82,7 +92,7 @@ function ConfiguracoesUsuario() {
   useEffect(() => {
     async function fetchUsuarioCompleto() {
       const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado && usuarioLogado.id) {
+      if (usuarioLogado?.id) {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
@@ -158,7 +168,7 @@ function ConfiguracoesUsuario() {
         const codigo = inputs.map(input => input.value).join('');
         if (codigo.length !== 6) {
           Swal.showValidationMessage('Digite os 6 dígitos do código');
-          return false;
+          return '';
         }
         return codigo;
       }
@@ -187,39 +197,60 @@ function ConfiguracoesUsuario() {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Privacidade</h2>
             <hr className="mb-6 border-gray-300" />
             <div className="mb-6">
-              <label className="font-semibold text-gray-700 text-base flex items-center gap-2">
-                <span className="text-gray-400 text-lg">●</span>
-                Termo e política de privacidade</label>
+              <label htmlFor="termo-politica-checkbox" className="font-semibold text-gray-700 text-base flex items-center gap-2">
+                  <span>
+                    <span className="text-gray-400 text-lg">●</span>
+                    Termo e política de privacidade
+                    {' '}
+                  </span>
+                </label>
               <div className="flex items-center gap-2 mt-2 ml-6 text-gray-600">
-                <input type="checkbox" checked readOnly className="accent-gray-400 w-5 h-5" />
+                <input id="termo-politica-checkbox" type="checkbox" checked readOnly className="accent-gray-400 w-5 h-5" />
                 <span>
-                  Nosso <a href="#" className="text-gray-600 underline font-medium">termo de uso</a> e <a href="#" className="text-gray-600 underline font-medium">política de privacidade</a>
+                  Nosso <button type="button" className="text-gray-600 underline font-medium p-0 bg-transparent border-none cursor-pointer">termo de uso</button> e <button type="button" className="text-gray-600 underline font-medium p-0 bg-transparent border-none cursor-pointer">política de privacidade</button>
                 </span>
               </div>
             </div>
             <div className="mb-6">
-              <label className="font-semibold text-gray-700 text-base flex items-center gap-2"><span className="text-gray-400 text-lg">●</span>
-                Post salvos
+              <label htmlFor="post-salvos-switch" className="font-semibold text-gray-700 text-base flex items-center gap-2">
+                <span className="text-gray-400 text-lg">●</span>{' '}
+                <span>Post salvos</span>
               </label>
               <div className="flex items-center justify-between mt-2 ml-6">
                 <div>
-                  <span className="text-gray-800 font-medium">Exibir suas postagens salvas no seu <a href="#" className="text-gray-600 underline font-medium">perfil público</a></span>
+                  <span className="text-gray-800 font-medium">
+                    Exibir suas postagens salvas no seu{' '}
+                    <button
+                      type="button"
+                      className="text-gray-600 underline font-medium bg-transparent border-none p-0 cursor-pointer"
+                      aria-label="Ver perfil público"
+                    >
+                      perfil público
+                    </button>
+                  </span>
                   <p className="text-xs text-gray-500 mt-1">Ao ativar essa opção todas as postagens que você salvou ficarão visíveis ao público</p>
                 </div>
-                <TailwindSwitch checked={postSalvos} onChange={setPostSalvos} />
+                <span id="post-salvos-switch">
+                  <TailwindSwitch checked={postSalvos} onChange={setPostSalvos} />
+                </span>
               </div>
             </div>
             <div>
-              <label className="font-semibold text-gray-700 text-base flex items-center gap-2">
-                <span className="text-gray-400 text-lg">●</span>
-                Compartilhamento de localização
+              <label htmlFor="compartilhar-localizacao-switch" className="font-semibold text-gray-700 text-base flex items-center gap-2">
+                <span>
+                  <span className="text-gray-400 text-lg">●</span>
+                  {' '}
+                  Compartilhamento de localização
+                </span>
               </label>
               <div className="flex items-center justify-between mt-2 ml-6">
                 <div>
-                  <span className="text-gray-800 font-medium">Permitir exibição da sua cidade ou localização no <a href="#" className="text-gray-600 underline font-medium">perfil público</a></span>
+                  <span className="text-gray-800 font-medium">Permitir exibição da sua cidade ou localização no <button type="button" className="text-gray-600 underline font-medium bg-transparent border-none p-0 cursor-pointer">perfil público</button></span>
                   <p className="text-xs text-gray-500 mt-1">Você pode tornar essa informação privada.</p>
                 </div>
-                <TailwindSwitch checked={compartilharLocalizacao} onChange={setCompartilharLocalizacao} />
+                <span id="compartilhar-localizacao-switch">
+                  <TailwindSwitch checked={compartilharLocalizacao} onChange={setCompartilharLocalizacao} />
+                </span>
               </div>
             </div>
           </section>
@@ -238,24 +269,27 @@ function ConfiguracoesUsuario() {
                 <div className="font-semibold text-base text-gray-800 mb-2">Redefinir senha</div>
                 <form onSubmit={handleRedefinirSenha} className="flex flex-col gap-3 max-w-md">
                   <div>
-                    <label className="block text-gray-700 text-sm mb-1">Nova senha:</label>
+                    <label htmlFor="nova-senha-1" className="block text-gray-700 text-sm mb-1">Nova senha:</label>
                     <PasswordInput
+                      id="nova-senha-1"
                       placeholder="email.do.usuario@gmail.com"
                       value={senha1}
                       onChange={e => setSenha1(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm mb-1">Nova senha:</label>
+                    <label htmlFor="nova-senha-2" className="block text-gray-700 text-sm mb-1">Nova senha:</label>
                     <PasswordInput
+                      id="nova-senha-2"
                       placeholder="email.do.usuario@gmail.com"
                       value={senha2}
                       onChange={e => setSenha2(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm mb-1">Repita sua nova senha:</label>
+                    <label htmlFor="repita-nova-senha" className="block text-gray-700 text-sm mb-1">Repita sua nova senha:</label>
                     <PasswordInput
+                      id="repita-nova-senha"
                       placeholder="Sua senha"
                       value={senha3}
                       onChange={e => setSenha3(e.target.value)}
@@ -291,16 +325,18 @@ function ConfiguracoesUsuario() {
                 </div>
                 <form onSubmit={handleTrocarEmail} className="flex flex-col gap-3 max-w-md">
                   <div>
-                    <label className="block text-gray-700 text-sm mb-1">Sua senha atual:</label>
+                    <label htmlFor="senha-atual" className="block text-gray-700 text-sm mb-1">Sua senha atual:</label>
                     <PasswordInput
+                      id="senha-atual"
                       placeholder="Sua senha"
                       value={senhaAtual}
                       onChange={e => setSenhaAtual(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm mb-1">Novo email:</label>
+                    <label htmlFor="novo-email" className="block text-gray-700 text-sm mb-1">Novo email:</label>
                     <input
+                      id="novo-email"
                       type="email"
                       placeholder="email.do.usuario@gmail.com"
                       className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-200"
