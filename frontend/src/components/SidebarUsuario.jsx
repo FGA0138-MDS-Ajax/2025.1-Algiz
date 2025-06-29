@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function SidebarUsuario({ usuario }) {
   // Máscara simples para telefone (opcional)
@@ -73,6 +74,18 @@ export default function SidebarUsuario({ usuario }) {
           </Link>
         </nav>
       </div>
-    </div>
+      </div>
   );
 }
+
+SidebarUsuario.propTypes = {
+  usuario: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    nome: PropTypes.string.isRequired,
+    sobrenome: PropTypes.string,
+    email: PropTypes.string.isRequired,
+    telefone: PropTypes.string,
+    bannerPerfil: PropTypes.string,
+    fotoPerfil: PropTypes.string,
+  }).isRequired,
+};
