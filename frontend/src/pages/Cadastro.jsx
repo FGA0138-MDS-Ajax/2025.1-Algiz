@@ -294,29 +294,38 @@ export default function Cadastro() {
             Cadastrar
           </button>
         </div>
-        {erro
-          ? Array.isArray(erro)
-            ? (
+        {(() => {
+          if (!erro) return null;
+          if (Array.isArray(erro)) {
+            return (
               <ul className="text-red-400 font-semibold text-sm mt-2 text-center list-disc list-inside">
-                {erro.map((e, i) => (
-                  <li key={i}>
-                    {typeof e === "object"
+                {erro.map((e) => {
+                  const key =
+                    typeof e === "object"
                       ? e.mensagem || e.message || JSON.stringify(e)
-                      : e}
-                  </li>
-                ))}
+                      : e;
+                  return (
+                    <li key={key}>
+                      {typeof e === "object"
+                        ? e.mensagem || e.message || JSON.stringify(e)
+                        : e}
+                    </li>
+                  );
+                })}
               </ul>
-            )
-            : typeof erro === "object"
-              ? (
-                <p className="text-red-400 font-semibold text-sm mt-2 text-center">
-                  {erro.mensagem || erro.message || JSON.stringify(erro)}
-                </p>
-              )
-              : (
-                <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
-              )
-          : null}
+            );
+          }
+          if (typeof erro === "object") {
+            return (
+              <p className="text-red-400 font-semibold text-sm mt-2 text-center">
+                {(erro?.mensagem || erro?.message || JSON.stringify(erro))}
+              </p>
+            );
+          }
+          return (
+            <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
+          );
+        })()}
       </form>
     </div>
   );
