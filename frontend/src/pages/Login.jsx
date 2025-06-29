@@ -72,7 +72,7 @@ function Login() {
           <input
             id="email"
             type="email"
-            className="input w-full"
+            className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
             placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
