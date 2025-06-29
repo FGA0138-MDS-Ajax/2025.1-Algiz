@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
+import PropTypes from "prop-types";
 
 export default function ModalFotoPerfil({ open, onClose, onTrocar, onRemover, fotoAtual, tipo = "foto" }) {
   const fileInputRef = useRef();
@@ -11,6 +12,15 @@ export default function ModalFotoPerfil({ open, onClose, onTrocar, onRemover, fo
     if (e.target.files[0]) {
       onTrocar(e.target.files[0]);
     }
+    
+    ModalFotoPerfil.propTypes = {
+      open: PropTypes.bool.isRequired,
+      onClose: PropTypes.func.isRequired,
+      onTrocar: PropTypes.func.isRequired,
+      onRemover: PropTypes.func.isRequired,
+      fotoAtual: PropTypes.string,
+      tipo: PropTypes.oneOf(["foto", "banner"])
+    };
   };
 
   if (!open) return null;
