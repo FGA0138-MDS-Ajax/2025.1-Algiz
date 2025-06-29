@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useEffect } from "react";
 import Home from './pages/Home';
 import Sobrenos from './pages/Sobrenos';
 import Blog from './pages/Blog';
@@ -8,8 +7,6 @@ import Login from './pages/Login';
 import Layout from './components/Layout'; 
 import Cadastro from './pages/Cadastro';
 import PaginaUsuario from './pages/PaginaUsuario';
-import { seedFakeUsers } from "./utils/fakeUsers";
-import { seedFakeEmpresas } from "./utils/fakeEmpresas";
 import PaginaPost from './pages/PaginaPost';
 import EsqueciSenha from './pages/EsqueciSenha';
 import CodigoAutenticacao from './pages/CodigoAutenticacao';
