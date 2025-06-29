@@ -12,6 +12,7 @@ import EsqueciSenha from './pages/EsqueciSenha';
 import CodigoAutenticacao from './pages/CodigoAutenticacao';
 import RedefinirSenha from './pages/RedefinirSenha';
 import ConfiguracoesUsuario from './pages/ConfiguracoesUsuario';
+import CriarPostagem from './pages/PaginaCriacaoPostagem';
 
 function App() {
   
@@ -33,6 +34,7 @@ function App() {
           <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           <Route path="/post" element={<PaginaPost />} />
           <Route path="/configuracoesusuario" element={<ConfiguracoesUsuario />} />
+          <Route path="/empresa/criar-postagem" element={<CriarPostagem />} />
         </Routes>
       </Layout>
     </BrowserRouter>
