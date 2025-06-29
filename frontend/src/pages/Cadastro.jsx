@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
+import EstadoDropdown from "../components/EstadoDropdown";
+import GeneroDropdown from "../components/GeneroDropdown";
 import { validateCadastro } from "../utils/validacao";
-import { estados, generos } from "../utils/opcoes_form";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 
@@ -127,7 +128,7 @@ export default function Cadastro() {
                 value={form.nome}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -139,7 +140,7 @@ export default function Cadastro() {
                 value={form.sobrenome}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -151,7 +152,7 @@ export default function Cadastro() {
                 value={form.cpfCnpj}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -163,7 +164,7 @@ export default function Cadastro() {
                 value={form.celular}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -176,55 +177,25 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type="email"
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
           </div>
           {/* Coluna 2 */}
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
-              <select
-                id="estado"
-                name="estado"
-                value={form.estado}
-                onChange={handleChange}
-                required
-                className="input w-full text-base py-2"
-              >
-                {estados.map((e) => (
-                  <option
-                    key={e.value}
-                    value={e.value}
-                    disabled={e.disabled}
-                    hidden={e.disabled}
-                  >
-                    {e.label}
-                  </option>
-                ))}
-              </select>
+                <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
+                <EstadoDropdown
+                  value={form.estado}
+                  onChange={(value) => setForm((prev) => ({ ...prev, estado: value }))}
+                />
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="genero">Gênero</label>
-              <select
-                id="genero"
-                name="genero"
+              <GeneroDropdown
                 value={form.genero}
-                onChange={handleChange}
-                required
-                className="input w-full text-base py-2"
-              >
-                {generos.map((g) => (
-                  <option
-                    key={g.value}
-                    value={g.value}
-                    disabled={g.disabled}
-                    hidden={g.disabled}
-                  >
-                    {g.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm((prev) => ({ ...prev, genero: value }))}
+              />
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="dtNascimento">Data de Nascimento</label>
@@ -235,7 +206,7 @@ export default function Cadastro() {
                 value={form.dtNascimento}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div className="relative">
@@ -248,7 +219,7 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type={showSenha ? "text" : "password"}
-                className="input w-full text-base py-2 pr-10"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
               {form.senha && (
                 <button
@@ -270,7 +241,7 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type={showRepetir ? "text" : "password"}
-                className="input w-full text-base py-2 pr-10"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
               {form.repetirSenha && (
                 <button
