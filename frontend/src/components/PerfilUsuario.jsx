@@ -107,19 +107,18 @@ export default function PerfilUsuario({
     reader.readAsDataURL(file);
   };
 
-  // Remover foto
+  // Remover foto de perfil (usando a rota /foto-default)
   const handleRemoverFoto = async () => {
     setModalFotoOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/foto`,
-        { fotoPerfil: defaultProfileURL },
+        `http://localhost:3001/api/usuario/${usuario.id}/foto-default`,
+        {},
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
       const updatedUsuario = { ...usuario, fotoPerfil: defaultProfileURL };
@@ -131,19 +130,18 @@ export default function PerfilUsuario({
     }
   };
 
-  // Remover banner
+  // Remover banner de perfil (usando a rota /banner-default)
   const handleRemoverBanner = async () => {
     setModalBannerOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/banner`,
-        { bannerPerfil: defaultBannerURL },
+        `http://localhost:3001/api/usuario/${usuario.id}/banner-default`,
+        {},
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
       const updatedUsuario = { ...usuario, bannerPerfil: defaultBannerURL };
