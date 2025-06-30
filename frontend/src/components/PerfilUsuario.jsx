@@ -28,8 +28,10 @@ export default function PerfilUsuario({
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
-  const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png");
-  const [banner, setBanner] = useState(usuario.bannerPerfil || "/user/banner-padrao-1.png");
+  const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
+  const [banner, setBanner] = useState(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
+  const defaultProfileURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  const defaultBannerURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -112,7 +114,7 @@ export default function PerfilUsuario({
       const token = sessionStorage.getItem("authToken");
       await axios.post(
         `http://localhost:3001/api/usuario/${usuario.id}/foto`,
-        { fotoPerfil: "" },
+        { fotoPerfil: defaultProfileURL },
         {
           headers: {
             "Content-Type": "application/json",
@@ -120,10 +122,9 @@ export default function PerfilUsuario({
           }
         }
       );
-      // Atualize o usuário logado no sessionStorage
-      const updatedUsuario = { ...usuario, fotoPerfil: "" };
+      const updatedUsuario = { ...usuario, fotoPerfil: defaultProfileURL };
       sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-      window.location.reload();
+      setFotoPerfil(defaultProfileURL);
     } catch (err) {
       console.error("Erro ao remover foto de perfil:", err);
       setErro("Erro ao remover foto de perfil.");
@@ -137,7 +138,7 @@ export default function PerfilUsuario({
       const token = sessionStorage.getItem("authToken");
       await axios.post(
         `http://localhost:3001/api/usuario/${usuario.id}/banner`,
-        { bannerPerfil: "" },
+        { bannerPerfil: defaultBannerURL },
         {
           headers: {
             "Content-Type": "application/json",
@@ -145,10 +146,9 @@ export default function PerfilUsuario({
           }
         }
       );
-      const updatedUsuario = { ...usuario, bannerPerfil: "" };
+      const updatedUsuario = { ...usuario, bannerPerfil: defaultBannerURL };
       sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-      setBanner("/user/banner-padrao-1.png");
-      window.location.reload();
+      setBanner(defaultBannerURL);
     } catch (err) {
       console.error("Erro ao remover banner:", err);
       setErro("Erro ao remover banner.");
@@ -170,8 +170,8 @@ export default function PerfilUsuario({
       dataNascimento: usuario.data_nascimento || "",
       email: usuario.email || "",
     });
-    setBanner(usuario.bannerPerfil || "/user/banner-padrao-1.png");
-    setFotoPerfil(usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png");
+    setBanner(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
+    setFotoPerfil(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
   }, [usuario]);
 
   return (
@@ -319,7 +319,7 @@ export default function PerfilUsuario({
         onClose={() => setModalFotoOpen(false)}
         onTrocar={handleTrocarFoto}
         onRemover={handleRemoverFoto}
-        fotoAtual={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
+        fotoAtual={fotoPerfil}
         tipo="foto"
       />
       {/* Modal para trocar/remover banner */}

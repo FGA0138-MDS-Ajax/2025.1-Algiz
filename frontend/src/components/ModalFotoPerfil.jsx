@@ -61,7 +61,10 @@ export default function ModalFotoPerfil({ open, onClose, onTrocar, onRemover, fo
           </button>
           <button
             className="flex-1 bg-green-100 hover:bg-green-200 text-green-900 font-semibold py-2 rounded-full transition flex items-center justify-center"
-            onClick={onRemover}
+            onClick={() => {
+              console.log("Remove button clicked!");
+              onRemover();
+            }}
           >
             Remover
           </button>
