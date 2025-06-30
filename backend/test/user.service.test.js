@@ -1,4 +1,3 @@
-import userService from '../src/api/components/users/user.service.js';
 // Vamos assumir que você exportou a lógica de validação para um ficheiro de utilitários.
 import { isValidDocument } from '../src/api/utils/validation.util.js';
 

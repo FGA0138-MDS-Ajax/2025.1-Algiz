@@ -1,33 +1,18 @@
 import db from "../../config/db.js";
-import { hashPassword } from "../../utils/hash.util.js";
-//import { cpf, cnpj } from 'cpf-cnpj-validator';
+import { hashPassword, comparePassword } from "../../utils/hash.util.js";
 import jwt from "jsonwebtoken";
 import models from "../../../models/index.model.js";
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
-import { comparePassword } from "../../utils/hash.util.js"; // Fixed path
 const { Usuario } = models;
 
-async function createUser(userData) {
-  const {
-    nome,
-    sobrenome,
-    email,
-    senha,
-    telefone,
-    estado,
-    sexo,
-    dtNascimento,
-    cpfCnpj,
-  } = userData;
-  const erros = [];
+// Helper functions for validation
+function validateRequiredField(field, fieldName, erros) {
+  if (!field || field.trim() === "") {
+    erros.push({ campo: fieldName, mensagem: `${capitalize(fieldName)} é obrigatório.` });
+  }
+}
 
-  // 1. Validações de campos obrigatórios e formato
-  if (!nome || nome.trim() === "") {
-    erros.push({ campo: "nome", mensagem: "Nome é obrigatório." });
-  }
-  if (!sobrenome || sobrenome.trim() === "") {
-    erros.push({ campo: "sobrenome", mensagem: "Sobrenome é obrigatório." });
-  }
+function validateEmail(email, erros) {
   if (!email || email.trim() === "") {
     erros.push({ campo: "email", mensagem: "Email é obrigatório." });
   } else {
@@ -36,10 +21,12 @@ async function createUser(userData) {
       erros.push({ campo: "email", mensagem: "Formato de e-mail inválido." });
     }
   }
+}
+
+function validateSenha(senha, erros) {
   if (!senha) {
     erros.push({ campo: "senha", mensagem: "Senha é obrigatória." });
   } else {
-    // Validações de senha
     if (senha.length < 8) {
       erros.push({
         campo: "senha",
@@ -65,24 +52,9 @@ async function createUser(userData) {
       });
     }
   }
-  if (!telefone || telefone.trim() === "") {
-    erros.push({ campo: "telefone", mensagem: "Telefone é obrigatório." });
-  }
-  if (!estado || estado.trim() === "") {
-    erros.push({ campo: "estado", mensagem: "Estado é obrigatório." });
-  }
-  if (!sexo || sexo.trim() === "") {
-    erros.push({ campo: "sexo", mensagem: "Sexo é obrigatório." });
-  }
-  if (!dtNascimento || dtNascimento.trim() === "") {
-    erros.push({
-      campo: "dtNascimento",
-      mensagem: "Data de nascimento é obrigatória.",
-    });
-  }
+}
 
-  // Validação CPF/CNPJ
-  // Basic validation without cpf-cnpj-validator
+function validateCpfCnpj(cpfCnpj, erros) {
   if (!cpfCnpj || cpfCnpj.trim() === "") {
     erros.push({ campo: "cpfCnpj", mensagem: "CPF/CNPJ é obrigatório." });
   } else {
@@ -94,8 +66,37 @@ async function createUser(userData) {
       });
     }
   }
+}
 
-  // 2. Se houver erros de validação, lançar exceção
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function createUser(userData) {
+  const {
+    nome,
+    sobrenome,
+    email,
+    senha,
+    telefone,
+    estado,
+    sexo,
+    dtNascimento,
+    cpfCnpj,
+  } = userData;
+  const erros = [];
+
+  // Validations
+  validateRequiredField(nome, "nome", erros);
+  validateRequiredField(sobrenome, "sobrenome", erros);
+  validateEmail(email, erros);
+  validateSenha(senha, erros);
+  validateRequiredField(telefone, "telefone", erros);
+  validateRequiredField(estado, "estado", erros);
+  validateRequiredField(sexo, "sexo", erros);
+  validateRequiredField(dtNascimento, "dtNascimento", erros);
+  validateCpfCnpj(cpfCnpj, erros);
+
   if (erros.length > 0) {
     const error = new Error("Erro de validação");
     error.name = "ValidationError";
@@ -115,14 +116,14 @@ async function createUser(userData) {
 
   const hashedPassword = await hashPassword(senha);
 
-  // 1. Inserir em USUARIO
+  // Inserir em USUARIO
   const insertUserSql = `
         INSERT INTO USUARIO (emailUsuario, senha, fotoPerfil, bannerPerfil)
         VALUES (?, ?, ?, ?)
     `;
 
-  const defaultFotoPerfil = "default/foto-perfil-padrao-usuario-1.png";
-  const defaultBannerPerfil = "default/banner-padrao-1.png";
+  const defaultFotoPerfil = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  const defaultBannerPerfil = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
   const [userResult] = await db.query(insertUserSql, [
     email,
     hashedPassword,
@@ -131,7 +132,7 @@ async function createUser(userData) {
   ]);
   const insertedUserId = userResult.insertId;
 
-  // 2. Inserir em FISICO
+  // Inserir em FISICO
   const insertFisicoSql = `
         INSERT INTO FISICO (cpfFisico, nomeFisico, sobrenomeFisico, telefoneFisico, dtNascimento, estadoFisico, sexo, idUsuario)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)

@@ -1,7 +1,5 @@
 import { Juridico } from '../../../models/index.js';
-
 import { isValidDocument } from '../../utils/validation.util.js';
-
 
 async function createEmpresa(idUsuario, dadosEmpresa) {
     const {
@@ -14,31 +12,36 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         areaAtuacao
     } = dadosEmpresa;
 
-
     if (!isValidDocument(cnpjJuridico)) {
-        throw { name: 'ValidationError', message: 'CNPJ inválido ou não fornecido.' };
+        const error = new Error('CNPJ inválido ou não fornecido.');
+        error.name = 'ValidationError';
+        throw error;
     }
     if (!razaoSocial) {
-        throw { name: 'ValidationError', message: 'Razão Social é obrigatória.' };
+        const error = new Error('Razão Social é obrigatória.');
+        error.name = 'ValidationError';
+        throw error;
     }
     if (!nomeComercial) {
-        throw { name: 'ValidationError', message: 'Nome Comercial é obrigatório.' };
+        const error = new Error('Nome Comercial é obrigatório.');
+        error.name = 'ValidationError';
+        throw error;
     }
-
 
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
 
-
     const existingCnpj = await Juridico.findByPk(cnpjLimpo);
     if (existingCnpj) {
-        throw { name: 'ConflictError', message: 'Este CNPJ já está cadastrado.' };
+        const error = new Error('Este CNPJ já está cadastrado.');
+        error.name = 'ConflictError';
+        throw error;
     }
     const existingNome = await Juridico.findOne({ where: { nomeComercial } });
     if (existingNome) {
-        throw { name: 'ConflictError', message: 'Este Nome Comercial já está em uso.' };
+        const error = new Error('Este Nome Comercial já está em uso.');
+        error.name = 'ConflictError';
+        throw error;
     }
-
-
     try {
         const novaEmpresa = await Juridico.create({
             cnpjJuridico: cnpjLimpo,
@@ -56,8 +59,6 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         throw new Error("Não foi possível salvar a empresa no banco de dados.");
     }
 }
-
-
 async function findAllEmpresas() {
     try {
         return await Juridico.findAll();
@@ -66,8 +67,6 @@ async function findAllEmpresas() {
         throw new Error("Erro ao buscar dados das empresas.");
     }
 }
-
-
 async function findEmpresaByPk(cnpj) {
     try {
         const cnpjLimpo = cnpj.replace(/\D/g, '');
@@ -77,8 +76,6 @@ async function findEmpresaByPk(cnpj) {
         throw new Error("Erro ao buscar dados da empresa.");
     }
 }
-
-
 export default {
     createEmpresa,
     findAllEmpresas,
