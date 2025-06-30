@@ -29,6 +29,9 @@ router.post("/usuario/:id/banner",
   userController.editUserBanner
 );
 
+router.post("/usuario/:id/foto-default", verifyToken, userController.setUserDefaultProfilePhoto);
+router.post("/usuario/:id/banner-default", verifyToken, userController.setUserDefaultBanner);
+
 // 🔧 DEBUG/UTILITY: List all users (keep protected if needed)
 router.get("/usuarios", async (req, res) => {
   try {
