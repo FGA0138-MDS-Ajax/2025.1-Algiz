@@ -6,32 +6,32 @@ module.exports = {
       {
         emailUsuario: 'joao.silva@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
-        bannerPerfil: 'default/banner-padrao-1.png'
+        fotoPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png',
+        bannerPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png'
       },
       {
         emailUsuario: 'maria.souza@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
-        bannerPerfil: 'default/banner-padrao-1.png'
+        fotoPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png',
+        bannerPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png'
       },
       {
         emailUsuario: 'carlos.pereira@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
-        bannerPerfil: 'default/banner-padrao-1.png'
+        fotoPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png',
+        bannerPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png'
       },
       {
         emailUsuario: 'ana.oliveira@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
-        bannerPerfil: 'default/banner-padrao-1.png'
+        fotoPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png',
+        bannerPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png'
       },
       {
         emailUsuario: 'lucas.santos@gmail.com',
         senha: 'ecoNet123',
-        fotoPerfil: 'default/foto-perfil-padrao-usuario-1.png',
-        bannerPerfil: 'default/banner-padrao-1.png'
+        fotoPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png',
+        bannerPerfil: 'https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png'
       },
     ], {});
   },
