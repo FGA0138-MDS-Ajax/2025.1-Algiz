@@ -324,6 +324,38 @@ export async function editUserBanner(req, res) {
   }
 }
 
+export async function setUserDefaultProfilePhoto(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    if (userId !== req.user.id) {
+      return res.status(403).json({ erro: "Você só pode editar sua própria foto." });
+    }
+
+    const DEFAULT_PROFILE_URL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+    const updateResult = await userService.updateUserProfilePhoto(userId, DEFAULT_PROFILE_URL);
+
+    return res.status(200).json({ ...updateResult, fotoPerfil: DEFAULT_PROFILE_URL });
+  } catch (error) {
+    return res.status(400).json({ erro: error.message });
+  }
+}
+
+export async function setUserDefaultBanner(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    if (userId !== req.user.id) {
+      return res.status(403).json({ erro: "Você só pode editar seu próprio banner." });
+    }
+
+    const DEFAULT_BANNER_URL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
+    const updateResult = await userService.updateUserBanner(userId, DEFAULT_BANNER_URL);
+
+    return res.status(200).json({ ...updateResult, bannerPerfil: DEFAULT_BANNER_URL });
+  } catch (error) {
+    return res.status(400).json({ erro: error.message });
+  }
+}
+
 export default {
   registerUser,
   loginUser,
@@ -334,5 +366,7 @@ export default {
   getPublicUserProfile,
   editUserProfile,
   editUserProfilePhoto,
-  editUserBanner
+  editUserBanner,
+  setUserDefaultProfilePhoto,
+  setUserDefaultBanner
 };
