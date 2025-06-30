@@ -14,5 +14,3 @@ router.get('/', enterpriseController.getAllEmpresas);
 
 // ROTA PARA BUSCAR UMA empresa específica pelo seu CNPJ (pública)
 router.get('/:cnpj', enterpriseController.getEmpresaById);
-
-// export default router;
