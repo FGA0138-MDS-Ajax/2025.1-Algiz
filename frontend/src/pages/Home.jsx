@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
 import Footer from "../components/Footer";
-import Post from "../components/Post";
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -19,7 +18,7 @@ export default function HomePublica() {
   useEffect(() => {
     async function fetchUsuarioCompleto() {
       const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado && usuarioLogado.id) {
+      if (usuarioLogado?.id) {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
@@ -88,9 +87,10 @@ export default function HomePublica() {
         {/* Feed central */}
         <main className="order-3 md:order-2 flex-1 flex flex-col items-center gap-6">
           {[1, 2].map((i) => (
-            <div
+            <button
+              type="button"
               key={i}
-              className="bg-white p-4 rounded-xl shadow-md cursor-pointer transition hover:shadow-lg w-full max-w-[520px]"
+              className="bg-white p-4 rounded-xl shadow-md cursor-pointer transition hover:shadow-lg w-full max-w-[520px] text-left"
               onClick={() => navigate("/post")}
               title="Ver post completo"
             >
@@ -143,7 +143,7 @@ export default function HomePublica() {
                   <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
                 </button>
               </div>
-            </div>
+            </button>
           ))}
         </main>
       </div>

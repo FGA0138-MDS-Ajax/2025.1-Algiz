@@ -54,11 +54,6 @@ function EsqueciSenha() {
       navigate("/codigo-autenticacao", {
         state: { email },
       });
-      {email && (
-        <p className="text-white text-sm text-center mb-4">
-          Código enviado para: <strong>{email}</strong>
-        </p>
-      )}
     } catch (err) {
       setError(err.message);
     }
@@ -94,8 +89,9 @@ function EsqueciSenha() {
         {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
 
         <div className="w-full mb-5 mt-auto">
-          <label className="block mb-1 text-white font-medium">Qual é o seu email?</label>
+          <label htmlFor="email" className="block mb-1 text-white font-medium">Qual é o seu email?</label>
           <input
+            id="email"
             type="email"
             className="input w-full"
             placeholder="username@gmail.com"

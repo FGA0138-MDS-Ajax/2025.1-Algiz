@@ -84,8 +84,9 @@ function RedefinirSenha() {
         {erro && <p className="text-red-500 mb-4 text-sm">{erro}</p>}
 
         <div className="relative w-full mb-6">
-        <label className="block mb-1 text-white font-medium">Nova senha:</label>
+        <label htmlFor="nova-senha" className="block mb-1 text-white font-medium">Nova senha:</label>
             <input
+                id="nova-senha"
                 type={verNovaSenha ? "text" : "password"}
                 className="input w-full"
                 placeholder="insira o código"
@@ -105,8 +106,9 @@ function RedefinirSenha() {
     </div>
 
     <div className="relative w-full mb-6">
-    <label className="block mb-1 text-white font-medium">Repita a nova senha:</label>
+    <label htmlFor="confirmar-senha" className="block mb-1 text-white font-medium">Repita a nova senha:</label>
     <input
+        id="confirmar-senha"
         type={verConfirmarSenha ? "text" : "password"}
         className="input w-full"
         placeholder="insira o código"

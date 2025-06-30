@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function EmpresasModal({ open, onClose, tab, setTab, empresasRecomendadas }) {
   if (!open) return null;
@@ -39,8 +40,8 @@ export default function EmpresasModal({ open, onClose, tab, setTab, empresasReco
         </div>
         <div className="overflow-y-auto pr-5" style={{ maxHeight: "71vh" }}>
           <ul className="space-y-6">
-            {(tab === "recomendadas" ? empresasRecomendadas : empresasRecomendadas).map((empresa, idx) => (
-              <li key={idx} className="flex gap-4 items-start">
+            {(tab === "recomendadas" ? empresasRecomendadas : []).map((empresa) => (
+              <li key={empresa.nome} className="flex gap-4 items-start">
                 <img
                   src={empresa.img}
                   alt={empresa.nome}
@@ -61,3 +62,17 @@ export default function EmpresasModal({ open, onClose, tab, setTab, empresasReco
     </div>
   );
 }
+
+EmpresasModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  tab: PropTypes.string.isRequired,
+  setTab: PropTypes.func.isRequired,
+  empresasRecomendadas: PropTypes.arrayOf(
+    PropTypes.shape({
+      img: PropTypes.string,
+      nome: PropTypes.string,
+      desc: PropTypes.string,
+    })
+  ).isRequired,
+};

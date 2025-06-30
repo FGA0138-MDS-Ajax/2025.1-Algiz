@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
   const [formData, setFormData] = useState({
@@ -40,10 +41,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
         <form className="px-8 py-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="nome" className="block text-gray-700 font-semibold mb-1">
                 Nome da empresa
               </label>
               <input
+                id="nome"
                 type="text"
                 name="nome"
                 placeholder="Nome fantasia"
@@ -54,10 +56,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="cnpj" className="block text-gray-700 font-semibold mb-1">
                 CNPJ
               </label>
               <input
+                id="cnpj"
                 type="text"
                 name="cnpj"
                 placeholder="00.000.000/0000-00"
@@ -68,10 +71,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="email" className="block text-gray-700 font-semibold mb-1">
                 Email
               </label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 placeholder="empresa@email.com"
@@ -82,10 +86,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="telefone" className="block text-gray-700 font-semibold mb-1">
                 Telefone
               </label>
               <input
+                id="telefone"
                 type="text"
                 name="telefone"
                 placeholder="ex: 61 912345678"
@@ -95,10 +100,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="endereco" className="block text-gray-700 font-semibold mb-1">
                 Endereço
               </label>
               <input
+                id="endereco"
                 type="text"
                 name="endereco"
                 placeholder="ex: Qr ## Cnj ###"
@@ -108,10 +114,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="segmento" className="block text-gray-700 font-semibold mb-1">
                 Segmento
               </label>
               <input
+                id="segmento"
                 type="text"
                 name="segmento"
                 placeholder="ex: Tecnologia"
@@ -138,7 +145,13 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
             </button>
           </div>
         </form>
-      </div>
+    </div>
     </div>
   );
 }
+
+ModalCadastroEmpresa.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  erro: PropTypes.string,
+};
