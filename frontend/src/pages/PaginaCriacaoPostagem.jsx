@@ -75,9 +75,10 @@ export default function CriarPostagem() {
             />
 
             <div className="mb-4">
-              <label className="block mb-1 font-semibold">Upload da imagem</label>
+              <label htmlFor="upload-imagem" className="block mb-1 font-semibold">Upload da imagem</label>
               <div className="bg-gray-200 rounded-xl h-48 flex justify-center items-center relative overflow-hidden">
                 <input
+                  id="upload-imagem"
                   type="file"
                   accept="image/*"
                   onChange={handleImagemChange}
@@ -98,8 +99,9 @@ export default function CriarPostagem() {
               </div>
             </div>
 
-            <label className="block mb-1 font-semibold">Descrição do post:</label>
+            <label htmlFor="descricao-post" className="block mb-1 font-semibold">Descrição do post:</label>
             <textarea
+              id="descricao-post"
               className="w-full border border-gray-300 rounded-xl px-4 py-2 mb-4"
               rows={3}
               placeholder="Descrição do post"
@@ -110,8 +112,9 @@ export default function CriarPostagem() {
 
             <div className="flex flex-col md:flex-row gap-4 items-end">
               <div className="flex-1">
-                <label className="block mb-1 font-semibold">Adicionar tag:</label>
+                <label htmlFor="tag-select" className="block mb-1 font-semibold">Adicionar tag:</label>
                 <select
+                  id="tag-select"
                   className="w-full border border-gray-300 rounded-xl px-4 py-2"
                   value={tag}
                   onChange={(e) => setTag(e.target.value)}
