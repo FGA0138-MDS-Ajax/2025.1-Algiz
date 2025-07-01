@@ -1,9 +1,10 @@
-import { Juridico } from '../../../models/index.js';
-
+import models from "../../../models/index.model.js";
+const { Empresa } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
 
 
 async function createEmpresa(idUsuario, dadosEmpresa) {
+    console.log("Recebido no backend:", dadosEmpresa);
     const {
         cnpjJuridico,
         razaoSocial,
@@ -29,18 +30,18 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
 
 
-    const existingCnpj = await Juridico.findByPk(cnpjLimpo);
+    const existingCnpj = await Empresa.findByPk(cnpjLimpo);
     if (existingCnpj) {
         throw { name: 'ConflictError', message: 'Este CNPJ já está cadastrado.' };
     }
-    const existingNome = await Juridico.findOne({ where: { nomeComercial } });
+    const existingNome = await Empresa.findOne({ where: { nomeComercial } });
     if (existingNome) {
         throw { name: 'ConflictError', message: 'Este Nome Comercial já está em uso.' };
     }
 
 
     try {
-        const novaEmpresa = await Juridico.create({
+        const novaEmpresa = await Empresa.create({
             cnpjJuridico: cnpjLimpo,
             razaoSocial,
             nomeComercial,
@@ -60,7 +61,7 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
 
 async function findAllEmpresas() {
     try {
-        return await Juridico.findAll();
+        return await Empresa.findAll();
     } catch (error) {
         console.error("Erro no serviço ao buscar todas as empresas:", error);
         throw new Error("Erro ao buscar dados das empresas.");
@@ -71,7 +72,7 @@ async function findAllEmpresas() {
 async function findEmpresaByPk(cnpj) {
     try {
         const cnpjLimpo = cnpj.replace(/\D/g, '');
-        return await Juridico.findByPk(cnpjLimpo);
+        return await Empresa.findByPk(cnpjLimpo);
     } catch (error) {
         console.error(`Erro no serviço ao buscar empresa pelo CNPJ ${cnpj}:`, error);
         throw new Error("Erro ao buscar dados da empresa.");

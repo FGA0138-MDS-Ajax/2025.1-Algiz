@@ -1,21 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function OpcoesPerfil() {
+export default function OpcoesPerfil({ fotoPerfil }) {
   const [isOpen, setIsOpen] = useState(false);
   const API_URL = "http://localhost:3001";
-  const [fotoPerfil, setFotoPerfil] = useState(`${API_URL}/images/default/foto-perfil-padrao-usuario-1.png`);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-    if (usuarioLogado && usuarioLogado.fotoPerfil) {
-      setFotoPerfil(usuarioLogado.fotoPerfil);
-    } else {
-      setFotoPerfil(`${API_URL}/images/default/foto-perfil-padrao-usuario-1.png`);
-    }
-  }, []);
 
   // Fecha o dropdown ao clicar fora
   useEffect(() => {
@@ -30,9 +20,9 @@ export default function OpcoesPerfil() {
   }, [isOpen]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("usuarioLogado"); 
-    navigate("/Login"); 
-    setIsOpen(false); 
+    sessionStorage.removeItem("usuarioLogado");
+    navigate("/Login");
+    setIsOpen(false);
   };
 
   return (

@@ -14,6 +14,7 @@ import { admin, adminRouter } from './admin.js';
 
 // Importa as rotas de usuário
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
+import empresaRoutes from './src/api/routes/empresa.route.js'; 
 import messageRoutes from './src/api/routes/message.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
@@ -83,6 +84,7 @@ async function startServer() {
 
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
+  app.use('/api', empresaRoutes); 
 
   app.use(
     session({

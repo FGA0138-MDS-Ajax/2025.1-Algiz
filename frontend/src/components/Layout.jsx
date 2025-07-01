@@ -1,22 +1,50 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 import NavbarLogado from "./Navbar_logado";
+import { useEffect, useState } from "react";
 
 function Layout({ children }) {
   const location = useLocation();
+  const [usuario, setUsuario] = useState(null);
 
-  
   const noNavbarRoutes = ["/Login", "/cadastro", "/login", "/esqueci-senha", "/codigo-autenticacao", "/redefinir-senha"];
-
-  
   const hideNavbar = noNavbarRoutes.includes(location.pathname);
 
-  
-  const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+  useEffect(() => {
+    async function fetchUsuarioCompleto() {
+      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+      if (usuarioLogado && usuarioLogado.id) {
+        try {
+          const token = sessionStorage.getItem("authToken");
+          const res = await fetch(
+            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setUsuario(data);
+          } else {
+            setUsuario(null);
+          }
+        } catch {
+          setUsuario(null);
+        }
+      } else {
+        setUsuario(null);
+      }
+    }
+    fetchUsuarioCompleto();
+  }, []);
 
   return (
     <>
-      {!hideNavbar && (usuarioLogado ? <NavbarLogado usuario={usuarioLogado} /> : <Navbar />)}
+      {!hideNavbar && (usuario ? <NavbarLogado usuario={usuario} /> : <Navbar />)}
       <div className="min-h-screen">{children}</div>
     </>
   );

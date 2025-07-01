@@ -2,6 +2,7 @@ import models from '../../../models/index.model.js';
 const { Mensagem, Usuario } = models;
 import { Op } from 'sequelize';
 
+
 async function createMessage(dadosMensagem) {
     const { idRemetente, idDestinatario, conteudo } = dadosMensagem;
 
