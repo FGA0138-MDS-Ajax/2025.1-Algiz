@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 import { estados } from "../utils/opcoes_form";
 
@@ -49,12 +50,13 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
       });
       const data = await res.json();
       if (res.ok) {
-        onSave && onSave(data.empresa);
+        onSave?.(data.empresa);
         onClose();
       } else {
         setErroLocal(data.erro || "Erro ao cadastrar empresa.");
       }
     } catch (err) {
+      console.error("Erro ao cadastrar empresa:", err);
       setErroLocal("Erro ao conectar com o servidor.");
     }
   };
@@ -79,7 +81,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
         <form className="px-8 py-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="nome" className="block text-gray-700 font-semibold mb-1">
                 Nome Comercial
               </label>
               <input
@@ -94,10 +96,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="razaoSocial" className="block text-gray-700 font-semibold mb-1">
                 Razão Social
               </label>
               <input
+                id="razaoSocial"
                 type="text"
                 name="razaoSocial"
                 placeholder="Razão social"
@@ -108,7 +111,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="cnpj" className="block text-gray-700 font-semibold mb-1">
                 CNPJ
               </label>
               <input
@@ -168,10 +171,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="estado" className="block text-gray-700 font-semibold mb-1">
                 Estado
               </label>
               <select
+                id="estado"
                 name="estado"
                 value={formData.estado}
                 onChange={handleChange}
@@ -187,7 +191,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               </select>
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="segmento" className="block text-gray-700 font-semibold mb-1">
                 Área de Atuação
               </label>
               <input
