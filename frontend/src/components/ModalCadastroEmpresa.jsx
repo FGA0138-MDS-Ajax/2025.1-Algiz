@@ -1,24 +1,64 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+import { estados } from "../utils/opcoes_form";
+
 export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
   const [formData, setFormData] = useState({
     nome: "",
+    razaoSocial: "",
     cnpj: "",
     email: "",
     telefone: "",
     endereco: "",
-    segmento: "",
+    estado: "",
+    areaAtuacao: "",
   });
+
+  const [erroLocal, setErroLocal] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
+    setErroLocal("");
+
+    // Mapeia os campos do frontend para os nomes esperados no backend
+    const dadosParaBackend = {
+      nomeComercial: formData.nome,
+      razaoSocial: formData.razaoSocial,
+      cnpjJuridico: formData.cnpj,
+      email: formData.email,
+      telefoneJuridico: formData.telefone,
+      enderecoJuridico: formData.endereco,
+      estadoJuridico: formData.estado,
+      areaAtuacao: formData.areaAtuacao,
+    };
+
+    try {
+      const token = sessionStorage.getItem("authToken");
+      const res = await fetch("http://localhost:3001/api/empresa/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(dadosParaBackend),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        onSave?.(data.empresa);
+        onClose();
+      } else {
+        setErroLocal(data.erro || "Erro ao cadastrar empresa.");
+      }
+    } catch (err) {
+      console.error("Erro ao cadastrar empresa:", err);
+      setErroLocal("Erro ao conectar com o servidor.");
+    }
   };
 
   return (
@@ -42,7 +82,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <div>
               <label htmlFor="nome" className="block text-gray-700 font-semibold mb-1">
-                Nome da empresa
+                Nome Comercial
               </label>
               <input
                 id="nome"
@@ -50,6 +90,21 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 name="nome"
                 placeholder="Nome fantasia"
                 value={formData.nome}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="razaoSocial" className="block text-gray-700 font-semibold mb-1">
+                Razão Social
+              </label>
+              <input
+                id="razaoSocial"
+                type="text"
+                name="razaoSocial"
+                placeholder="Razão social"
+                value={formData.razaoSocial}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
                 required
@@ -97,6 +152,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 value={formData.telefone}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
+                required
               />
             </div>
             <div>
@@ -111,24 +167,48 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 value={formData.endereco}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
+                required
               />
             </div>
             <div>
+              <label htmlFor="estado" className="block text-gray-700 font-semibold mb-1">
+                Estado
+              </label>
+              <select
+                id="estado"
+                name="estado"
+                value={formData.estado}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
+                required
+              >
+                <option value="">Selecione o estado</option>
+                {estados.map((e) => (
+                  <option key={e.value} value={e.value}>
+                    {e.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
               <label htmlFor="segmento" className="block text-gray-700 font-semibold mb-1">
-                Segmento
+                Área de Atuação
               </label>
               <input
                 id="segmento"
                 type="text"
-                name="segmento"
+                name="areaAtuacao"
                 placeholder="ex: Tecnologia"
-                value={formData.segmento}
+                value={formData.areaAtuacao}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
+                required
               />
             </div>
           </div>
-          {erro && <div className="text-red-500 text-sm mb-4">{erro}</div>}
+          {(erroLocal || erro) && (
+            <div className="text-red-500 text-sm mb-4">{erroLocal || erro}</div>
+          )}
           <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"
