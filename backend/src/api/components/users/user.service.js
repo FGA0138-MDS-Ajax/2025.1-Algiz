@@ -51,6 +51,12 @@ function validateSenha(senha, erros) {
         mensagem: "Senha deve conter pelo menos um número.",
       });
     }
+    if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]]/.test(senha)) {
+      erros.push({
+        campo: "senha",
+        mensagem: "A senha deve conter ao menos um caractere especial.",
+      });
+    }
   }
 }
 
