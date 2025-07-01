@@ -5,9 +5,9 @@ sidebar_label: "30/06/2025"
 # Ata de Reunião
 
 **Data:** 30/06/2025  
-**Horário de Início:** 20:14
-**Horário de Término:** 20:54
-**Duração:**  40 minutos
+**Horário de Início:** 20:14  
+**Horário de Término:** 20:54  
+**Duração:**  40 minutos  
 **Local:** Microsoft Teams
 
 ## Participantes
@@ -48,5 +48,5 @@ Apresentar backlog da Sprint Final do projeto e resolver conflitos das issues at
 
 ## Próxima Reunião
 **Data:** 02/07/2025  
-**Local:** Microsoft Teams 
+**Local:** Microsoft Teams  
 **Horário:** 14:00 
