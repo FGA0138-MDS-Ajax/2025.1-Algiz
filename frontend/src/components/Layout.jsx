@@ -13,30 +13,28 @@ function Layout({ children }) {
 
   useEffect(() => {
     async function fetchUsuarioCompleto() {
-      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado?.id) {
-        try {
-          const token = sessionStorage.getItem("authToken");
-          const res = await fetch(
-            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-            }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            setUsuario(data);
-          } else {
-            setUsuario(null);
+      try {
+        const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+        if (!usuarioLogado?.id) return setUsuario(null);
+
+        const token = sessionStorage.getItem("authToken");
+        const res = await fetch(
+          `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
           }
-        } catch {
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setUsuario(data);
+        } else {
           setUsuario(null);
         }
-      } else {
+      } catch {
         setUsuario(null);
       }
     }
