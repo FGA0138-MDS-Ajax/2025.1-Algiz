@@ -5,56 +5,48 @@ sidebar_label: "30/06/2025"
 # Ata de Reunião
 
 **Data:** 30/06/2025  
-**Horário de Início:** [Hora de Início]  
-**Horário de Término:** [Hora de Término]  
-**Duração:**  [Tempo de duração]
+**Horário de Início:** 20:14  
+**Horário de Término:** 20:54  
+**Duração:**  40 minutos  
 **Local:** Microsoft Teams
 
 ## Participantes
-1. Ana Beatriz Cunha Wirthmann
-2. Arthur de Lima Sobreira
-3. Caua Nicolas Pereira de Oliveira
-4. Diogo Oliveira Ferreira
-5. Gabriel Augusto Vilarinho Viana Rocha
-6. Gabriel Pereira da Silva
-7. João Victor Sousa Soares e Silva
-8. João Pedro Sampaio Maciel
-9. Julia Oliveira Patricio
-10. Mariana Ribeiro Santana Gonzaga
-11. Rafael Siqueira Soares
-12. Tiago Scherrer Tavares de Lyra
+1. Arthur de Lima Sobreira
+2. Diogo Oliveira Ferreira
+3. Gabriel Augusto Vilarinho Viana Rocha
+4. Gabriel Pereira da Silva
+5. João Pedro Sampaio Maciel
+6. Rafael Siqueira Soares
+7. Tiago Scherrer Tavares de Lyra
 
 ## Objetivos
-[Espaço para quaisquer observações adicionais]
+Apresentar backlog da Sprint Final do projeto e resolver conflitos das issues atuais
 
 ## Discussões e Decisões
 
-### 1. [Item 1]
+### 1. Discussão do estado das Issues
 **Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
+- Discussão sobre as issues atuais #112, #113 e #164
+- Funcionamento atual do código, restante para funcionamento completo e também para a finalização das issues
 
 **Decisões:**
-- [Descrição da decisão tomada]
+- Esclarecer tarefas restantes e objetivos das issues + Checar Funcionalidades atuais
 
 **Responsáveis:**
-- [Nome dos responsáveis pela ação]
+- Gabriel Augusto Vilarinho Viana Rocha
 
-### 2. [Item 2]
+### 2. Funcionalides e páginas restantes para o final do projeto
 **Discussão:**
-- [Descrição da discussão]
-- [Pontos relevantes levantados]
+- Demonstração e Discussão das funcionalidades restantes e páginas restantes do projeto
+- Os tópicos abordados são as issues da Sprint Final -- Checar GitHub-Projects
 
 **Decisões:**
-- [Descrição da decisão tomada]
+- Definição de funcionalides das Issues finais para o funcionamento programado do projeto
 
 **Responsáveis:**
-- [Nome dos responsáveis pela ação]
+- Gabriel Augusto Vilarinho Viana Rocha
 
 ## Próxima Reunião
 **Data:** 02/07/2025  
-**Local:** Microsoft Teams 
+**Local:** Microsoft Teams  
 **Horário:** 14:00 
-
-## Observações
-[Espaço para quaisquer observações adicionais]
