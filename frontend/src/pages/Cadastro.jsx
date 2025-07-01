@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import EstadoDropdown from "../components/EstadoDropdown";
 import GeneroDropdown from "../components/GeneroDropdown";
-import { validateCadastro } from "../utils/validacao";
+import { validatePasswordsMatch } from "../utils/validacao";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 
@@ -28,25 +28,32 @@ export default function Cadastro() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [senhaErros, setSenhaErros] = useState([]);
+  const [senhaErros] = useState([]);
 
   function handleChange(e) {
-    
     const { name, value } = e.target;
-    setForm({ ...form, [e.target.name]: e.target.value, [name]: value });
-    setErro("");
-      if (name === "senha") {
-        const errosTemp = [];
-      if (value.length < 8) {
-        errosTemp.push("A senha deve conter no mínimo 8 caracteres.");
-      } else if (!/[A-Z]/.test(value)) {
-        errosTemp.push("A senha deve conter ao menos uma letra maiúscula.");
-      } else if (!/\d/.test(value)) {
-        errosTemp.push("A senha deve conter ao menos um número.");
-      } else if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]]/.test(value)) {
-        errosTemp.push("A senha deve conter ao menos um caractere especial.");
+    const updatedForm = { ...form, [name]: value };
+    setForm(updatedForm);
+    setErro({}); // zera os erros sempre que digita algo
+
+    // Validação da senha
+    if (name === "repetirSenha" || name === "senha") {
+      if (updatedForm.repetirSenha) { // só valida se repetiu algo
+        const erroRepetir = validatePasswordsMatch(updatedForm.senha, updatedForm.repetirSenha);
+        if (erroRepetir) {
+          setErro((prev) => ({ ...prev, repetirSenha: erroRepetir }));
+        } else {
+          setErro((prev) => {
+            const { repetirSenha, ...rest } = prev;
+            return rest;
+          });
+        }
+      } else {
+        setErro((prev) => {
+          const { repetirSenha, ...rest } = prev;
+          return rest;
+        });
       }
-      setSenhaErros(errosTemp);
     }
   }
 
@@ -54,8 +61,12 @@ export default function Cadastro() {
     e.preventDefault();
     setErro("");
     const error = validateCadastro(form, "pessoa");
+    if (error) {
+      setErro({ [error.field]: error.message });
+      return;
+    }
     if (senhaErros.length > 0) {
-      setErro(error);
+      setErro({ senha: senhaErros.join(" ") });
       return;
     }
 
@@ -266,6 +277,9 @@ export default function Cadastro() {
                 type={showRepetir ? "text" : "password"}
                 className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.repetirSenha && (
+                <p className="text-red-400 text-sm mt-2">{erro.repetirSenha}</p>
+              )}
               {form.repetirSenha && (
                 <button
                   type="button"
@@ -288,38 +302,9 @@ export default function Cadastro() {
             Cadastrar
           </button>
         </div>
-        {(() => {
-          if (!erro) return null;
-          if (Array.isArray(erro)) {
-            return (
-              <ul className="text-red-400 font-semibold text-sm mt-2 text-center list-disc list-inside">
-                {erro.map((e) => {
-                  const key =
-                    typeof e === "object"
-                      ? e.mensagem || e.message || JSON.stringify(e)
-                      : e;
-                  return (
-                    <li key={key}>
-                      {typeof e === "object"
-                        ? e.mensagem || e.message || JSON.stringify(e)
-                        : e}
-                    </li>
-                  );
-                })}
-              </ul>
-            );
-          }
-          if (typeof erro === "object") {
-            return (
-              <p className="text-red-400 font-semibold text-sm mt-2 text-center">
-                {(erro?.mensagem || erro?.message || JSON.stringify(erro))}
-              </p>
-            );
-          }
-          return (
-            <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
-          );
-        })()}
+        {typeof erro === "string" && (
+          <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
+        )}
       </form>
     </div>
   );

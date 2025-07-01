@@ -25,12 +25,20 @@ export function validateCelular(celular) {
   return null;
 }
 
-export function validateSenhaForte(senha) {
-  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-  if (!regex.test(senha)) {
-    return "A senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número.";
+export function validarSenhaCompleta(senha) {
+  if (senha.length < 8) {
+    return ["A senha deve conter no mínimo 8 caracteres."];
   }
-  return null;
+  if (!/[A-Z]/.test(senha)) {
+    return ["A senha deve conter ao menos uma letra maiúscula."];
+  }
+  if (!/\d/.test(senha)) {
+    return ["A senha deve conter ao menos um número."];
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]]/.test(senha)) {
+    return ["A senha deve conter ao menos um caractere especial."];
+  }
+  return [];
 }
 
 export function validateEmail(email) {
