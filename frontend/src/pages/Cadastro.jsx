@@ -28,17 +28,33 @@ export default function Cadastro() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [senhaErros, setSenhaErros] = useState([]);
 
   function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    
+    const { name, value } = e.target;
+    setForm({ ...form, [e.target.name]: e.target.value, [name]: value });
     setErro("");
+      if (name === "senha") {
+        const errosTemp = [];
+      if (value.length < 8) {
+        errosTemp.push("A senha deve conter no mínimo 8 caracteres.");
+      } else if (!/[A-Z]/.test(value)) {
+        errosTemp.push("A senha deve conter ao menos uma letra maiúscula.");
+      } else if (!/\d/.test(value)) {
+        errosTemp.push("A senha deve conter ao menos um número.");
+      } else if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]]/.test(value)) {
+        errosTemp.push("A senha deve conter ao menos um caractere especial.");
+      }
+      setSenhaErros(errosTemp);
+    }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setErro("");
     const error = validateCadastro(form, "pessoa");
-    if (error) {
+    if (senhaErros.length > 0) {
       setErro(error);
       return;
     }
@@ -69,7 +85,7 @@ export default function Cadastro() {
     } catch (err) {
       console.error('Full error:', err);
       if (err.response?.data?.details) {
-        // details pode ser array de objetos { field, message }
+       
         const details = err.response.data.details;
         if (Array.isArray(details)) {
           // Mostra cada mensagem em uma lista
@@ -221,6 +237,13 @@ export default function Cadastro() {
                 type={showSenha ? "text" : "password"}
                 className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {senhaErros.length > 0 && (
+                <ul className="text-red-400 text-sm mt-3 list-inside">
+                  {senhaErros.map((err) => (
+                    <li key={err}>{err}</li>
+                  ))}
+                </ul>
+              )}
               {form.senha && (
                 <button
                   type="button"
