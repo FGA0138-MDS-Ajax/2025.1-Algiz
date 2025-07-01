@@ -7,6 +7,7 @@ import Salvos from "../components/Salvos";
 import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
+import EmpresasVinculadas from "../components/EmpresasVinculadas";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -16,6 +17,7 @@ export default function PaginaUsuario() {
   const [showEmpresasModal, setShowEmpresasModal] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
+  const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
 
   // Verifica se é o usuário logado
   const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
@@ -32,7 +34,6 @@ export default function PaginaUsuario() {
           {
           // Visitante ou modo público: rota pública
           url = `http://localhost:3001/api/usuarios/${idUsuario}/publico`;
-          console.log("Buscando usuário público:", idUsuario);
           options = {
             headers: { "Content-Type": "application/json" }
           };
@@ -66,6 +67,30 @@ export default function PaginaUsuario() {
     }
     fetchUsuario();
   }, [idUsuario, visualizandoPublico]);
+
+  // Busca empresas vinculadas ao usuário
+  useEffect(() => {
+    async function fetchEmpresasVinculadas() {
+      if (usuario) {
+        try {
+          const token = sessionStorage.getItem("authToken");
+          const res = await fetch("http://localhost:3001/api/empresa", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const empresas = await res.json();
+          // Filtra empresas do usuário
+          const vinculadas = empresas.filter(e => e.idUsuario === usuario.id);
+          setEmpresasVinculadas(vinculadas);
+        } catch {
+          setEmpresasVinculadas([]);
+        }
+      }
+    }
+    fetchEmpresasVinculadas();
+  }, [usuario]);
 
   if (loading) {
     return (
@@ -135,6 +160,9 @@ export default function PaginaUsuario() {
             // Se não for o usuário logado, mostra EmpresasTrabalhando normalmente
             <EmpresasTrabalhando usuario={usuario} />
           )}
+
+          {/* --- AQUI ENTRA O CARD DE EMPRESAS VINCULADAS --- */}
+          <EmpresasVinculadas empresas={empresasVinculadas} />
 
           {/* Salvos */}
           <Salvos usuario={usuario} />

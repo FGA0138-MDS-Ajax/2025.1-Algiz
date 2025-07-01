@@ -88,8 +88,8 @@ export default function HomePublica() {
         <main className="order-3 md:order-2 flex-1 flex flex-col items-center gap-6">
           {[1, 2].map((i) => (
             <button
-              type="button"
               key={i}
+              type="button"
               className="bg-white p-4 rounded-xl shadow-md cursor-pointer transition hover:shadow-lg w-full max-w-[520px] text-left"
               onClick={() => navigate("/post")}
               title="Ver post completo"
@@ -147,8 +147,6 @@ export default function HomePublica() {
           ))}
         </main>
       </div>
-
-      {/* Modal */}
       <EmpresasModal
         open={modalAberto}
         onClose={() => setModalAberto(false)}
