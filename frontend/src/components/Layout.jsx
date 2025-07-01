@@ -14,7 +14,7 @@ function Layout({ children }) {
   useEffect(() => {
     async function fetchUsuarioCompleto() {
       const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado && usuarioLogado.id) {
+      if (usuarioLogado?.id) {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
