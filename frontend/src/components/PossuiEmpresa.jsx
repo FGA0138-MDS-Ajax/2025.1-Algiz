@@ -1,9 +1,8 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import ModalCadastroEmpresa from "./ModalCadastroEmpresa";
-import { useNavigate } from "react-router-dom";
 
 export default function PossuiEmpresa({ cardClass = "" }) {
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const handleCadastroEmpresa = () => {
@@ -49,3 +48,7 @@ export default function PossuiEmpresa({ cardClass = "" }) {
     </div>
   );
 }
+
+PossuiEmpresa.propTypes = {
+  cardClass: PropTypes.string,
+};

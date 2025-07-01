@@ -13,6 +13,7 @@ router.post('/empresa', verifyToken, empresaController.registerEmpresa);
 router.get('/empresa', empresaController.getAllEmpresas);
 
 // ROTA PARA BUSCAR UMA empresa específica pelo seu CNPJ (pública)
+
 router.get('/:cnpj', empresaController.getEmpresaById);
 
 export default router;

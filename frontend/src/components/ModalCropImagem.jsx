@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 /**
  * Utilitário para recortar a imagem usando canvas.
@@ -62,7 +63,29 @@ export default function ModalCropImagem({
   // Função para enviar a imagem cortada ao backend
   const handleSave = async () => {
     if (!croppedAreaPixels) return;
-    const croppedImg = await getCroppedImg(image, croppedAreaPixels, outputWidth, outputHeight);
+    const croppedBase64 = await getCroppedImg(image, croppedAreaPixels, outputWidth, outputHeight);
+    const croppedBlob = await (await fetch(croppedBase64)).blob();
+    const formData = new FormData();
+
+    const endpoint = tipo === "foto" ? "foto" : "banner";
+    formData.append(tipo === "foto" ? "fotoPerfil" : "bannerPerfil", croppedBlob, "imagem.jpg");
+
+    const token = sessionStorage.getItem("authToken");
+
+    await axios.post(
+      `http://localhost:3001/api/usuario/${usuarioId}/${endpoint}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Atualiza a imagem localmente com a URL nova vinda do Cloudinary
+    if (onCropSave) onCropSave(croppedBase64);
+    onClose();
+    window.location.reload();
 
     try {
       const token = sessionStorage.getItem("authToken");
@@ -72,7 +95,6 @@ export default function ModalCropImagem({
           { fotoPerfil: croppedImg },
           {
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             }
           }
@@ -89,7 +111,6 @@ export default function ModalCropImagem({
           { bannerPerfil: croppedImg },
           {
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             }
           }
@@ -188,3 +209,16 @@ export default function ModalCropImagem({
     </div>
   );
 }
+ModalCropImagem.propTypes = {
+  open: PropTypes.bool.isRequired,
+  image: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onCropSave: PropTypes.func,
+  aspect: PropTypes.number,
+  cropShape: PropTypes.oneOf(["round", "rect"]),
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
+  label: PropTypes.string,
+  tipo: PropTypes.oneOf(["foto", "banner"]),
+  usuarioId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import Post from "./Post";
 
 export default function Salvos({ usuario }) {
@@ -20,53 +21,18 @@ export default function Salvos({ usuario }) {
     if (usuarioCompleto) {
       setPosts(usuarioCompleto.posts || []);
       setVisivel(
-        usuarioCompleto.hasOwnProperty("visivel") ? usuarioCompleto.visivel : true
       );
     }
+    
+    Salvos.propTypes = {
+      usuario: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        // add other properties if needed
+      }),
+    };
   }, [usuario]);
 
-  const handleAddPost = () => {
-    const newPostId = posts.length > 0 ? Math.max(...posts) + 1 : 1;
-    const updatedPosts = [...posts, newPostId];
-    setPosts(updatedPosts);
 
-    const users = JSON.parse(sessionStorage.getItem("fakeUsers") || "[]");
-    const usuarioIndex = users.findIndex(
-      (u) => u.id?.toString() === usuarioId?.toString()
-    );
-    if (usuarioIndex !== -1) {
-      users[usuarioIndex].posts = updatedPosts;
-      sessionStorage.setItem("fakeUsers", JSON.stringify(users));
-      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado?.id?.toString() === usuarioId?.toString()) {
-        sessionStorage.setItem(
-          "usuarioLogado",
-          JSON.stringify(users[usuarioIndex])
-        );
-      }
-    }
-  };
-
-  const handleToggleVisibilidade = () => {
-    const newVisivel = !visivel;
-    setVisivel(newVisivel);
-
-    const users = JSON.parse(sessionStorage.getItem("fakeUsers") || "[]");
-    const usuarioIndex = users.findIndex(
-      (u) => u.id?.toString() === usuarioId?.toString()
-    );
-    if (usuarioIndex !== -1) {
-      users[usuarioIndex].visivel = newVisivel;
-      sessionStorage.setItem("fakeUsers", JSON.stringify(users));
-      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado?.id?.toString() === usuarioId?.toString()) {
-        sessionStorage.setItem(
-          "usuarioLogado",
-          JSON.stringify(users[usuarioIndex])
-        );
-      }
-    }
-  };
 
   // Grid Alternado
   function renderMosaic(posts) {
@@ -112,6 +78,25 @@ export default function Salvos({ usuario }) {
 
   const podeVerPosts = visivel || isUsuarioLogado;
 
+  let postsContent;
+  if (podeVerPosts) {
+    if (posts.length > 0) {
+      postsContent = <>{renderMosaic(posts)}</>;
+    } else {
+      postsContent = (
+        <div className="text-center text-gray-400 py-12 italic">
+          Não há nenhum post salvo no momento.
+        </div>
+      );
+    }
+  } else {
+    postsContent = (
+      <div className="text-center text-gray-500 py-12">
+        Este usuário limita a visibilidade de seus posts salvos.
+      </div>
+    );
+  }
+
   return (
     <div className="mt-6">
       <div className="flex items-center gap-2 mb-2">
@@ -122,19 +107,7 @@ export default function Salvos({ usuario }) {
       </div>
       <hr className="border-gray-300 mb-6" />
       <div>
-        {podeVerPosts ? (
-          posts.length > 0 ? (
-            renderMosaic(posts)
-          ) : (
-            <div className="text-center text-gray-400 py-12 italic">
-              Não há nenhum post salvo no momento.
-            </div>
-          )
-        ) : (
-          <div className="text-center text-gray-500 py-12">
-            Este usuário limita a visibilidade de seus posts salvos.
-          </div>
-        )}
+        {postsContent}
       </div>
     </div>
   );

@@ -113,11 +113,11 @@ function CodigoAutenticacao() {
         {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
 
         <div className="w-full mb-5 mt-auto">
-          <label className="block mb-1 text-white font-medium">Código de verificação:</label>
+          <label htmlFor="codigo-0" className="block mb-1 text-white font-medium">Código de verificação:</label>
           <div className="flex justify-between gap-2 w-full" onPaste={handlePaste}>
             {codigo.map((valor, index) => (
               <input
-                key={index}
+                key={`codigo-input-${email || "user"}-${index}`}
                 id={`codigo-${index}`}
                 type="text"
                 inputMode="numeric"

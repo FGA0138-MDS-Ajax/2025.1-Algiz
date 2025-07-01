@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 function verifyToken(req, res, next) {
     // Fix: req.header['authorization'] → req.headers['authorization']
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader?.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ erro: 'Acesso negado. Nenhum token fornecido.' });
@@ -15,6 +15,7 @@ function verifyToken(req, res, next) {
         req.user = decodePayload;
         next();
     } catch (error) {
+        console.error('JWT verification error:', error);
         return res.status(403).json({ erro: 'Token inválido ou expirado.' });
     }
 }

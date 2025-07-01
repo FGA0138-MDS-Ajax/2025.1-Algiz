@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { estados } from "../utils/opcoes_form";
 
 export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
@@ -82,6 +83,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 Nome Comercial
               </label>
               <input
+                id="nome"
                 type="text"
                 name="nome"
                 placeholder="Nome fantasia"
@@ -110,6 +112,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 CNPJ
               </label>
               <input
+                id="cnpj"
                 type="text"
                 name="cnpj"
                 placeholder="00.000.000/0000-00"
@@ -120,10 +123,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="email" className="block text-gray-700 font-semibold mb-1">
                 Email
               </label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 placeholder="empresa@email.com"
@@ -134,10 +138,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="telefone" className="block text-gray-700 font-semibold mb-1">
                 Telefone
               </label>
               <input
+                id="telefone"
                 type="text"
                 name="telefone"
                 placeholder="ex: 61 912345678"
@@ -148,10 +153,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="endereco" className="block text-gray-700 font-semibold mb-1">
                 Endereço
               </label>
               <input
+                id="endereco"
                 type="text"
                 name="endereco"
                 placeholder="ex: Qr ## Cnj ###"
@@ -185,6 +191,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
                 Área de Atuação
               </label>
               <input
+                id="segmento"
                 type="text"
                 name="areaAtuacao"
                 placeholder="ex: Tecnologia"
@@ -214,7 +221,13 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
             </button>
           </div>
         </form>
-      </div>
+    </div>
     </div>
   );
 }
+
+ModalCadastroEmpresa.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  erro: PropTypes.string,
+};

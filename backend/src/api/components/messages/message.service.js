@@ -7,14 +7,20 @@ async function createMessage(dadosMensagem) {
     const { idRemetente, idDestinatario, conteudo } = dadosMensagem;
 
     if (!conteudo || conteudo.trim() === '') {
-        throw { name: 'ValidationError', message: 'O conteúdo da mensagem não pode estar vazio.' };
+        const error = new Error('O conteúdo da mensagem não pode estar vazio.');
+        error.name = 'ValidationError';
+        throw error;
     }
     if (!idDestinatario) {
-        throw { name: 'ValidationError', message: 'É necessário especificar um destinatário.' };
+        const error = new Error('É necessário especificar um destinatário.');
+        error.name = 'ValidationError';
+        throw error;
     }
     const destinatario = await Usuario.findByPk(idDestinatario);
     if (!destinatario) {
-        throw { name: 'NotFoundError', message: 'O usuário destinatário não foi encontrado.' };
+        const error = new Error('O usuário destinatário não foi encontrado.');
+        error.name = 'NotFoundError';
+        throw error;
     }
 
     const novaMensagem = await Mensagem.create({

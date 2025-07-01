@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function EmpresasTrabalhando({ usuario }) {
   const empresas = usuario.empresasTrabalhando || [];
@@ -40,3 +41,16 @@ export default function EmpresasTrabalhando({ usuario }) {
     </div>
   );
 }
+
+EmpresasTrabalhando.propTypes = {
+  usuario: PropTypes.shape({
+    empresasTrabalhando: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        logo: PropTypes.string,
+        nome: PropTypes.string,
+        dataVinculo: PropTypes.string,
+      })
+    ),
+  }).isRequired,
+};

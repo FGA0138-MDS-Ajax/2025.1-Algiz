@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
   const [seguidos, setSeguidos] = useState(Array(sugestoes.length).fill(false));
@@ -16,7 +17,7 @@ export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
       <ul className="space-y-3">
         {sugestoes.map((empresa, idx) => (
           <li
-            key={idx}
+            key={empresa.nome}
             className="flex items-center justify-between gap-2 w-full"
           >
             <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -50,3 +51,13 @@ export default function SugestoesEmpresas({ sugestoes, onVerTodas }) {
     </div>
   );
 }
+
+SugestoesEmpresas.propTypes = {
+  sugestoes: PropTypes.arrayOf(
+    PropTypes.shape({
+      logo: PropTypes.string.isRequired,
+      nome: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  onVerTodas: PropTypes.func.isRequired,
+}; 

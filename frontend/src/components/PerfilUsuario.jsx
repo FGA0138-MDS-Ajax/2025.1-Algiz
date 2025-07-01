@@ -23,12 +23,15 @@ export default function PerfilUsuario({
     email: usuario.email,
   });
   const [erro, setErro] = useState("");
-  const [banner, setBanner] = useState(usuario.bannerPerfil || "/user/banner-padrao-1.png");
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropModalType, setCropModalType] = useState("foto");
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
+  const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
+  const [banner, setBanner] = useState(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
+  const defaultProfileURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  const defaultBannerURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -104,50 +107,48 @@ export default function PerfilUsuario({
     reader.readAsDataURL(file);
   };
 
-  // Remover foto
+  // Remover foto de perfil (usando a rota /foto-default)
   const handleRemoverFoto = async () => {
     setModalFotoOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/foto`,
-        { fotoPerfil: "" },
+        `http://localhost:3001/api/usuario/${usuario.id}/foto-default`,
+        {},
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
-      // Atualize o usuário logado no sessionStorage
-      const updatedUsuario = { ...usuario, fotoPerfil: "" };
+      const updatedUsuario = { ...usuario, fotoPerfil: defaultProfileURL };
       sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-      window.location.reload();
+      setFotoPerfil(defaultProfileURL);
     } catch (err) {
+      console.error("Erro ao remover foto de perfil:", err);
       setErro("Erro ao remover foto de perfil.");
     }
   };
 
-  // Remover banner
+  // Remover banner de perfil (usando a rota /banner-default)
   const handleRemoverBanner = async () => {
     setModalBannerOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
       await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/banner`,
-        { bannerPerfil: "" },
+        `http://localhost:3001/api/usuario/${usuario.id}/banner-default`,
+        {},
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
-      const updatedUsuario = { ...usuario, bannerPerfil: "" };
+      const updatedUsuario = { ...usuario, bannerPerfil: defaultBannerURL };
       sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-      setBanner("/user/banner-padrao-1.png");
-      window.location.reload();
+      setBanner(defaultBannerURL);
     } catch (err) {
+      console.error("Erro ao remover banner:", err);
       setErro("Erro ao remover banner.");
     }
   };
@@ -167,7 +168,8 @@ export default function PerfilUsuario({
       dataNascimento: usuario.data_nascimento || "",
       email: usuario.email || "",
     });
-    setBanner(usuario.bannerPerfil || "/user/banner-padrao-1.png");
+    setBanner(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
+    setFotoPerfil(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
   }, [usuario]);
 
   return (
@@ -194,7 +196,7 @@ export default function PerfilUsuario({
         <div className="absolute left-1/2 sm:left-8 -bottom-16 z-20 transform -translate-x-1/2 sm:translate-x-0">
           <div className="relative">
             <img
-              src={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
+              src={fotoPerfil}
               alt="Foto de perfil"
               className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover"
             />
@@ -300,15 +302,22 @@ export default function PerfilUsuario({
         label="Salvar"
         tipo={cropModalType}
         usuarioId={usuario.id}
-        // Passe as funções de update para o ModalCropImagem se necessário
+        onCropSave={(url) => {
+          if (cropModalType === "foto") {
+            setFotoPerfil(url);
+          } else {
+            setBanner(url);
+          }
+        }}
       />
+
       {/* Modal para trocar/remover foto de perfil */}
       <ModalFotoPerfil
         open={modalFotoOpen}
         onClose={() => setModalFotoOpen(false)}
         onTrocar={handleTrocarFoto}
         onRemover={handleRemoverFoto}
-        fotoAtual={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
+        fotoAtual={fotoPerfil}
         tipo="foto"
       />
       {/* Modal para trocar/remover banner */}
@@ -323,3 +332,23 @@ export default function PerfilUsuario({
     </div>
   );
 }
+
+import PropTypes from "prop-types";
+
+PerfilUsuario.propTypes = {
+  usuario: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    nome: PropTypes.string,
+    sobrenome: PropTypes.string,
+    telefone: PropTypes.string,
+    estado: PropTypes.string,
+    sexo: PropTypes.string,
+    data_nascimento: PropTypes.string,
+    email: PropTypes.string,
+    fotoPerfil: PropTypes.string,
+    bannerPerfil: PropTypes.string,
+  }).isRequired,
+  isUsuarioLogado: PropTypes.bool.isRequired,
+  visualizandoPublico: PropTypes.bool,
+  onToggleVisualizacaoPublica: PropTypes.func,
+};

@@ -21,11 +21,6 @@ function Empresas() {
 
   const [empresa, setEmpresa] = useState(null);
   const [seguindo, setSeguindo] = useState(false);
-  const [reacoes, setReacoes] = useState([
-    { like: false, comment: false, share: false },
-    { like: false, comment: false, share: false },
-    { like: false, comment: false, share: false },
-  ]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [tab, setTab] = useState("recomendadas");
@@ -94,7 +89,7 @@ function Empresas() {
                   <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Seguidor" className="w-8 h-8 rounded-full border" />
                   <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Seguidor" className="w-8 h-8 rounded-full border -ml-2" />
                   <span className="font-semibold text-gray-700 ml-2">20+</span>
-                  <a href="#" className="text-blue-600 text-xs ml-2">Ver todos</a>
+                  <button type="button" className="text-blue-600 text-xs ml-2 underline cursor-pointer bg-transparent border-none p-0">Ver todos</button>
                 </div>
               </div>
             </div>
@@ -132,8 +127,9 @@ function Empresas() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               {/* Card grande à esquerda ocupando duas linhas */}
               <div className="md:row-span-2">
-                <div
-                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition"
+                <button
+                  type="button"
+                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition text-left"
                   onClick={() => navigate("/post")}
                   title="Ver post completo"
                 >
@@ -173,15 +169,17 @@ function Empresas() {
                       <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
                     </button>
                   </div>
-                </div>
+                </button>
               </div>
               {/* Dois cards pequenos à direita, um embaixo do outro */}
               {[1, 2, 3, 4].map((i) => (
-                <div
+                <button
                   key={i}
-                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition"
+                  type="button"
+                  className="bg-white rounded-xl shadow p-4 cursor-pointer hover:shadow-lg transition text-left"
                   onClick={() => navigate("/post")}
                   title="Ver post completo"
+                  tabIndex={0}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <img
@@ -200,21 +198,21 @@ function Empresas() {
                   </div>
                   <div className="flex items-center justify-between mt-4 text-gray-600">
                     <div className="flex items-center gap-4 text-xl">
-                      <button title="Curtir">
+                      <button type="button" title="Curtir">
                         <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
                       </button>
-                      <button title="Comentar">
+                      <button type="button" title="Comentar">
                         <MessageSquare className="w-5 h-5 cursor-pointer hover:text-green-700" />
                       </button>
-                      <button title="Compartilhar">
+                      <button type="button" title="Compartilhar">
                         <Share2 className="w-5 h-5 cursor-pointer hover:text-green-700" />
                       </button>
                     </div>
-                    <button title="Salvar">
+                    <button type="button" title="Salvar">
                       <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
                     </button>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>

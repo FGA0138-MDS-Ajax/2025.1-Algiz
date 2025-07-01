@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import Navbar from "./Navbar";
 import NavbarLogado from "./Navbar_logado";
 import { useEffect, useState } from "react";
@@ -49,5 +50,9 @@ function Layout({ children }) {
     </>
   );
 }
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default Layout;
