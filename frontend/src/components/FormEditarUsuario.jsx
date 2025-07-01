@@ -1,4 +1,4 @@
-import { generos } from "../utils/opcoes_form";
+import { generos, estados } from "../utils/opcoes_form";
 import PropTypes from "prop-types";
 
 export default function FormEditarUsuario({
@@ -112,10 +112,11 @@ export default function FormEditarUsuario({
               </div>
             </div>
             <div>
-              <label className="block text-gray-700 font-semibold mb-1">
+              <label htmlFor="estado" className="block text-gray-700 font-semibold mb-1">
                 Estado
               </label>
               <select
+                id="estado"
                 name="estado"
                 value={formData.estado}
                 onChange={onChange}
@@ -179,10 +180,11 @@ FormEditarUsuario.propTypes = {
     email: PropTypes.string,
     endereco: PropTypes.string,
     genero: PropTypes.string,
+    estado: PropTypes.string,
   }).isRequired,
   erro: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onEditEmail: PropTypes.func,
-}; 
+};
