@@ -6,6 +6,7 @@ import GeneroDropdown from "../components/GeneroDropdown";
 import { validatePasswordsMatch, validarSenhaCompleta, validateCadastro } from "../utils/validacao";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 export default function Cadastro() {
   const initialForm = {
@@ -78,7 +79,7 @@ export default function Cadastro() {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/register',
+        "http://localhost:3001/api/register",
         {
           nome: form.nome,
           sobrenome: form.sobrenome,
@@ -91,22 +92,30 @@ export default function Cadastro() {
           cpfCnpj: form.cpfCnpj,
         },
         {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      console.log('Usuário criado:', response.data);
-      setShowPopup(true);
-      setTimeout(() => navigate("/login"), 2000);
+      console.log("Usuário criado:", response.data);
 
+      // Show SweetAlert success message
+      Swal.fire({
+        title: "Cadastro realizado com sucesso!",
+        text: "Você será redirecionado para a página de login.",
+        icon: "success",
+        timer: 2000, // Close after 2 seconds
+        showConfirmButton: false,
+      });
+
+      // Redirect to login page after 2 seconds
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      console.error('Full error:', err);
+      console.error("Full error:", err);
       if (err.response?.data?.details) {
-       
         const details = err.response.data.details;
         if (Array.isArray(details)) {
-          // Mostra cada mensagem em uma lista
-          setErro(details.map(e => e.mensagem || e.message || JSON.stringify(e)));
+          // Show each message in a list
+          setErro(details.map((e) => e.mensagem || e.message || JSON.stringify(e)));
         } else {
           setErro({ geral: details.mensagem || details.message || JSON.stringify(details) });
         }
