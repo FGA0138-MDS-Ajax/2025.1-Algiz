@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const MyReCAPTCHA = ({ onChange }) => {
@@ -8,6 +9,9 @@ const MyReCAPTCHA = ({ onChange }) => {
       onChange={onChange}
     />
   );
+};
+MyReCAPTCHA.propTypes = {
+  onChange: PropTypes.func.isRequired,
 };
 
 export default MyReCAPTCHA;

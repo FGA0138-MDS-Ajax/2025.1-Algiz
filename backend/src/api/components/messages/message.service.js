@@ -1,27 +1,37 @@
-import { Mensagem, Usuario } from '../../../models/index.js';
+import models from '../../../models/index.model.js';
+const { Mensagem, Usuario } = models;
 import { Op } from 'sequelize';
+
 
 async function createMessage(dadosMensagem) {
     const { idRemetente, idDestinatario, conteudo } = dadosMensagem;
 
     if (!conteudo || conteudo.trim() === '') {
-        throw { name: 'ValidationError', message: 'O conteúdo da mensagem não pode estar vazio.' };
+        const error = new Error('O conteúdo da mensagem não pode estar vazio.');
+        error.name = 'ValidationError';
+        throw error;
     }
     if (!idDestinatario) {
-        throw { name: 'ValidationError', message: 'É necessário especificar um destinatário.' };
+        const error = new Error('É necessário especificar um destinatário.');
+        error.name = 'ValidationError';
+        throw error;
     }
     const destinatario = await Usuario.findByPk(idDestinatario);
     if (!destinatario) {
-        throw { name: 'NotFoundError', message: 'O usuário destinatário não foi encontrado.' };
+        const error = new Error('O usuário destinatário não foi encontrado.');
+        error.name = 'NotFoundError';
+        throw error;
     }
+
     const novaMensagem = await Mensagem.create({
         idRemetente,
         idDestinatario,
         conteudo
     });
-    return novaMensagem;
 
+    return novaMensagem;
 }
+
 async function findMessages(idUsuario) {
     const messages = await Mensagem.findAll({
         where: {
@@ -31,19 +41,16 @@ async function findMessages(idUsuario) {
             ]
         },
         include: [
-        {model: Usuario, as: 'remetente', attributes: ['idUsuario', 'nomeCompleto', 'foto_perfil_url']},
-        { model: Usuario, as: 'destinatario', attributes: ['idUsuario', 'nomeCompleto', 'foto_perfil_url']}
-
+            { model: Usuario, as: 'remetente', attributes: ['idUsuario', 'nomeCompleto', 'foto_perfil_url'] },
+            { model: Usuario, as: 'destinatario', attributes: ['idUsuario', 'nomeCompleto', 'foto_perfil_url'] }
         ],
         order: [['enviada_em', 'ASC']]
     });
 
-    return mensagens;
+    return messages;
 }
-export default{
+
+export default {
     createMessage,
     findMessages
 };
-
-
-        

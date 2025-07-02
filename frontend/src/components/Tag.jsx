@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function Tag({ nome }) {
   return (
@@ -7,3 +8,7 @@ export default function Tag({ nome }) {
     </span>
   );
 }
+
+Tag.propTypes = {
+  nome: PropTypes.string.isRequired,
+};

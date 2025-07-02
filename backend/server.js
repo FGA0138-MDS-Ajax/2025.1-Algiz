@@ -9,11 +9,12 @@ import connectSessionSequelize from 'connect-session-sequelize';
 
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
-import models, { sequelize } from './models/index.js';
+import models, { sequelize } from './src/models/index.model.js';
 import { admin, adminRouter } from './admin.js';
 
 // Importa as rotas de usuário
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
+import empresaRoutes from './src/api/routes/empresa.route.js'; 
 import messageRoutes from './src/api/routes/message.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
@@ -23,12 +24,23 @@ const { Usuario } = models;
 dotenv.config();
 
 console.log('🔍 Verificando serviços opcionais:');
+
 if (!process.env.RESEND_API_KEY) {
   console.warn('⚠️  Serviço de email DESATIVADO - RESEND_API_KEY não configurada');
+} else{
+  console.log('✅ Serviço de email ativado');
 }
+
 if (!process.env.RECAPTCHA_SECRET_KEY) {
   console.warn('⚠️  reCAPTCHA DESATIVADO - RECAPTCHA_SECRET_KEY não configurada');
+} else{
+  console.log('✅ reCAPTCHA ativado');
 }
+
+if (process.env.DEV_RECOVERY_MODE === 'true') {
+  console.log('📭 [DEV MODE] usando fallback.');
+}
+
 const app = express();
 const PORT = 3001;
 
@@ -80,8 +92,10 @@ async function startServer() {
     // console.log('📦 Content-Type:', req.headers['content-type']);
     next();
   });
+
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
+  app.use('/api', empresaRoutes); 
 
   app.use(
     session({
@@ -108,15 +122,12 @@ async function startServer() {
   // Serve arquivos estaticos da pasta public
   app.use('/images', express.static(path.resolve('public/images')));
 
-  // ✅ Remove rota duplicada /api/usuarios (já tratada em user.routes.js)
   // Garante usuário admin
   const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
   const [adminUser, created] = await Usuario.findOrCreate({
   where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
     defaults: {
-      senha: hashedPassword,
-      telefoneUsuario: '0000000000',
-      estado: 'DF',
+      senha: hashedPassword
     },
   });
 

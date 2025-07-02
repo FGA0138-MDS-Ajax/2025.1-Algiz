@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
+    "@heroicons/react": "^2.2.0",
     "axios": "^1.10.0",
     "lucide-react": "^0.515.0",
     "ra-data-simple-rest": "^5.8.2",
@@ -18,7 +20,9 @@
     "react-dom": "^19.1.0",
     "react-easy-crop": "^5.4.2",
     "react-google-recaptcha": "^3.1.0",
-    "resend": "^4.6.0"
+    "resend": "^4.6.0",
+    "sweetalert2": "^11.22.1",
+    "sweetalert2-react-content": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

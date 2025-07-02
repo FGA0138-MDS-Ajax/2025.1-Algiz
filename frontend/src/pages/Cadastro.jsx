@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
-import { validateCadastro } from "../utils/validacao";
-import { estados, generos } from "../utils/opcoes_form";
+import EstadoDropdown from "../components/EstadoDropdown";
+import GeneroDropdown from "../components/GeneroDropdown";
+import { validatePasswordsMatch, validarSenhaCompleta, validateCadastro } from "../utils/validacao";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
+import Swal from "sweetalert2";
 
 export default function Cadastro() {
   const initialForm = {
@@ -23,14 +25,43 @@ export default function Cadastro() {
   const [form, setForm] = useState(initialForm);
   const [showSenha, setShowSenha] = useState(false);
   const [showRepetir, setShowRepetir] = useState(false);
-  const [erro, setErro] = useState("");
+  const [erro, setErro] = useState({});
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [senhaErros, setSenhaErros] = useState([]);
 
   function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErro("");
+    const { name, value } = e.target;
+    const updatedForm = { ...form, [name]: value };
+    setForm(updatedForm);
+    setErro({}); // limpa erros
+
+    // Atualiza os erros da senha
+    if (name === "senha") {
+      const erros = validarSenhaCompleta(value);
+      setSenhaErros(erros);
+    }
+
+    // Valida repetição de senha somente se repetirSenha tiver valor
+    if (name === "repetirSenha" || name === "senha") {
+      if (updatedForm.repetirSenha) {
+        const erroRepetir = validatePasswordsMatch(updatedForm.senha, updatedForm.repetirSenha);
+        if (erroRepetir) {
+          setErro((prev) => ({ ...prev, repetirSenha: erroRepetir }));
+        } else {
+          setErro((prev) => {
+            const { repetirSenha, ...rest } = prev;
+            return rest;
+          });
+        }
+      } else {
+        setErro((prev) => {
+          const { repetirSenha, ...rest } = prev;
+          return rest;
+        });
+      }
+    }
   }
 
   async function handleSubmit(e) {
@@ -38,13 +69,17 @@ export default function Cadastro() {
     setErro("");
     const error = validateCadastro(form, "pessoa");
     if (error) {
-      setErro(error);
+      setErro({ [error.field]: error.message });
+      return;
+    }
+    if (senhaErros.length > 0) {
+      setErro({ senha: senhaErros.join(" ") });
       return;
     }
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/register',
+        "http://localhost:3001/api/register",
         {
           nome: form.nome,
           sobrenome: form.sobrenome,
@@ -57,24 +92,32 @@ export default function Cadastro() {
           cpfCnpj: form.cpfCnpj,
         },
         {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      console.log('Usuário criado:', response.data);
-      setShowPopup(true);
-      setTimeout(() => navigate("/login"), 2000);
+      console.log("Usuário criado:", response.data);
 
+      // Show SweetAlert success message
+      Swal.fire({
+        title: "Cadastro realizado com sucesso!",
+        text: "Você será redirecionado para a página de login.",
+        icon: "success",
+        timer: 2000, // Close after 2 seconds
+        showConfirmButton: false,
+      });
+
+      // Redirect to login page after 2 seconds
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      console.error('Full error:', err);
+      console.error("Full error:", err);
       if (err.response?.data?.details) {
-        // details pode ser array de objetos { field, message }
         const details = err.response.data.details;
         if (Array.isArray(details)) {
-          // Mostra cada mensagem em uma lista
-          setErro(details.map(e => e.mensagem || e.message || JSON.stringify(e)));
+          // Show each message in a list
+          setErro(details.map((e) => e.mensagem || e.message || JSON.stringify(e)));
         } else {
-          setErro([details.mensagem || details.message || JSON.stringify(details)]);
+          setErro({ geral: details.mensagem || details.message || JSON.stringify(details) });
         }
       } else if (err.response?.data?.erro) {
         setErro([err.response.data.erro]);
@@ -127,7 +170,7 @@ export default function Cadastro() {
                 value={form.nome}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -139,7 +182,7 @@ export default function Cadastro() {
                 value={form.sobrenome}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div>
@@ -151,8 +194,11 @@ export default function Cadastro() {
                 value={form.cpfCnpj}
                 onChange={handleChange}
                 required
-                className="input w-full"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.cpfCnpj && (
+                <p className="text-red-400 text-sm mt-2">{erro.cpfCnpj}</p>
+              )}
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="celular">Celular</label>
@@ -163,8 +209,11 @@ export default function Cadastro() {
                 value={form.celular}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.celular && (
+                <p className="text-red-400 text-sm mt-2">{erro.celular}</p>
+              )}
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="email">Email</label>
@@ -176,55 +225,25 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type="email"
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
           </div>
           {/* Coluna 2 */}
           <div className="flex flex-col gap-3">
             <div>
-              <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
-              <select
-                id="estado"
-                name="estado"
-                value={form.estado}
-                onChange={handleChange}
-                required
-                className="input w-full text-base py-2"
-              >
-                {estados.map((e) => (
-                  <option
-                    key={e.value}
-                    value={e.value}
-                    disabled={e.disabled}
-                    hidden={e.disabled}
-                  >
-                    {e.label}
-                  </option>
-                ))}
-              </select>
+                <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
+                <EstadoDropdown
+                  value={form.estado}
+                  onChange={(value) => setForm((prev) => ({ ...prev, estado: value }))}
+                />
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="genero">Gênero</label>
-              <select
-                id="genero"
-                name="genero"
+              <GeneroDropdown
                 value={form.genero}
-                onChange={handleChange}
-                required
-                className="input w-full text-base py-2"
-              >
-                {generos.map((g) => (
-                  <option
-                    key={g.value}
-                    value={g.value}
-                    disabled={g.disabled}
-                    hidden={g.disabled}
-                  >
-                    {g.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm((prev) => ({ ...prev, genero: value }))}
+              />
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="dtNascimento">Data de Nascimento</label>
@@ -235,7 +254,7 @@ export default function Cadastro() {
                 value={form.dtNascimento}
                 onChange={handleChange}
                 required
-                className="input w-full text-base py-2"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
             </div>
             <div className="relative">
@@ -248,8 +267,15 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type={showSenha ? "text" : "password"}
-                className="input w-full text-base py-2 pr-10"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {senhaErros.length > 0 && (
+                <ul className="text-red-400 text-sm mt-3 list-inside">
+                  {senhaErros.map((err) => (
+                    <li key={err}>{err}</li>
+                  ))}
+                </ul>
+              )}
               {form.senha && (
                 <button
                   type="button"
@@ -270,8 +296,11 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 type={showRepetir ? "text" : "password"}
-                className="input w-full text-base py-2 pr-10"
+                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.repetirSenha && (
+                <p className="text-red-400 text-sm mt-2">{erro.repetirSenha}</p>
+              )}
               {form.repetirSenha && (
                 <button
                   type="button"
@@ -294,8 +323,14 @@ export default function Cadastro() {
             Cadastrar
           </button>
         </div>
-        {erro && (
+        {typeof erro === "string" && (
           <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
+        )}
+        {erro.senha && (
+          <p className="text-red-400 text-sm mt-2">{erro.senha}</p>
+        )}
+        {erro.geral && (
+          <p className="text-red-400 text-sm mt-2">{erro.geral}</p>
         )}
       </form>
     </div>

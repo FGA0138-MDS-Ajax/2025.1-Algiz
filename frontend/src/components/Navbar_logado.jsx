@@ -1,13 +1,7 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import OpcoesPerfil from "./OpcoesPerfil"; 
-
+import PropTypes from "prop-types";
 function NavbarLogado({ usuario }) {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("usuarioLogado");
-    navigate("/Login");
-  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2 bg-gradient-to-b from-[#7ffa88] to-white shadow-md">
@@ -94,10 +88,13 @@ function NavbarLogado({ usuario }) {
         </NavLink>
 
         {/* Foto de perfil com dropdown */}
-        <OpcoesPerfil />
+        <OpcoesPerfil fotoPerfil={usuario.fotoPerfil} />
       </div>
     </nav>
   );
 }
+NavbarLogado.propTypes = {
+  usuario: PropTypes.any,
+};
 
 export default NavbarLogado;

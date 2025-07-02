@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-.input {
-  @apply px-4 py-2 rounded-lg border border-white/30 bg-white/90 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-400;
-}
+/* Use Tailwind utility classes directly in your HTML elements' class attributes instead */
 
 /* Removes default password reveal icon on Microsoft Edge */
 input::-ms-reveal {

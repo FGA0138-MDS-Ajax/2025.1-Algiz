@@ -1,6 +1,6 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Tag from "./Tag";
+import PropTypes from "prop-types";
 
 export default function Post({ post, big, small, completo, comentarios = [] }) {
   const navigate = useNavigate();
@@ -19,15 +19,6 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            {/* <img
-              src={post.empresaLogo}
-              alt={post.empresaNome}
-              className="w-8 h-8 rounded-full"
-            />
-            <div>
-              <div className="font-semibold text-sm">{post.empresaNome}</div>
-              <div className="text-xs text-green-700 font-semibold">Promovido</div>
-            </div> */}
             <img
               src={post?.empresaLogo || "/coca.png"}
               alt={post?.empresaNome || "Empresa"}
@@ -46,13 +37,6 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
         {/* <div className="font-bold mb-2">{post.titulo}</div> */}
         <div className="font-semibold text-base mb-2">{titulo}</div>
         {/* Imagem do post */}
-        {/* {big && post.imagem && (
-          <img
-            src={post.imagem}
-            alt="Imagem do post"
-            className="rounded-xl w-full object-cover mb-3 max-h-48"
-          />
-        )} */}
         <img
           src={imagem}
           alt="Imagem do post"
@@ -61,8 +45,8 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
         />
         {/* Tags */}
         <div className="flex gap-2 mb-2">
-          {(post?.tags || []).map((tag, idx) => (
-            <Tag key={idx} nome={tag} />
+          {(post?.tags || []).map((tag) => (
+            <Tag key={tag} nome={tag} />
           ))}
         </div>
         {/* Descrição completa */}
@@ -132,27 +116,28 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
       </div>
     );
   }
+  
+  Post.propTypes = {
+    post: PropTypes.object,
+    big: PropTypes.bool,
+    small: PropTypes.bool,
+    completo: PropTypes.bool,
+    comentarios: PropTypes.array
+  };
 
   // preview dos posts (para serem usados nos perfil)
   return (
-    <div
+    <button
+      type="button"
       className={`bg-white rounded-2xl shadow-md p-5 flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200
         ${big ? "min-h-[500px]" : "min-h-[241px]"}
       `}
       onClick={() => navigate("/post")}
       title="Ver post completo"
+      style={{ textAlign: "left" }}
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
-        {/* <img
-          src={post.empresaLogo}
-          alt={post.empresaNome}
-          className="w-8 h-8 rounded-full"
-        />
-        <div>
-          <div className="font-semibold text-sm">{post.empresaNome}</div>
-          <div className="text-xs text-green-700 font-semibold">Promovido</div>
-        </div> */}
         <img
           src={post?.empresaLogo || "/coca.png"}
           alt={post?.empresaNome || "Empresa"}
@@ -167,13 +152,6 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
       {/* <div className="font-bold mb-2">{post.titulo}</div> */}
       <div className="font-bold mb-2">{titulo}</div>
       {/* Imagem do post (apenas para big) */}
-      {/* {big && post.imagem && (
-        <img
-          src={post.imagem}
-          alt="Imagem do post"
-          className="rounded-xl w-full object-cover mb-3 max-h-48"
-        />
-      )} */}
       {big && (
         <img
           src={imagem}
@@ -213,6 +191,6 @@ export default function Post({ post, big, small, completo, comentarios = [] }) {
           </svg>
         </button>
       </div>
-    </div>
+    </button>
   );
 }

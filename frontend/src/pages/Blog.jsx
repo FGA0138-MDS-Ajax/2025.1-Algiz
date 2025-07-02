@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 function Blog() {
   return (
     <div className="text-center pt-16">

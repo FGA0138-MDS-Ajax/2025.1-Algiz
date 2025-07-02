@@ -1,5 +1,5 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function MinhasConexoes({ usuario, cardClass = "" }) {
   const empresas = usuario.empresasSeguindo || [];
@@ -42,3 +42,16 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
     </div>
   );
 }
+
+MinhasConexoes.propTypes = {
+  usuario: PropTypes.shape({
+    empresasSeguindo: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        logo: PropTypes.string,
+        nome: PropTypes.string,
+      })
+    ),
+  }).isRequired,
+  cardClass: PropTypes.string,
+}; 
