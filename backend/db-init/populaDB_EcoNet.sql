@@ -37,12 +37,12 @@ INSERT INTO JURIDICO (
 ('78.901.234/0001-05', 'PLASTINOVOS INDUSTRIA E COMERCIO LTDA', 'PlastiNovos', '(51) 98765-0005', 'RS', 'Avenida dos Plásticos, 202', 'Transformação de plásticos', 5);
 
 -- Vínculos (já incluído no seu arquivo)
-INSERT INTO VINCULO_JURIDICO_FISICO (cpfFisico, cnpjJuridico, cargo) VALUES
-('111.222.333-01', '12.345.678/0001-01', 'Analista Ambiental'),
-('222.333.444-02', '98.765.432/0001-02', 'Engenheira de Processos'),
-('333.444.555-03', '45.678.901/0001-03', 'Gerente de Operações'),
-('444.555.666-04', '65.432.198/0001-04', 'Assistente Técnica'),
-('555.666.777-05', '78.901.234/0001-05', 'Supervisor de Logística');
+INSERT INTO VINCULO_JURIDICO_FISICO (cpfFisico, cnpjJuridico, cargo, estado) VALUES
+('111.222.333-01', '12.345.678/0001-01', 'Dono de Empresa', 'aprovado'),
+('222.333.444-02', '98.765.432/0001-02', 'Vice-Dono', 'aprovado'),
+('333.444.555-03', '45.678.901/0001-03', 'Gestor de Contratos', 'aprovado'),
+('444.555.666-04', '65.432.198/0001-04', 'Dono de Empresa', 'aprovado'),
+('555.666.777-05', '78.901.234/0001-05', 'Vice-Dono', 'aprovado');
 
 -- Físicos seguem jurídicos
 INSERT INTO FISICO_SEGUE_JURIDICO (cpfFisico, cnpjJuridico, dtInicio) VALUES

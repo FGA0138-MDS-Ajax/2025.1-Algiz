@@ -14,11 +14,13 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         areaAtuacao
     } = dadosEmpresa;
 
+    /*
     if (!isValidDocument(cnpjJuridico)) {
         const error = new Error('CNPJ inválido ou não fornecido.');
         error.name = 'ValidationError';
         throw error;
     }
+    */
     if (!razaoSocial) {
         const error = new Error('Razão Social é obrigatória.');
         error.name = 'ValidationError';
@@ -62,6 +64,7 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         throw new Error("Não foi possível salvar a empresa no banco de dados.");
     }
 }
+
 async function findAllEmpresas() {
     try {
         return await Empresa.findAll();

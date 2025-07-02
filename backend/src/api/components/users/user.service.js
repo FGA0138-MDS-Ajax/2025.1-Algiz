@@ -374,6 +374,20 @@ export async function updateUserBanner(userId, bannerPerfil) {
   return { message: "Banner de perfil atualizado com sucesso." };
 }
 
+export async function getCpfByUserId(idUsuario) {
+  // Função para retornar o CPF do Usuario
+  const [rows] = await db.query(
+    "SELECT cpfFisico FROM FISICO WHERE idUsuario = ?",
+    [idUsuario]
+  );
+
+  if (rows.length === 0) {
+    throw new Error("CPF não encontrado para o usuário");
+  }
+
+  return rows[0].cpfFisico;
+}
+
 export default {
   createUser,
   findUserProfileById,
@@ -383,5 +397,6 @@ export default {
   saveResetCode,
   updateUserProfile,
   updateUserProfilePhoto,
-  updateUserBanner
+  updateUserBanner,
+  getCpfByUserId
 };

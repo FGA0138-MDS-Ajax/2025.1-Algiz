@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS VINCULO_JURIDICO_FISICO (
     cpfFisico      VARCHAR(14)   NOT NULL,
     cnpjJuridico   VARCHAR(18)   NOT NULL,
     cargo          VARCHAR(255)      NULL,
+    estado         VARCHAR(20)   NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (cpfFisico) REFERENCES FISICO(cpfFisico)
         ON DELETE CASCADE

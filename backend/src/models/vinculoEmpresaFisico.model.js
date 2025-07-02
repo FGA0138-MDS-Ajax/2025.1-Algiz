@@ -1,3 +1,4 @@
+
 import { DataTypes } from 'sequelize';
 
 const VinculoEmpresaFisico = (sequelize) => sequelize.define('VinculoEmpresaFisico', {
@@ -15,6 +16,10 @@ const VinculoEmpresaFisico = (sequelize) => sequelize.define('VinculoEmpresaFisi
   cargo: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  estado: {
+  type: DataTypes.STRING,
+  defaultValue: 'pendente'
   }
 }, {
   tableName: 'VINCULO_JURIDICO_FISICO',

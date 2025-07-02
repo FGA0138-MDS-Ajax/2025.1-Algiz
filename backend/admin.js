@@ -119,11 +119,14 @@ const adminOptions = {
           },
           cargo: {
             type: 'string'
+          },
+          estado: {
+            type: 'string'
           }
         },
-        listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
-        showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
-        editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo']
+        listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo', 'estado'],
+        showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo', 'estado'],
+        editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo', 'estado']
       }
     },
     {
