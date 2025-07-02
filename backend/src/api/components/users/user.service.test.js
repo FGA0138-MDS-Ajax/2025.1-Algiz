@@ -1,5 +1,5 @@
 // Vamos assumir que você exportou a lógica de validação para um ficheiro de utilitários.
-import { isValidDocument } from '../src/api/utils/validation.util.js';
+import { isValidDocument } from '../../utils/validation.util.js';
 
 // Grupo de testes para a validação de CPF/CNPJ
 describe('Validação de Documento (CPF/CNPJ)', () => {
@@ -17,41 +17,50 @@ describe('Validação de Documento (CPF/CNPJ)', () => {
 
     // --- Tarefa: Testar entradas mal formatadas ---
     describe('Entradas mal formatadas', () => {
+
+        const cpfInvalido = '123.456.789-00';
+        const cpfInvalidoSemMascara = '12345678900';
+        const cnpjInvalido = '11.222.333/0001-44';
+        const cnpjInvalidoSemMascara = '11222333000144';
         it('deve retornar falso para documento com letras', () => {
-            expect(isValidDocument('123.abc.456-78')).toBe(false);
+            expect(isValidDocument(cpfInvalido)).toBe(false);
         });
 
         it('deve retornar falso para documento com símbolos', () => {
-            expect(isValidDocument('123!456$789-00')).toBe(false);
+            expect(isValidDocument(cpfInvalidoSemMascara)).toBe(false);
         });
 
         it('deve retornar falso para documento com menos de 11 dígitos', () => {
-            expect(isValidDocument('123.456.789')).toBe(false);
+            expect(isValidDocument(cnpjInvalido)).toBe(false);
         });
 
         it('deve retornar falso para documento com 12 ou 13 dígitos', () => {
-            expect(isValidDocument('123456789012')).toBe(false);
+            expect(isValidDocument(cnpjInvalidoSemMascara)).toBe(false);
         });
     });
 
     // --- Tarefa: Testar entradas válidas reais ---
     describe('Entradas válidas', () => {
+        // Use estes CPFs e CNPJs que são matematicamente válidos
+        const cpfValido = '123.456.789-09';
+        const cpfValidoSemMascara = '12345678909';
+        const cnpjValido = '11.444.777/0001-61';
+        const cnpjValidoSemMascara = '11444777000161';
+
         it('deve retornar verdadeiro para um CPF válido (com máscara)', () => {
-            // Use um CPF válido gerado para testes
-            expect(isValidDocument('215.399.738-42')).toBe(true);
+            expect(isValidDocument(cpfValido)).toBe(true);
         });
 
         it('deve retornar verdadeiro para um CPF válido (sem máscara)', () => {
-            expect(isValidDocument('21539973842')).toBe(true);
+            expect(isValidDocument(cpfValidoSemMascara)).toBe(true);
         });
 
         it('deve retornar verdadeiro para um CNPJ válido (com máscara)', () => {
-            // Use um CNPJ válido gerado para testes
-            expect(isValidDocument('86.438.361/0001-38')).toBe(true);
+            expect(isValidDocument(cnpjValido)).toBe(true);
         });
 
         it('deve retornar verdadeiro para um CNPJ válido (sem máscara)', () => {
-            expect(isValidDocument('86438361000138')).toBe(true);
+            expect(isValidDocument(cnpjValidoSemMascara)).toBe(true);
         });
     });
     
