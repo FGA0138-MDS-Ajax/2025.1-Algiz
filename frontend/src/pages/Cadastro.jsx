@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import EstadoDropdown from "../components/EstadoDropdown";
 import GeneroDropdown from "../components/GeneroDropdown";
-import { validatePasswordsMatch } from "../utils/validacao";
+import { validatePasswordsMatch, validarSenhaCompleta, validateCadastro } from "../utils/validacao";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 
@@ -24,21 +24,27 @@ export default function Cadastro() {
   const [form, setForm] = useState(initialForm);
   const [showSenha, setShowSenha] = useState(false);
   const [showRepetir, setShowRepetir] = useState(false);
-  const [erro, setErro] = useState("");
+  const [erro, setErro] = useState({});
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [senhaErros] = useState([]);
+  const [senhaErros, setSenhaErros] = useState([]);
 
   function handleChange(e) {
     const { name, value } = e.target;
     const updatedForm = { ...form, [name]: value };
     setForm(updatedForm);
-    setErro({}); // zera os erros sempre que digita algo
+    setErro({}); // limpa erros
 
-    // Validação da senha
+    // Atualiza os erros da senha
+    if (name === "senha") {
+      const erros = validarSenhaCompleta(value);
+      setSenhaErros(erros);
+    }
+
+    // Valida repetição de senha somente se repetirSenha tiver valor
     if (name === "repetirSenha" || name === "senha") {
-      if (updatedForm.repetirSenha) { // só valida se repetiu algo
+      if (updatedForm.repetirSenha) {
         const erroRepetir = validatePasswordsMatch(updatedForm.senha, updatedForm.repetirSenha);
         if (erroRepetir) {
           setErro((prev) => ({ ...prev, repetirSenha: erroRepetir }));
@@ -102,7 +108,7 @@ export default function Cadastro() {
           // Mostra cada mensagem em uma lista
           setErro(details.map(e => e.mensagem || e.message || JSON.stringify(e)));
         } else {
-          setErro([details.mensagem || details.message || JSON.stringify(details)]);
+          setErro({ geral: details.mensagem || details.message || JSON.stringify(details) });
         }
       } else if (err.response?.data?.erro) {
         setErro([err.response.data.erro]);
@@ -181,6 +187,9 @@ export default function Cadastro() {
                 required
                 className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.cpfCnpj && (
+                <p className="text-red-400 text-sm mt-2">{erro.cpfCnpj}</p>
+              )}
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="celular">Celular</label>
@@ -193,6 +202,9 @@ export default function Cadastro() {
                 required
                 className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {erro.celular && (
+                <p className="text-red-400 text-sm mt-2">{erro.celular}</p>
+              )}
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="email">Email</label>
@@ -304,6 +316,12 @@ export default function Cadastro() {
         </div>
         {typeof erro === "string" && (
           <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
+        )}
+        {erro.senha && (
+          <p className="text-red-400 text-sm mt-2">{erro.senha}</p>
+        )}
+        {erro.geral && (
+          <p className="text-red-400 text-sm mt-2">{erro.geral}</p>
         )}
       </form>
     </div>
