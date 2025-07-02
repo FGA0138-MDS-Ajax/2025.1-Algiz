@@ -383,5 +383,6 @@ export default {
   saveResetCode,
   updateUserProfile,
   updateUserProfilePhoto,
-  updateUserBanner
+  updateUserBanner,
+  validateSenha
 };
