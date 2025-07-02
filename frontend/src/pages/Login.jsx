@@ -33,6 +33,7 @@ function Login() {
     sessionStorage.setItem("authToken", data.token);
     sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
     navigate("/");
+    window.location.reload(); // Força o refresh após navegar
   } catch (err) {
     setErro(err.message);
     throw new Error("Erro inesperado no servidor. Verifique o backend.");

@@ -1,4 +1,4 @@
-import { generos } from "../utils/opcoes_form";
+import { generos, estados } from "../utils/opcoes_form";
 import PropTypes from "prop-types";
 
 export default function FormEditarUsuario({
@@ -112,18 +112,23 @@ export default function FormEditarUsuario({
               </div>
             </div>
             <div>
-              <label htmlFor="endereco" className="block text-gray-700 font-semibold mb-1">
-                Endereço
+              <label htmlFor="estado" className="block text-gray-700 font-semibold mb-1">
+                Estado
               </label>
-              <input
-                id="endereco"
-                type="text"
-                name="endereco"
-                placeholder="ex: Qr ## Cnj ###"
-                value={formData.endereco}
+              <select
+                id="estado"
+                name="estado"
+                value={formData.estado}
                 onChange={onChange}
                 className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-200 focus:outline-none transition"
-              />
+              >
+                <option value="">Selecione o estado</option>
+                {estados.map((e) => (
+                  <option key={e.value} value={e.value}>
+                    {e.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label htmlFor="genero" className="block text-gray-700 font-semibold mb-1">
@@ -144,6 +149,7 @@ export default function FormEditarUsuario({
                 ))}
               </select>
             </div>
+            
           </div>
           {erro && <div className="text-red-500 text-sm mb-4">{erro}</div>}
           <div className="flex justify-end gap-3 mt-6">
@@ -174,10 +180,11 @@ FormEditarUsuario.propTypes = {
     email: PropTypes.string,
     endereco: PropTypes.string,
     genero: PropTypes.string,
+    estado: PropTypes.string,
   }).isRequired,
   erro: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   onEditEmail: PropTypes.func,
-}; 
+};
