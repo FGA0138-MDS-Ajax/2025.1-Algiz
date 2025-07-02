@@ -269,10 +269,10 @@ function ConfiguracoesUsuario() {
                 <div className="font-semibold text-base text-gray-800 mb-2">Redefinir senha</div>
                 <form onSubmit={handleRedefinirSenha} className="flex flex-col gap-3 max-w-md">
                   <div>
-                    <label htmlFor="nova-senha-1" className="block text-gray-700 text-sm mb-1">Nova senha:</label>
+                    <label htmlFor="nova-senha-1" className="block text-gray-700 text-sm mb-1">Sua senha atual:</label>
                     <PasswordInput
                       id="nova-senha-1"
-                      placeholder="email.do.usuario@gmail.com"
+                      placeholder="Sua senha atual"
                       value={senha1}
                       onChange={e => setSenha1(e.target.value)}
                     />
@@ -281,7 +281,7 @@ function ConfiguracoesUsuario() {
                     <label htmlFor="nova-senha-2" className="block text-gray-700 text-sm mb-1">Nova senha:</label>
                     <PasswordInput
                       id="nova-senha-2"
-                      placeholder="email.do.usuario@gmail.com"
+                      placeholder="Nova senha"
                       value={senha2}
                       onChange={e => setSenha2(e.target.value)}
                     />
@@ -290,7 +290,7 @@ function ConfiguracoesUsuario() {
                     <label htmlFor="repita-nova-senha" className="block text-gray-700 text-sm mb-1">Repita sua nova senha:</label>
                     <PasswordInput
                       id="repita-nova-senha"
-                      placeholder="Sua senha"
+                      placeholder="Repita sua nova senha"
                       value={senha3}
                       onChange={e => setSenha3(e.target.value)}
                     />
@@ -328,7 +328,7 @@ function ConfiguracoesUsuario() {
                     <label htmlFor="senha-atual" className="block text-gray-700 text-sm mb-1">Sua senha atual:</label>
                     <PasswordInput
                       id="senha-atual"
-                      placeholder="Sua senha"
+                      placeholder="Sua senha atual"
                       value={senhaAtual}
                       onChange={e => setSenhaAtual(e.target.value)}
                     />
@@ -338,7 +338,7 @@ function ConfiguracoesUsuario() {
                     <input
                       id="novo-email"
                       type="email"
-                      placeholder="email.do.usuario@gmail.com"
+                      placeholder="Digite o novo email"
                       className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-200"
                       value={novoEmail}
                       onChange={e => setNovoEmail(e.target.value)}
