@@ -57,10 +57,6 @@ async function startServer() {
       db: sequelize,
     });
 
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173'
-  ];
 
   app.use(cors({
     origin: true, // Allows all origins
@@ -88,8 +84,6 @@ async function startServer() {
   });
 
   app.use((req, res, next) => {
-    // console.log('📥 Incoming request:', req.method, req.url);
-    // console.log('📦 Content-Type:', req.headers['content-type']);
     next();
   });
 
@@ -124,7 +118,7 @@ async function startServer() {
 
   // Garante usuário admin
   const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
-  const [adminUser, created] = await Usuario.findOrCreate({
+  const [, created] = await Usuario.findOrCreate({
   where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
     defaults: {
       senha: hashedPassword
