@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
+import postRoutes from './src/api/routes/post.routes.js';
 
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
@@ -90,6 +91,7 @@ async function startServer() {
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
   app.use('/api', empresaRoutes); 
+  app.use('/api', postRoutes);
 
   app.use(
     session({
