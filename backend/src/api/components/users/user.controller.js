@@ -205,6 +205,35 @@ export const resetPassword = async (req, res) => {
       .json({ message: "Erro ao redefinir senha.", error: error.message });
   }
 };
+// testar
+async function updatePassword(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    const { currentPassword, newPassword, repeatNewPassword } = req.body;
+
+    // Ensure the user is updating their own password
+    if (userId !== req.user.id) {
+      return res.status(403).json({ erro: "Você só pode atualizar sua própria senha." });
+    }
+
+    // Validate new password and repeat password
+    if (newPassword !== repeatNewPassword) {
+      return res.status(400).json({ erro: "A nova senha e a repetição não coincidem." });
+    }
+
+    // Validate the current password and update the password
+    const result = await userService.updatePassword(userId, currentPassword, newPassword);
+
+    if (result.success) {
+      return res.status(200).json({ mensagem: "Senha atualizada com sucesso. Faça login novamente." });
+    } else {
+      return res.status(400).json({ erro: result.message });
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar senha:", error);
+    return res.status(500).json({ erro: "Erro interno ao atualizar senha." });
+  }
+}
 
 async function getPublicUserProfile(req, res) {
   try {
@@ -361,6 +390,7 @@ export default {
   loginUser,
   getUserProfile,
   forgotPassword,
+  updatePassword,
   verifyResetCode,
   resetPassword,
   getPublicUserProfile,
