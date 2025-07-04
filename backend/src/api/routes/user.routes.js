@@ -35,7 +35,7 @@ router.put(
 router.put("/users/:id/photo/default", verifyToken, userController.setUserDefaultProfilePhoto); // Restaurar foto padrão
 router.put("/users/:id/banner/default", verifyToken, userController.setUserDefaultBanner);      // Restaurar banner padrão
 
-router.put("/users/:id/password", verifyToken, userController.updatePassword); // Atualizar senha do usuário
+router.put("/users/:id/update-password", verifyToken, userController.updatePassword); // Atualizar senha do usuário
 
 /* 🔧 UTILITÁRIO/DEBUG: Listar todos os usuários do banco (pode ser mantido protegido) */
 router.get("/users", async (req, res) => {
