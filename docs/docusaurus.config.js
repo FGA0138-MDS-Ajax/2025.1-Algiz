@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'EcoNet',
-  tagline: 'Matketplace de produtos sustentáveis',
+  tagline: 'Marketplace de produtos sustentáveis',
   favicon: 'img/logo-2.png',
   trailingSlash: false,
   deploymentBranch: 'gh-pages',
