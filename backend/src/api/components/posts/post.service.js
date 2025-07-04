@@ -1,17 +1,17 @@
-import models from '../../../models/index.js';
+import models from '../../../models/index.model.js';
 const { Post, Empresa } = models;
 
 async function createPost(postData) {
   const { titulo, conteudo, empresaId } = postData;
 
   // 1. Validação de campos obrigatórios
-  if (!titulo || !titulo.trim()) {
+  if (!titulo?.trim()) {
     const error = new Error('O título da postagem não pode estar vazio.');
     error.name = 'ValidationError';
     throw error;
   }
 
-  if (!conteudo || !conteudo.trim()) {
+  if (!conteudo?.trim()) {
     const error = new Error('O conteúdo da postagem não pode estar vazio.');
     error.name = 'ValidationError';
     throw error;
