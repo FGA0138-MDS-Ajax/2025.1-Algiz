@@ -5,10 +5,11 @@ sidebar_position: 7
 # Diagrama de classes
 
 # Diagrama de Classes
-
+Figura 6: Diagrama de classes
 ![Diagrama de classes](../../static/img/image2.png)
+Fonte: De autoria própria.
 
-O diagrama ilustrado apresenta diversas classes fundamentais organizadas de forma a refletir a complexidade e a modularização do sistema. Entre as classes principais, destacam-se:
+O diagrama ilustrado (Figura 6) apresenta diversas classes fundamentais organizadas de forma a refletir a complexidade e a modularização do sistema. Entre as classes principais, destacam-se:
 
 ## Classes e Relações
 

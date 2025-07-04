@@ -4,11 +4,11 @@ sidebar_position: 6
 ---
 # Diagrama de atividades  
 
-![Representação Visual da Arquitetura](../../static/img/diagrama_atividades.png)
-
 Figura 5: Diagrama de atividades
+![Representação Visual da Arquitetura](../../static/img/diagrama_atividades.png)
+Fonte: De autoria própria
 
-O diagrama de atividade apresentado mapeia de forma clara e dinâmica o fluxo de interações de um usuário dentro do sistema web, desde o acesso inicial até a execução de funcionalidades específicas pós-login.
+O diagrama de atividade apresentado (Figura 5) mapeia de forma clara e dinâmica o fluxo de interações de um usuário dentro do sistema web, desde o acesso inicial até a execução de funcionalidades específicas pós-login.
 
 **Fluxo de Navegação Inicial:**
 

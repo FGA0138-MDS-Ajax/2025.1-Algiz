@@ -3,14 +3,13 @@ sidebar_label: "Diagrama de estado"
 sidebar_position: 5
 ---
 # Diagrama de estado  
-
+Figura 4: Diagrama de estados.
 ![Representação Visual da Arquitetura](../../static/img/diagrama_estado.png) 
-
-Figura 4: Diagrama de estados
+Fonte: De autoria própria.
 
 ### **Descrição Geral do Diagrama de Estados**
 
-O diagrama representa o fluxo de navegação de um sistema web desde o acesso inicial até as diferentes telas conforme o tipo de usuário e seu vínculo com empresas.
+O diagrama representa o fluxo de navegação de um sistema web desde o acesso inicial até as diferentes telas conforme o tipo de usuário e seu vínculo com empresas (Figura 4).
 
 1. **Acesso Inicial:**
 
