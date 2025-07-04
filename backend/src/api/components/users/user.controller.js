@@ -1,122 +1,129 @@
-// backend/src/api/components/users/user.controller.js
-import userService from "./user.service.js";
-import * as hashUtil from "../../utils/hash.util.js";
-import axios from "axios";
-import {  sendCodeEmail,  isEmailServiceEnabled } from "../../utils/email.util.js"; 
-import cloudinary from "../../utils/cloudinary.util.js";
+import userService from "./user.service.js"; // Serviço relacionado ao usuário
+import * as hashUtil from "../../utils/hash.util.js"; // Utilitário para hash de senhas
+import axios from "axios"; // Biblioteca para requisições HTTP
+import { sendCodeEmail, isEmailServiceEnabled } from "../../utils/email.util.js"; // Utilitários para envio de email
+import cloudinary from "../../utils/cloudinary.util.js"; // Serviço de upload de imagens
 
-const isDevRecoveryMode = process.env.DEV_RECOVERY_MODE === "true";
-const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY;
+// Variáveis de configuração
+const isDevRecoveryMode = process.env.DEV_RECOVERY_MODE === "true"; // Modo de recuperação em desenvolvimento
+const recaptchaEnabled = !!process.env.RECAPTCHA_SECRET_KEY; // Verifica se o reCAPTCHA está habilitado
 
+// Função para registrar um novo usuário
 async function registerUser(req, res) {
     try {
-        const userData = req.body;
-        const newUser = await userService.createUser(userData);
+        const userData = req.body; // Dados enviados pelo cliente
+        const newUser = await userService.createUser(userData); // Cria o usuário no banco de dados
         return res.status(201).json({
-            mensagem: "Usuário cadastrado com sucesso!",
-            usuarioId: newUser.id 
+            mensagem: "Usuário cadastrado com sucesso!", // Mensagem de sucesso
+            usuarioId: newUser.id // Retorna o ID do novo usuário
         });
     } catch (error) {
+        // Tratamento de erros específicos
         if (error.message === 'Email já cadastrado') { 
-            return res.status(409).json({ erro: error.message });
+            return res.status(409).json({ erro: error.message }); // Email já registrado
         }
         if (error.name === 'ValidationError') { 
-            return res.status(400).json({ erro: "Erro de validação", detalhes: error.details });
+            return res.status(400).json({ erro: "Erro de validação", detalhes: error.details }); // Erro de validação
         }
+        // Tratamento de erros gerais
         console.error("Erro no controller ao registrar usuário:", error);
         return res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
     }
 }
 
+// Função para autenticar o usuário (login)
 async function loginUser(req, res) {
   try {
-    const { email, password } = req.body; 
-    const { token, user } = await userService.authenticateUser(email, password);
-    res.json({ token, user });
+    const { email, password } = req.body; // Dados de login enviados pelo cliente
+    const { token, user } = await userService.authenticateUser(email, password); // Autentica o usuário
+    res.json({ token, user }); // Retorna o token e os dados do usuário
   } catch (error) {
     if (error.name === "AuthenticationError") {
       console.error("Erro de autenticação:", error);
-      return res.status(401).json({ erro: error.message });
+      return res.status(401).json({ erro: error.message }); // Erro de autenticação
     }
-    res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+    res.status(500).json({ erro: "Ocorreu um erro interno no servidor." }); // Erro interno
   }
 }
 
+// Função para buscar o perfil do usuário autenticado
 async function getUserProfile(req, res) {
   try {
-    const requestedUserId = req.params.id; 
-    const authenticatedUserId = req.user.id;
+    const requestedUserId = req.params.id; // ID do usuário solicitado
+    const authenticatedUserId = req.user.id; // ID do usuário autenticado
 
+    // Verifica se o usuário está acessando seu próprio perfil
     if (parseInt(requestedUserId) !== authenticatedUserId) {
       return res
         .status(403)
         .json({ erro: "Você não tem permissão para acessar este perfil." });
     }
 
-    const userProfile = await userService.findUserProfileById(requestedUserId);
+    const userProfile = await userService.findUserProfileById(requestedUserId); // Busca o perfil no banco de dados
 
     if (!userProfile) {
-      return res.status(404).json({ erro: "Usuário não encontrado." });
+      return res.status(404).json({ erro: "Usuário não encontrado." }); // Usuário não encontrado
     }
 
-    res.json(userProfile);
+    res.json(userProfile); // Retorna os dados do perfil
   } catch (error) {
     console.error("Erro ao buscar perfil de usuário:", error);
-    res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+    res.status(500).json({ erro: "Ocorreu um erro interno no servidor." }); // Erro interno
   }
 }
 
-// Helper to verify reCAPTCHA
+// Função auxiliar para verificar o reCAPTCHA
 async function verifyRecaptcha(recaptchaToken) {
   if (!recaptchaEnabled) {
     if (!isDevRecoveryMode) {
       console.warn("⚠️ reCAPTCHA não verificado (serviço desativado)");
     }
-    return true;
+    return true; // Ignora verificação se o reCAPTCHA está desativado
   }
   const { data } = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify`,
     null,
     {
       params: {
-        secret: process.env.RECAPTCHA_SECRET_KEY,
-        response: recaptchaToken,
+        secret: process.env.RECAPTCHA_SECRET_KEY, // Chave secreta do reCAPTCHA
+        response: recaptchaToken, // Token enviado pelo cliente
       },
     }
   );
   if (!data.success) {
     if (isDevRecoveryMode) {
       console.warn("⚠️ Ignorando falha do reCAPTCHA (modo DEV ativado)");
-      return true;
+      return true; // Ignora falha no modo de desenvolvimento
     }
-    return false;
+    return false; // Falha na verificação do reCAPTCHA
   }
-  return true;
+  return true; // Verificação bem-sucedida
 }
 
-// Helper to handle sending code or dev mode
+// Função auxiliar para enviar código de recuperação ou modo DEV
 function handleSendCodeResponse(res, email, code) {
   if (isEmailServiceEnabled()) {
     return sendCodeEmail(email, code).then(() =>
       res.status(200).json({
-        message: "Código enviado com sucesso!",
-        code: isDevRecoveryMode ? code : undefined,
+        message: "Código enviado com sucesso!", // Mensagem de sucesso
+        code: isDevRecoveryMode ? code : undefined, // Retorna o código no modo DEV
       })
     );
   } else if (isDevRecoveryMode) {
     console.warn(`⚠️  [DEV MODE] Código de recuperação gerado: ${code}`);
     return res.status(200).json({
-      message: "Código gerado em modo desenvolvimento.",
+      message: "Código gerado em modo desenvolvimento.", // Mensagem no modo DEV
       code: code,
     });
   } else {
     return res.status(503).json({
-      message: "Serviço de recuperação de senha temporariamente indisponível",
+      message: "Serviço de recuperação de senha temporariamente indisponível", // Serviço indisponível
       serviceUnavailable: true,
     });
   }
 }
 
+// Função para enviar código de recuperação de senha
 export const forgotPassword = async (req, res) => {
   if (!req.body) {
     return res
@@ -147,7 +154,7 @@ export const forgotPassword = async (req, res) => {
       .status(500)
       .json({ message: "Erro ao processar solicitação", error: err.message });
   }
-};
+}
 
 // Verifica se o código enviado corresponde ao código armazenado no usuário
 export const verifyResetCode = async (req, res) => {
@@ -175,7 +182,7 @@ export const verifyResetCode = async (req, res) => {
       .status(500)
       .json({ message: "Erro ao verificar o código.", error: error.message });
   }
-};
+}
 
 // Atualiza a senha do usuário após validação
 export const resetPassword = async (req, res) => {
@@ -204,24 +211,25 @@ export const resetPassword = async (req, res) => {
       .status(500)
       .json({ message: "Erro ao redefinir senha.", error: error.message });
   }
-};
-// testar
+}
+
+// Função para atualizar a senha do usuário
 async function updatePassword(req, res) {
   try {
     const userId = parseInt(req.params.id);
     const { currentPassword, newPassword, repeatNewPassword } = req.body;
 
-    // Ensure the user is updating their own password
+    // Verifica se o usuário está atualizando sua própria senha
     if (userId !== req.user.id) {
       return res.status(403).json({ erro: "Você só pode atualizar sua própria senha." });
     }
 
-    // Validate new password and repeat password
+    // Valida nova senha e repetição
     if (newPassword !== repeatNewPassword) {
       return res.status(400).json({ erro: "A nova senha e a repetição não coincidem." });
     }
 
-    // Validate the current password and update the password
+    // Valida a senha atual e atualiza a senha
     const result = await userService.updatePassword(userId, currentPassword, newPassword);
 
     if (result.success) {
@@ -235,6 +243,7 @@ async function updatePassword(req, res) {
   }
 }
 
+// Função para buscar perfil público do usuário
 async function getPublicUserProfile(req, res) {
   try {
     const userId = req.params.id;
@@ -263,6 +272,7 @@ async function getPublicUserProfile(req, res) {
   }
 }
 
+// Função para editar perfil do usuário
 async function editUserProfile(req, res) {
   try {
     const userId = parseInt(req.params.id);
@@ -275,7 +285,7 @@ async function editUserProfile(req, res) {
         .json({ erro: "Você só pode editar seu próprio perfil." });
     }
 
-    const resultado = await  userService.updateUserProfile(userId, req.body);
+    const resultado = await userService.updateUserProfile(userId, req.body);
 
     return res.status(200).json(resultado);
   } catch (error) {
@@ -289,6 +299,7 @@ async function editUserProfile(req, res) {
   }
 }
 
+// Função para editar foto de perfil do usuário
 export async function editUserProfilePhoto(req, res) {
   try {
     const userId = parseInt(req.params.id);
@@ -321,6 +332,7 @@ export async function editUserProfilePhoto(req, res) {
   }
 }
 
+// Função para editar banner do usuário
 export async function editUserBanner(req, res) {
   try {
     const userId = parseInt(req.params.id);
@@ -353,6 +365,7 @@ export async function editUserBanner(req, res) {
   }
 }
 
+// Função para definir foto de perfil padrão
 export async function setUserDefaultProfilePhoto(req, res) {
   try {
     const userId = parseInt(req.params.id);
@@ -369,6 +382,7 @@ export async function setUserDefaultProfilePhoto(req, res) {
   }
 }
 
+// Função para definir banner padrão
 export async function setUserDefaultBanner(req, res) {
   try {
     const userId = parseInt(req.params.id);
@@ -385,6 +399,7 @@ export async function setUserDefaultBanner(req, res) {
   }
 }
 
+// Exporta todas as funções do controller
 export default {
   registerUser,
   loginUser,

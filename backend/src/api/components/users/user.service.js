@@ -255,11 +255,6 @@ async function authenticateUser(email, password) {
 
     const user = userRows[0];
 
-    // Veja o objeto completo do usuário com dados retornados no log do backend
-    // console.log('Usuário encontrado:', user);
-    // Veja o nome exato das propriedades
-    // console.log(Object.keys(user));
-
     const senhaHash = user.senha;
 
     const senhaCorreta = await comparePassword(password, senhaHash);
