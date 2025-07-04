@@ -1,8 +1,7 @@
 import models from "../../../models/index.model.js";
 const { Empresa } = models;
+const { Juridico } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
-
-import { Juridico } from '../../../models/index.js';
 
 // --- Lógica de Validação (agora dentro do service para evitar problemas de import) ---
 function validateCNPJ(cnpj) {
@@ -24,8 +23,7 @@ function validateCNPJ(cnpj) {
     if (pos < 2) pos = 9;
   }
   resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  if (resultado !== parseInt(cnpjLimpo.charAt(13))) return false;
-  return true;
+  return resultado === parseInt(cnpjLimpo.charAt(13));
 }
 
 // --- Função para criar uma nova empresa ---
@@ -45,10 +43,13 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         const error = new Error('CNPJ inválido ou não fornecido.');
         error.name = 'ValidationError';
         throw error;
+    }
 
     // Validação de entrada
     if (!validateCNPJ(cnpjJuridico)) {
-        throw { name: 'ValidationError', message: 'CNPJ inválido ou não fornecido.' };
+        const error = new Error('CNPJ inválido ou não fornecido.');
+        error.name = 'ValidationError';
+        throw error;
     }
     if (!razaoSocial) {
         const error = new Error('Razão Social é obrigatória.');
@@ -63,8 +64,6 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
     // Adicione aqui as outras validações...
 
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
-
-    const existingCnpj = await Empresa.findByPk(cnpjLimpo);
 
     // Verificar duplicidade
     const existingCnpj = await Juridico.findByPk(cnpjLimpo);
