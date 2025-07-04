@@ -5,7 +5,11 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: '💡 Foco Sustentável',
-    Svg: () => <img src="/img/docs-home1.png" alt="Foco Sustentável" />,
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home1.png').default}
+        alt="Foco Sustentável"
+      />),
     description: (
       <>
       A plataforma EcoNet conecta empresas com excedentes de material a organizações que buscam 
@@ -15,7 +19,11 @@ const FeatureList = [
   },
   {
     title: '🤝 Conexão e Colaboração',
-    Svg: () => <img src="/img/docs-home2.png" alt="Conexão e Colaboração" />,
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home2.png').default}
+        alt="Conexão e Colaboração"
+      />),
     description: (
       <>
         Permitindo que as empresas atuem como fornecedoras e receptores dentro de um mesmo 
@@ -26,7 +34,11 @@ const FeatureList = [
   },
   {
     title: '📂 Gestão de Documentos',
-    Svg: () => <img src="/img/docs-home4.png" alt="Gestão de Documentos" />,
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home3.png').default}
+        alt="Gestão de Documentos"
+      />),
     description: (
       <>
         O diferencial da EcoNet está na gestão segura de contratos e documentos, 
