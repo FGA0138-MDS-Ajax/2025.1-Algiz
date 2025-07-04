@@ -37,7 +37,7 @@
 
 - [Contributing](./CONTRIBUTING.md) – Guia para colaboração  
 - [Visão do Projeto](https://fga0138-mds-ajax.github.io/2025.1-Algiz/assets/files/visao-do-produto-e-do-projeto-algiz-2025.1-0b57c6470d086d33873d26cefe58f845.pdf) – Documento de visão do produto e do projeto
-- [Arquitetura](https://fga0138-mds-ajax.github.io/2025.1-Algiz/assets/files/documento-de-arquitetura-algiz-2025-1-d32e0856a9cc7c85b2e6baee2c6a36f9.pdf) – Documento de arquitetura do projeto
+- [Arquitetura](https://fga0138-mds-ajax.github.io/2025.1-Algiz/assets/files/documento-de-arquitetura-algiz-2025.1-e46e1518abfe5013a2eaea3b6a66b73e.pdf) – Documento de arquitetura do projeto
 
 ---
 
