@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
+import SidebarUsuario from "../components/SidebarUsuario";
 import Footer from "../components/Footer";
 
 // fake empresas
@@ -41,6 +42,45 @@ export default function PaginaPost() {
   // Se quiser buscar o post pelo id via rota, descomente:
   // const { idPost } = useParams();
 
+  // Estado para modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tab, setTab] = useState("recomendadas");
+
+  // Usuário completo do backend
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    async function fetchUsuarioCompleto() {
+      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+      if (usuarioLogado?.id) {
+        try {
+          const token = sessionStorage.getItem("authToken");
+          const res = await fetch(
+            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            setUsuario(data);
+          } else {
+            setUsuario(null);
+          }
+        } catch {
+          setUsuario(null);
+        }
+      } else {
+        setUsuario(null);
+      }
+    }
+    fetchUsuarioCompleto();
+  }, []);
+
   // Mock de post
   const post = {
     empresaNome: "Relog",
@@ -51,10 +91,6 @@ export default function PaginaPost() {
     imagem: "/post.png",
     tags: ["Doação", "Sustentabilidade"],
   };
-
-  // etado para modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [tab, setTab] = useState("recomendadas");
 
   // empresas para o modal 
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
@@ -69,7 +105,11 @@ export default function PaginaPost() {
         {/* Sidebar esquerda */}
         <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
           <div className="sticky top-20">
-            <SidebarIntro />
+            {usuario ? (
+              <SidebarUsuario usuario={usuario} />
+            ) : (
+              <SidebarIntro />
+            )}
           </div>
         </div>
 

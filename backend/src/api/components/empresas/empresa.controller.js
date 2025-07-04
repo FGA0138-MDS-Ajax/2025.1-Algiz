@@ -40,6 +40,7 @@ export async function registerEmpresa(req, res) {
          if (empresa) {
              res.status(200).json(empresa);
          } else {
+            console.log("Empresa não encontrada para o CNPJ:", cnpj);
              res.status(404).json({ erro: "Empresa não encontrada." });
          }
      } catch (error) {

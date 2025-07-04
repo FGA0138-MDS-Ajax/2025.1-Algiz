@@ -2,6 +2,20 @@ import models from "../../../models/index.model.js";
 const { Empresa } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
 
+function formatarCNPJ(cnpj) {
+    // Remove tudo que não for número
+    const cnpjLimpo = cnpj.replace(/\D/g, '');
+    // Aplica a máscara: 12.345.678/0001-01
+    if (cnpjLimpo.length !== 14) return cnpj; // Retorna original se não for válido
+    return (
+        cnpjLimpo.slice(0, 2) + '.' +
+        cnpjLimpo.slice(2, 5) + '.' +
+        cnpjLimpo.slice(5, 8) + '/' +
+        cnpjLimpo.slice(8, 12) + '-' +
+        cnpjLimpo.slice(12, 14)
+    );
+}
+
 async function createEmpresa(idUsuario, dadosEmpresa) {
     console.log("Recebido no backend:", dadosEmpresa);
     const {
@@ -72,8 +86,8 @@ async function findAllEmpresas() {
 }
 async function findEmpresaByPk(cnpj) {
     try {
-        const cnpjLimpo = cnpj.replace(/\D/g, '');
-        return await Empresa.findByPk(cnpjLimpo);
+        const cnpjFormatado = formatarCNPJ(cnpj);
+        return await Empresa.findByPk(cnpjFormatado);
     } catch (error) {
         console.error(`Erro no serviço ao buscar empresa pelo CNPJ ${cnpj}:`, error);
         throw new Error("Erro ao buscar dados da empresa.");

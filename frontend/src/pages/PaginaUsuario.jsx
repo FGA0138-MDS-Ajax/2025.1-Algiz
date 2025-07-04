@@ -162,7 +162,7 @@ export default function PaginaUsuario() {
           )}
 
           {/* --- AQUI ENTRA O CARD DE EMPRESAS VINCULADAS --- */}
-          <EmpresasVinculadas empresas={empresasVinculadas} />
+          {/* <EmpresasVinculadas empresas={empresasVinculadas} /> */}
 
           {/* Salvos */}
           <Salvos usuario={usuario} />
