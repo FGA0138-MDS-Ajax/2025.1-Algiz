@@ -63,7 +63,7 @@ function CodigoAutenticacao() {
     const codigoCompleto = codigo.join("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/usuarios/verify-code", {
+      const response = await fetch("http://localhost:3001/api/users/verify-code", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
