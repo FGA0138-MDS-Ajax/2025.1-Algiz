@@ -24,3 +24,10 @@ As conexões entre as classes, representadas por linhas no diagrama, indicam com
 - Visualizar a dependência entre os módulos do sistema.
 - Identificar pontos de integração e interface entre componentes.
 - Assegurar que a implementação respeite as diretrizes da orientação a objetos, promovendo baixo acoplamento e alta coesão.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

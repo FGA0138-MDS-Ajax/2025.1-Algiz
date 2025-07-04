@@ -75,3 +75,10 @@ Foram propostas algumas metas que visam assegurar que a solução atenda às exp
 - O site precisa ser responsivo, funcionando adequadamente em navegadores como, Google Chrome e Microsoft Edge.  
 - O sistema deve funcionar em rede local.  
 - O sistema deve ter criptografia de senhas.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

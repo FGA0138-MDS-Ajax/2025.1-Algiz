@@ -73,3 +73,10 @@ A camada de negócios é o núcleo funcional da aplicação. Os pacotes desta ca
 
 ## Camada de Persistência
 A camada de persistência tem como principal função gerenciar a comunicação com o banco de dados da aplicação. Os pacotes desta camada realizam a conexão com o banco, executam instruções SQL e fornecem à camada de negócios os dados necessários para o funcionamento da aplicação. São incluídas aqui as operações de leitura, inserção, atualização e exclusão de dados.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

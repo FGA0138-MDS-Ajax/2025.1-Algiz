@@ -24,3 +24,10 @@ Fonte: De autoria própria.
 ![Representação Visual da Arquitetura](../../static/img/image1.png)
 ![Representação Visual da Arquitetura](../../static/img/image7.png)
 Fonte: De autoria própria. 
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

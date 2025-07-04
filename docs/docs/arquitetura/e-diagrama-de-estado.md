@@ -54,3 +54,10 @@ O diagrama representa o fluxo de navegação de um sistema web desde o acesso in
     - **Página de Contratos**
 
     - **Criação de Posts**
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)
