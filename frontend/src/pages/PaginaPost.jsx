@@ -3,9 +3,9 @@ import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
-import Footer from "../components/Footer";
+import SidebarUsuario from "../components/SidebarUsuario";
+import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
 
-// fake empresas
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
   { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -15,7 +15,6 @@ const sugestoesEmpresas = [
   { id: "6", nome: "Kactus", logo: "/empresa10.png" },
 ];
 
-// fake comentarios
 const comentariosMock = [
   {
     id: 1,
@@ -38,30 +37,34 @@ const comentariosMock = [
 ];
 
 export default function PaginaPost() {
-  // Se quiser buscar o post pelo id via rota, descomente:
-  // const { idPost } = useParams();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tab, setTab] = useState("recomendadas");
 
-  // Mock de post
+  const { usuario, carregando } = useUsuarioAutenticado();
+
   const post = {
     empresaNome: "Relog",
     empresaLogo: "/empresa1.png",
     titulo: "Uso massivo de aparelhos eletrônicos",
     descricao:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a libero urna. Vivamus sagittis ligula et euismod malesuada. Integer ullamcorper sem id lacus scelerisque eleifend. Curabitur faucibus ex tempus auctor posuere. Integer commodo sed sem sed ultricies. Ut pharetra posuere massa eget dignissim. Mauris tempor magna eu elementum faucibus. In hac habitasse platea dictumst. Aenean ac malesuada odio. Morbi maximus libero sit amet fermentum sagittis. Aenean ut nulla in erat feugiat egestas ut sed ligula. Cras semper egestas tempus. Proin tincidunt, eros sit amet tincidunt dictum, tortor risus egestas felis, in ullamcorper felis dolor quis justo. Maecenas pharetra accumsan velit id blandit. Phasellus at mauris condimentum, sollicitudin nisi nec, accumsan magna. Aliquam ut tortor a dui facilisis pulvinar ac quis magna. Nam et bibendum quam, eu vehicula mi. Nam pulvinar congue libero, eu fermentum magna pretium vel. Cras eleifend turpis in feugiat luctus. Integer vel iaculis ex. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent dignissim tristique libero eu interdum. Aenean pharetra interdum quam, id dapibus ligula eleifend consequat. Fusce tempus tortor vel nibh tempor interdum. Donec pretium suscipit mollis. Ut pellentesque velit eget leo ullamcorper laoreet. Etiam at magna lectus. Aliquam massa arcu, convallis eu augue vel, semper rutrum tortor. Nulla interdum ut justo et lobortis. Sed feugiat quam libero, sit amet eleifend felis molestie in. Proin tempor dapibus neque sit amet vehicula. Quisque vitae mi augue. ",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a libero urna...",
     imagem: "/post.png",
     tags: ["Doação", "Sustentabilidade"],
   };
 
-  // etado para modal
-  const [modalOpen, setModalOpen] = useState(false);
-  const [tab, setTab] = useState("recomendadas");
-
-  // empresas para o modal 
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
     img: e.logo,
     nome: e.nome,
     desc: "Empresa recomendada para você",
   }));
+
+  if (carregando) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-green-50">
+        <p className="text-gray-600 text-lg">Carregando post...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-green-50 min-h-screen pt-16">
@@ -69,7 +72,11 @@ export default function PaginaPost() {
         {/* Sidebar esquerda */}
         <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
           <div className="sticky top-20">
-            <SidebarIntro />
+            {usuario ? (
+              <SidebarUsuario usuario={usuario} />
+            ) : (
+              <SidebarIntro />
+            )}
           </div>
         </div>
 
@@ -78,7 +85,7 @@ export default function PaginaPost() {
           <Post post={post} completo comentarios={comentariosMock} />
         </section>
 
-        {/* Menu de sugestões */}
+        {/* Sugestões de empresas */}
         <aside className="order-2 md:order-3 w-80 flex-shrink-0 md:block">
           <SugestoesEmpresas
             sugestoes={sugestoesEmpresas}
@@ -86,6 +93,7 @@ export default function PaginaPost() {
           />
         </aside>
       </div>
+
       <EmpresasModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -93,8 +101,6 @@ export default function PaginaPost() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

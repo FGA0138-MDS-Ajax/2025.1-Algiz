@@ -3,10 +3,15 @@ import { useNavigate, Link } from "react-router-dom";
 import PopupMessage from "../components/PopupMessage";
 import EstadoDropdown from "../components/EstadoDropdown";
 import GeneroDropdown from "../components/GeneroDropdown";
-import { validatePasswordsMatch, validarSenhaCompleta, validateCadastro } from "../utils/validacao";
+import InputField from "../components/form/InputField";
 import { Eye, EyeOff } from "lucide-react";
 import axios from 'axios';
 import Swal from "sweetalert2";
+import {
+  validatePasswordsMatch,
+  validarSenhaCompleta,
+  validateCadastro
+} from "../utils/validacao";
 
 export default function Cadastro() {
   const initialForm = {
@@ -26,40 +31,34 @@ export default function Cadastro() {
   const [showSenha, setShowSenha] = useState(false);
   const [showRepetir, setShowRepetir] = useState(false);
   const [erro, setErro] = useState({});
-  const navigate = useNavigate();
+  const [senhaErros, setSenhaErros] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [senhaErros, setSenhaErros] = useState([]);
+  const navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value } = e.target;
     const updatedForm = { ...form, [name]: value };
     setForm(updatedForm);
-    setErro({}); // limpa erros
+    setErro({});
 
-    // Atualiza os erros da senha
     if (name === "senha") {
       const erros = validarSenhaCompleta(value);
       setSenhaErros(erros);
     }
 
-    // Valida repetição de senha somente se repetirSenha tiver valor
     if (name === "repetirSenha" || name === "senha") {
       if (updatedForm.repetirSenha) {
         const erroRepetir = validatePasswordsMatch(updatedForm.senha, updatedForm.repetirSenha);
         if (erroRepetir) {
           setErro((prev) => ({ ...prev, repetirSenha: erroRepetir }));
         } else {
-          setErro((prev) => {
-            const { repetirSenha, ...rest } = prev;
-            return rest;
-          });
+          const { repetirSenha, ...rest } = erro;
+          setErro(rest);
         }
       } else {
-        setErro((prev) => {
-          const { repetirSenha, ...rest } = prev;
-          return rest;
-        });
+        const { repetirSenha, ...rest } = erro;
+        setErro(rest);
       }
     }
   }
@@ -78,50 +77,39 @@ export default function Cadastro() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/users/register",
-        {
-          nome: form.nome,
-          sobrenome: form.sobrenome,
-          email: form.email,
-          senha: form.senha,
-          telefone: form.celular,
-          estado: form.estado,
-          sexo: form.genero,
-          dtNascimento: form.dtNascimento,
-          cpfCnpj: form.cpfCnpj,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await axios.post("http://localhost:3001/api/users/register", {
+        nome: form.nome,
+        sobrenome: form.sobrenome,
+        email: form.email,
+        senha: form.senha,
+        telefone: form.celular,
+        estado: form.estado,
+        sexo: form.genero,
+        dtNascimento: form.dtNascimento,
+        cpfCnpj: form.cpfCnpj,
+      }, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-      console.log("Usuário criado:", response.data);
-
-      // Show SweetAlert success message
       Swal.fire({
         title: "Cadastro realizado com sucesso!",
         text: "Você será redirecionado para a página de login.",
         icon: "success",
-        timer: 2000, // Close after 2 seconds
+        timer: 2000,
         showConfirmButton: false,
       });
 
-      // Redirect to login page after 2 seconds
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      console.error("Full error:", err);
       if (err.response?.data?.details) {
         const details = err.response.data.details;
         if (Array.isArray(details)) {
-          // Show each message in a list
           setErro(details.map((e) => e.mensagem || e.message || JSON.stringify(e)));
         } else {
           setErro({ geral: details.mensagem || details.message || JSON.stringify(details) });
         }
       } else if (err.response?.data?.erro) {
         setErro([err.response.data.erro]);
-        console.log("Erro backend completo:", err.response?.data);
       } else {
         setErro(["Erro ao conectar com o servidor"]);
       }
@@ -138,7 +126,6 @@ export default function Cadastro() {
         className="relative z-10 bg-green/5 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl px-8 py-5 w-full max-w-4xl flex flex-col gap-2"
         onSubmit={handleSubmit}
       >
-        {/* Logo centralizada */}
         <div className="flex justify-center mb-2">
           <Link
             to="/"
@@ -153,90 +140,73 @@ export default function Cadastro() {
             />
           </Link>
         </div>
-        {/* Título alinhado à esquerda */}
+
         <h2 className="text-2xl font-bold mb-4 text-white text-left w-full">
           Cadastramento
         </h2>
-        {/* Formulário em duas colunas */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
           {/* Coluna 1 */}
           <div className="flex flex-col gap-3">
-            <div>
-              <label className="block text-white mb-1 text-base" htmlFor="nome">Nome</label>
-              <input
-                id="nome"
-                name="nome"
-                placeholder="Primeiro nome"
-                value={form.nome}
-                onChange={handleChange}
-                required
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-white mb-1 text-base" htmlFor="sobrenome">Sobrenome</label>
-              <input
-                id="sobrenome"
-                name="sobrenome"
-                placeholder="Sobrenome"
-                value={form.sobrenome}
-                onChange={handleChange}
-                required
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-white mb-1" htmlFor="cpfCnpj">CPF*</label>
-              <input
-                id="cpfCnpj"
-                name="cpfCnpj"
-                placeholder="Digite seu CPF"
-                value={form.cpfCnpj}
-                onChange={handleChange}
-                required
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-              {erro.cpfCnpj && (
-                <p className="text-red-400 text-sm mt-2">{erro.cpfCnpj}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-white mb-1 text-base" htmlFor="celular">Celular</label>
-              <input
-                id="celular"
-                name="celular"
-                placeholder="ex: 61 912345678"
-                value={form.celular}
-                onChange={handleChange}
-                required
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-              {erro.celular && (
-                <p className="text-red-400 text-sm mt-2">{erro.celular}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-white mb-1 text-base" htmlFor="email">Email</label>
-              <input
-                id="email"
-                name="email"
-                placeholder="username@gmail.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-                type="email"
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-            </div>
+            <InputField
+              id="nome"
+              name="nome"
+              label="Nome"
+              placeholder="Primeiro nome"
+              value={form.nome}
+              onChange={handleChange}
+              required
+            />
+            <InputField
+              id="sobrenome"
+              name="sobrenome"
+              label="Sobrenome"
+              placeholder="Sobrenome"
+              value={form.sobrenome}
+              onChange={handleChange}
+              required
+            />
+            <InputField
+              id="cpfCnpj"
+              name="cpfCnpj"
+              label="CPF*"
+              placeholder="Digite seu CPF"
+              value={form.cpfCnpj}
+              onChange={handleChange}
+              required
+            />
+            {erro.cpfCnpj && (
+              <p className="text-red-400 text-sm mt-2">{erro.cpfCnpj}</p>
+            )}
+            <InputField
+              id="celular"
+              name="celular"
+              label="Celular"
+              placeholder="ex: 61 912345678"
+              value={form.celular}
+              onChange={handleChange}
+              required
+            />
+            <InputField
+              id="email"
+              name="email"
+              label="Email"
+              type="email"
+              placeholder="username@gmail.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
           </div>
+
           {/* Coluna 2 */}
           <div className="flex flex-col gap-3">
             <div>
-                <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
-                <EstadoDropdown
-                  value={form.estado}
-                  onChange={(value) => setForm((prev) => ({ ...prev, estado: value }))}
-                />
+              <label className="block text-white mb-1 text-base" htmlFor="estado">Estado</label>
+              <EstadoDropdown
+                value={form.estado}
+                onChange={(value) => setForm((prev) => ({ ...prev, estado: value }))}
+              />
             </div>
             <div>
               <label className="block text-white mb-1 text-base" htmlFor="genero">Gênero</label>
@@ -245,30 +215,35 @@ export default function Cadastro() {
                 onChange={(value) => setForm((prev) => ({ ...prev, genero: value }))}
               />
             </div>
-            <div>
-              <label className="block text-white mb-1 text-base" htmlFor="dtNascimento">Data de Nascimento</label>
-              <input
-                id="dtNascimento"
-                name="dtNascimento"
-                type="date"
-                value={form.dtNascimento}
-                onChange={handleChange}
-                required
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
-              />
-            </div>
+            <InputField
+              id="dtNascimento"
+              name="dtNascimento"
+              label="Data de Nascimento"
+              type="date"
+              value={form.dtNascimento}
+              onChange={handleChange}
+              required
+            />
             <div className="relative">
-              <label className="block text-white mb-1 text-base" htmlFor="senha">Senha</label>
-              <input
+              <InputField
                 id="senha"
                 name="senha"
+                label="Senha"
+                type={showSenha ? "text" : "password"}
                 placeholder="Digite sua senha"
                 value={form.senha}
                 onChange={handleChange}
                 required
-                type={showSenha ? "text" : "password"}
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
+              {form.senha && (
+                <button
+                  type="button"
+                  onClick={() => setShowSenha(!showSenha)}
+                  className="absolute right-3 top-[37px] text-gray-600 hover:text-gray-400"
+                >
+                  {showSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              )}
               {senhaErros.length > 0 && (
                 <ul className="text-red-400 text-sm mt-3 list-inside">
                   {senhaErros.map((err) => (
@@ -276,45 +251,34 @@ export default function Cadastro() {
                   ))}
                 </ul>
               )}
-              {form.senha && (
-                <button
-                  type="button"
-                  onClick={() => setShowSenha(!showSenha)}
-                  className="absolute right-3 top-[37px] cursor-pointer text-gree-600 hover:text-gree-200"
-                >
-                  {showSenha ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              )}
             </div>
             <div className="relative">
-              <label className="block text-white mb-1 text-base" htmlFor="repetirSenha">Repetir senha</label>
-              <input
+              <InputField
                 id="repetirSenha"
                 name="repetirSenha"
+                label="Repetir senha"
+                type={showRepetir ? "text" : "password"}
                 placeholder="Digite sua senha novamente"
                 value={form.repetirSenha}
                 onChange={handleChange}
                 required
-                type={showRepetir ? "text" : "password"}
-                className="input w-full pr-10 appearance-none bg-white rounded px-3 py-2 focus:outline-none"
               />
-              {erro.repetirSenha && (
-                <p className="text-red-400 text-sm mt-2">{erro.repetirSenha}</p>
-              )}
               {form.repetirSenha && (
                 <button
                   type="button"
                   onClick={() => setShowRepetir(!showRepetir)}
-                  className="absolute right-3 top-[37px] cursor-pointer text-gree-600 hover:text-gree-200"
+                  className="absolute right-3 top-[37px] text-gray-600 hover:text-gray-400"
                 >
                   {showRepetir ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
+              )}
+              {erro.repetirSenha && (
+                <p className="text-red-400 text-sm mt-2">{erro.repetirSenha}</p>
               )}
             </div>
           </div>
         </div>
 
-        {/* Botão cadastrar centralizado e largo */}
         <div className="flex justify-center mt-6 col-span-2">
           <button
             className="bg-green-600 hover:bg-green-800 text-white font-bold cursor-pointer py-3 w-full rounded-lg transition text-lg max-w-xs"
@@ -323,15 +287,12 @@ export default function Cadastro() {
             Cadastrar
           </button>
         </div>
+
         {typeof erro === "string" && (
           <p className="text-red-400 font-semibold text-sm mt-2 text-center">{erro}</p>
         )}
-        {erro.senha && (
-          <p className="text-red-400 text-sm mt-2">{erro.senha}</p>
-        )}
-        {erro.geral && (
-          <p className="text-red-400 text-sm mt-2">{erro.geral}</p>
-        )}
+        {erro.senha && <p className="text-red-400 text-sm mt-2">{erro.senha}</p>}
+        {erro.geral && <p className="text-red-400 text-sm mt-2">{erro.geral}</p>}
       </form>
     </div>
   );

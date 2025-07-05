@@ -1,51 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
-import Footer from "../components/Footer";
+import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const navigate = useNavigate();
 
-  // Usuário completo do backend
-  const [usuario, setUsuario] = useState(null);
-
-  useEffect(() => {
-    async function fetchUsuarioCompleto() {
-      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-      if (usuarioLogado?.id) {
-        try {
-          const token = sessionStorage.getItem("authToken");
-          const res = await fetch(
-            `http://localhost:3001/api/users/${usuarioLogado.id}/profile`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-            }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            setUsuario(data);
-          } else {
-            setUsuario(null);
-          }
-        } catch {
-          setUsuario(null);
-        }
-      } else {
-        setUsuario(null);
-      }
-    }
-    fetchUsuarioCompleto();
-  }, []);
+  const { usuario, carregando } = useUsuarioAutenticado();
 
   const sugestoesEmpresas = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -62,17 +29,21 @@ export default function HomePublica() {
     desc: "Empresa recomendada para você",
   }));
 
+  if (carregando) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-green-50">
+        <p className="text-gray-600 text-lg">Carregando...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-green-50 flex flex-col pt-16">
       <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-2 flex-1">
         {/* Sidebar esquerda */}
         <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
           <div className="sticky top-20">
-            {usuario ? (
-              <SidebarUsuario usuario={usuario} />
-            ) : (
-              <SidebarIntro />
-            )}
+            {usuario ? <SidebarUsuario usuario={usuario} /> : <SidebarIntro />}
           </div>
         </div>
 
@@ -125,7 +96,6 @@ export default function HomePublica() {
               </span>
 
               <div className="flex items-center justify-between mt-4 text-gray-600">
-                {/* Left side icons */}
                 <div className="flex items-center gap-4 text-xl">
                   <button title="Curtir">
                     <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
@@ -138,7 +108,6 @@ export default function HomePublica() {
                   </button>
                 </div>
 
-                {/* Right side: save icon */}
                 <button title="Salvar">
                   <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
                 </button>
@@ -147,6 +116,7 @@ export default function HomePublica() {
           ))}
         </main>
       </div>
+
       <EmpresasModal
         open={modalAberto}
         onClose={() => setModalAberto(false)}
@@ -155,8 +125,6 @@ export default function HomePublica() {
         empresasRecomendadas={empresasRecomendadas}
       />
 
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

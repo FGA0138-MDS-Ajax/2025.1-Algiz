@@ -3,30 +3,20 @@ const { Empresa } = models;
 const { Juridico } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
 
-// --- Lógica de Validação (agora dentro do service para evitar problemas de import) ---
-function validateCNPJ(cnpj) {
-  if (typeof cnpj !== 'string') return false;
-  const cnpjLimpo = cnpj.replace(/\D/g, '');
-  if (cnpjLimpo.length !== 14 || /^(\d)\1{13}$/.test(cnpjLimpo)) return false;
-  let tamanho = 12, soma = 0, pos = 5;
-  for (let i = 0; i < tamanho; i++) {
-    soma += parseInt(cnpjLimpo.charAt(i)) * pos--;
-    if (pos < 2) pos = 9;
-  }
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  if (resultado !== parseInt(cnpjLimpo.charAt(12))) return false;
-  tamanho = 13;
-  soma = 0;
-  pos = 6;
-  for (let i = 0; i < tamanho; i++) {
-    soma += parseInt(cnpjLimpo.charAt(i)) * pos--;
-    if (pos < 2) pos = 9;
-  }
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  return resultado === parseInt(cnpjLimpo.charAt(13));
+function formatarCNPJ(cnpj) {
+    // Remove tudo que não for número
+    const cnpjLimpo = cnpj.replace(/\D/g, '');
+    // Aplica a máscara: 12.345.678/0001-01
+    if (cnpjLimpo.length !== 14) return cnpj; // Retorna original se não for válido
+    return (
+        cnpjLimpo.slice(0, 2) + '.' +
+        cnpjLimpo.slice(2, 5) + '.' +
+        cnpjLimpo.slice(5, 8) + '/' +
+        cnpjLimpo.slice(8, 12) + '-' +
+        cnpjLimpo.slice(12, 14)
+    );
 }
 
-// --- Função para criar uma nova empresa ---
 async function createEmpresa(idUsuario, dadosEmpresa) {
     console.log("Recebido no backend:", dadosEmpresa);
     const {
@@ -111,8 +101,8 @@ async function findAllEmpresas() {
 // --- Função para buscar uma empresa pela Chave Primária (CNPJ) ---
 async function findEmpresaByPk(cnpj) {
     try {
-        const cnpjLimpo = cnpj.replace(/\D/g, '');
-        return await Empresa.findByPk(cnpjLimpo);
+        const cnpjFormatado = formatarCNPJ(cnpj);
+        return await Empresa.findByPk(cnpjFormatado);
     } catch (error) {
         console.error(`Erro no serviço ao buscar empresa pelo CNPJ ${cnpj}:`, error);
         throw new Error("Erro ao buscar dados da empresa.");

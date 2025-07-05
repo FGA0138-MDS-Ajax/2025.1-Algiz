@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Sobrenos from './pages/Sobrenos';
-import Blog from './pages/Blog';
 import Empresas from './pages/Empresas';
 import Login from './pages/Login';
 import Layout from './components/Layout'; 
@@ -23,10 +22,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sobrenos" element={<Sobrenos />} />
           <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/empresas" element={<Empresas />} />
           {/* Rota empresa/:id Irei deixar por enquanto a rota empresas/ do jeito que foi feito */ }
           <Route path="/empresa/:idEmpresa" element={<Empresas />} />
-          <Route path="/blog" element={<Blog />} />
           <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
           <Route path="/login" element={<Login />} />
           <Route path="/esqueci-senha" element={<EsqueciSenha />} />

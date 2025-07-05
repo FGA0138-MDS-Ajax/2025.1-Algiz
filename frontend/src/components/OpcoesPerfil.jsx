@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 export default function OpcoesPerfil({ fotoPerfil }) {
   const [isOpen, setIsOpen] = useState(false);
-  const API_URL = "http://localhost:3001";
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -67,3 +67,7 @@ export default function OpcoesPerfil({ fotoPerfil }) {
     </div>
   );
 }
+
+OpcoesPerfil.propTypes = {
+  fotoPerfil: PropTypes.string.isRequired,
+};
