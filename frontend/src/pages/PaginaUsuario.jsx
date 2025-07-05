@@ -66,6 +66,7 @@ export default function PaginaUsuario() {
     fetchUsuario();
   }, [idUsuario, visualizandoPublico, usuarioLogado]);
 
+  {/* CODIGO QUE NAO ESTA SENDO UTILIZado NO MOMENTO
   useEffect(() => {
     async function fetchEmpresasVinculadas() {
       if (usuario) {
@@ -87,7 +88,7 @@ export default function PaginaUsuario() {
     }
     fetchEmpresasVinculadas();
   }, [usuario]);
-
+*/}
   const sugestoes = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
     { id: "2", nome: "Nestle", logo: "/nestle.png" },
