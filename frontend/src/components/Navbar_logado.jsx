@@ -1,7 +1,11 @@
+// frontend/src/components/Navbar_logado.jsx
 import { NavLink } from "react-router-dom";
-import OpcoesPerfil from "./OpcoesPerfil"; 
-import PropTypes from "prop-types";
-function NavbarLogado({ usuario }) {
+import OpcoesPerfil from "./OpcoesPerfil";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+function NavbarLogado() {
+  const { usuario, logout } = useContext(AuthContext);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-4 py-2 bg-gradient-to-b from-[#7ffa88] to-white shadow-md">
@@ -64,18 +68,6 @@ function NavbarLogado({ usuario }) {
         >
           Home
         </NavLink>
-        {/*
-        <NavLink
-          to="/Empresas"
-          className={({ isActive }) =>
-            isActive
-              ? "text-green-800 font-bold"
-              : "hover:text-green-600 hover:scale-105 transition-transform"
-          }
-        >
-          Empresas
-        </NavLink>
-        */}
         <NavLink
           to="/Sobrenos"
           className={({ isActive }) =>
@@ -88,13 +80,10 @@ function NavbarLogado({ usuario }) {
         </NavLink>
 
         {/* Foto de perfil com dropdown */}
-        <OpcoesPerfil fotoPerfil={usuario.fotoPerfil} />
+        <OpcoesPerfil fotoPerfil={usuario?.fotoPerfil} />
       </div>
     </nav>
   );
 }
-NavbarLogado.propTypes = {
-  usuario: PropTypes.any,
-};
 
 export default NavbarLogado;
