@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import Footer from "../components/Footer";
@@ -22,7 +22,6 @@ const sugestoesEmpresas = [
 ];
 
 function Empresas() {
-  const navigate = useNavigate();
   const { idEmpresa } = useParams();
 
   const [empresa, setEmpresa] = useState(null);
@@ -37,7 +36,7 @@ function Empresas() {
     async function fetchEmpresa() {
       setLoading(true);
       try {
-        const idEmpresaLimpo = idEmpresa.replace(/[.\-\/]/g, "");
+        const idEmpresaLimpo = idEmpresa.replace(/[.\-/]/g, "");
         const res = await fetch(`http://localhost:3001/api/empresa/${idEmpresaLimpo}`);
         if (!res.ok) throw new Error("Empresa não encontrada");
         const data = await res.json();
@@ -48,7 +47,7 @@ function Empresas() {
             id: 1,
             nome: "João Silva",
             cargo: "Desenvolvedor",
-            fotoPerfil: "../../public/user/foto-perfil-padrao-1.png",
+            fotoPerfil: "/user/foto-perfil-padrao-1.png",
             dataVinculacao: "25/09/2023",
             status: "Presente",
             genero: "men"
@@ -57,7 +56,7 @@ function Empresas() {
             id: 2,
             nome: "Maria Santos",
             cargo: "Designer",
-            fotoPerfil: "../../public/user/foto-perfil-padrao-1.png",
+            fotoPerfil: "/user/foto-perfil-padrao-1.png",
             dataVinculacao: "15/08/2023",
             status: "Presente",
             genero: "women"
@@ -66,7 +65,7 @@ function Empresas() {
             id: 3,
             nome: "Pedro Costa",
             cargo: "Gerente",
-            fotoPerfil: "../../public/user/foto-perfil-padrao-1.png",
+            fotoPerfil: "/user/foto-perfil-padrao-1.png",
             dataVinculacao: "10/07/2023",
             status: "Presente",
             genero: "men"
