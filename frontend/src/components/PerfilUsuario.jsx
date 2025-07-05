@@ -47,7 +47,7 @@ export default function PerfilUsuario({
     return dateStr.split("T")[0];
   };
 
-  // Salva dados editados do usuário
+  // ✅ CORREÇÃO: Usar PUT em vez de POST e rota correta
   const handleSave = async () => {
     if (!formData.nome.trim() || !formData.sobrenome.trim()) {
       setErro("Nome e sobrenome são obrigatórios.");
@@ -55,8 +55,8 @@ export default function PerfilUsuario({
     }
     try {
       const token = sessionStorage.getItem("authToken");
-      await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/edit`,
+      await axios.put(
+        `http://localhost:3001/api/users/${usuario.id}/profile`, 
         {
           nome: formData.nome,
           sobrenome: formData.sobrenome,
@@ -107,13 +107,13 @@ export default function PerfilUsuario({
     reader.readAsDataURL(file);
   };
 
-  // Remover foto de perfil (usando a rota /foto-default)
+  // ✅ CORREÇÃO: Usar PUT e rota correta
   const handleRemoverFoto = async () => {
     setModalFotoOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
-      await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/foto-default`,
+      await axios.put(
+        `http://localhost:3001/api/users/${usuario.id}/photo/default`, 
         {},
         {
           headers: {
@@ -130,13 +130,13 @@ export default function PerfilUsuario({
     }
   };
 
-  // Remover banner de perfil (usando a rota /banner-default)
+  // ✅ CORREÇÃO: Usar PUT e rota correta
   const handleRemoverBanner = async () => {
     setModalBannerOpen(false);
     try {
       const token = sessionStorage.getItem("authToken");
-      await axios.post(
-        `http://localhost:3001/api/usuario/${usuario.id}/banner-default`,
+      await axios.put(
+        `http://localhost:3001/api/users/${usuario.id}/banner/default`, 
         {},
         {
           headers: {
