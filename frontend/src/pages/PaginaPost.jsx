@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import NavbarLogado from "../components/Navbar_logado";
 
-// fake empresas
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
   { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -16,7 +18,6 @@ const sugestoesEmpresas = [
   { id: "6", nome: "Kactus", logo: "/empresa10.png" },
 ];
 
-// fake comentarios
 const comentariosMock = [
   {
     id: 1,
@@ -39,15 +40,10 @@ const comentariosMock = [
 ];
 
 export default function PaginaPost() {
-  // Se quiser buscar o post pelo id via rota, descomente:
-  // const { idPost } = useParams();
-
-  // Estado para modal
   const [modalOpen, setModalOpen] = useState(false);
   const [tab, setTab] = useState("recomendadas");
-
-  // Usuário completo do backend
   const [usuario, setUsuario] = useState(null);
+  const [carregandoUsuario, setCarregandoUsuario] = useState(true);
 
   useEffect(() => {
     async function fetchUsuarioCompleto() {
@@ -56,7 +52,7 @@ export default function PaginaPost() {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
-            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
+            `http://localhost:3001/api/users/${usuarioLogado.id}/profile`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -77,64 +73,77 @@ export default function PaginaPost() {
       } else {
         setUsuario(null);
       }
+      setCarregandoUsuario(false);
     }
     fetchUsuarioCompleto();
   }, []);
 
-  // Mock de post
   const post = {
     empresaNome: "Relog",
     empresaLogo: "/empresa1.png",
     titulo: "Uso massivo de aparelhos eletrônicos",
     descricao:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a libero urna. Vivamus sagittis ligula et euismod malesuada. Integer ullamcorper sem id lacus scelerisque eleifend. Curabitur faucibus ex tempus auctor posuere. Integer commodo sed sem sed ultricies. Ut pharetra posuere massa eget dignissim. Mauris tempor magna eu elementum faucibus. In hac habitasse platea dictumst. Aenean ac malesuada odio. Morbi maximus libero sit amet fermentum sagittis. Aenean ut nulla in erat feugiat egestas ut sed ligula. Cras semper egestas tempus. Proin tincidunt, eros sit amet tincidunt dictum, tortor risus egestas felis, in ullamcorper felis dolor quis justo. Maecenas pharetra accumsan velit id blandit. Phasellus at mauris condimentum, sollicitudin nisi nec, accumsan magna. Aliquam ut tortor a dui facilisis pulvinar ac quis magna. Nam et bibendum quam, eu vehicula mi. Nam pulvinar congue libero, eu fermentum magna pretium vel. Cras eleifend turpis in feugiat luctus. Integer vel iaculis ex. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent dignissim tristique libero eu interdum. Aenean pharetra interdum quam, id dapibus ligula eleifend consequat. Fusce tempus tortor vel nibh tempor interdum. Donec pretium suscipit mollis. Ut pellentesque velit eget leo ullamcorper laoreet. Etiam at magna lectus. Aliquam massa arcu, convallis eu augue vel, semper rutrum tortor. Nulla interdum ut justo et lobortis. Sed feugiat quam libero, sit amet eleifend felis molestie in. Proin tempor dapibus neque sit amet vehicula. Quisque vitae mi augue. ",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a libero urna. Vivamus sagittis ligula et euismod malesuada...",
     imagem: "/post.png",
     tags: ["Doação", "Sustentabilidade"],
   };
 
-  // empresas para o modal 
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
     img: e.logo,
     nome: e.nome,
     desc: "Empresa recomendada para você",
   }));
 
+  if (carregandoUsuario) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-green-50">
+        <p className="text-gray-600 text-lg">Carregando post...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-green-50 min-h-screen pt-16">
-      <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-1 flex-1">
-        {/* Sidebar esquerda */}
-        <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
-          <div className="sticky top-20">
-            {usuario ? (
-              <SidebarUsuario usuario={usuario} />
-            ) : (
-              <SidebarIntro />
-            )}
+    <>
+      {/* Navbar fixa no topo */}
+      {usuario ? <NavbarLogado usuario={usuario} /> : <Navbar />}
+
+      <div className="bg-green-50 min-h-screen pt-16">
+        <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-1 flex-1">
+          {/* Sidebar esquerda */}
+          <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
+            <div className="sticky top-20">
+              {usuario ? (
+                <SidebarUsuario usuario={usuario} />
+              ) : (
+                <SidebarIntro />
+              )}
+            </div>
           </div>
+
+          {/* Conteúdo principal */}
+          <section className="order-3 md:order-2 flex-1 flex flex-col max-w-[520px] mx-auto items-center gap-30">
+            <Post post={post} completo comentarios={comentariosMock} />
+          </section>
+
+          {/* Sugestões de empresas */}
+          <aside className="order-2 md:order-3 w-80 flex-shrink-0 md:block">
+            <SugestoesEmpresas
+              sugestoes={sugestoesEmpresas}
+              onVerTodas={() => setModalOpen(true)}
+            />
+          </aside>
         </div>
 
-        {/* Conteúdo principal */}
-        <section className="order-3 md:order-2 flex-1 flex flex-col max-w-[520px] mx-auto items-center gap-30">
-          <Post post={post} completo comentarios={comentariosMock} />
-        </section>
+        <EmpresasModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          tab={tab}
+          setTab={setTab}
+          empresasRecomendadas={empresasRecomendadas}
+        />
 
-        {/* Menu de sugestões */}
-        <aside className="order-2 md:order-3 w-80 flex-shrink-0 md:block">
-          <SugestoesEmpresas
-            sugestoes={sugestoesEmpresas}
-            onVerTodas={() => setModalOpen(true)}
-          />
-        </aside>
+        <Footer />
       </div>
-      <EmpresasModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        tab={tab}
-        setTab={setTab}
-        empresasRecomendadas={empresasRecomendadas}
-      />
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   );
 }
