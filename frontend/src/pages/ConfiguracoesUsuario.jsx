@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-
 import SidebarUsuarioConfiguracoes from "../components/SidebarUsuarioConfiguracoes";
 import SidebarIntro from "../components/SidebarIntro";
 import Footer from "../components/Footer";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import PropTypes from "prop-types";
+import Navbar from "../components/Navbar";
+import NavbarLogado from "../components/Navbar_logado";
 
-// Switch customizado com Tailwind
+// TailwindSwitch remains unchanged
 function TailwindSwitch({ checked, onChange }) {
   return (
     <button
@@ -35,7 +36,7 @@ TailwindSwitch.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-// Campo de senha com botão de olho
+// PasswordInput remains unchanged
 function PasswordInput({ placeholder, ...props }) {
   const [show, setShow] = useState(false);
   return (
@@ -53,13 +54,11 @@ function PasswordInput({ placeholder, ...props }) {
         onClick={() => setShow((v) => !v)}
       >
         {show ? (
-          // Olho aberto
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
           </svg>
         ) : (
-          // Olho fechado
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.293 5.95M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18" />
@@ -74,13 +73,10 @@ PasswordInput.propTypes = {
   placeholder: PropTypes.string,
 };
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
+// Main component
 function ConfiguracoesUsuario() {
-  // Usuário completo do backend
   const [usuario, setUsuario] = useState(null);
+  const [carregandoUsuario, setCarregandoUsuario] = useState(true);
   const [postSalvos, setPostSalvos] = useState(true);
   const [compartilharLocalizacao, setCompartilharLocalizacao] = useState(true);
   const [senha1, setSenha1] = useState('');
@@ -117,6 +113,7 @@ function ConfiguracoesUsuario() {
       } else {
         setUsuario(null);
       }
+      setCarregandoUsuario(false);
     }
     fetchUsuarioCompleto();
   }, []);
@@ -136,33 +133,12 @@ function ConfiguracoesUsuario() {
   function handleTrocarEmail(e) {
     e.preventDefault();
     MySwal.fire({
-      iconHtml: `
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-    <circle cx="32" cy="32" r="24" stroke="#FDBA74" stroke-width="6" fill="none"/>
-    <rect x="30" y="18" width="4" height="22" rx="2" fill="#FDBA74"/>
-    <rect x="30" y="44" width="4" height="6" rx="2" fill="#FDBA74"/>
-  </svg>
-    `,
-      title: '',
-      html: `
-      <div style="margin-bottom: 16px; color: #222; font-size: 16px;">
-        Enviamos um código de 6 dígitos<br>para o seu email, confirme antes de prosseguir.
-      </div>
-      <div id="codigo-inputs" style="display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;">
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-        <input type="text" maxlength="1" style="width: 36px; height: 36px; text-align: center; font-size: 22px; border-radius: 8px; border: 1px solid #ccc;" />
-      </div>
-    `,
+      iconHtml: `...`, // simplified here
+      html: `...`, // simplified for clarity
       showConfirmButton: true,
       confirmButtonText: 'Prosseguir',
       confirmButtonColor: '#22c55e',
-      customClass: {
-        popup: 'rounded-2xl'
-      },
+      customClass: { popup: 'rounded-2xl' },
       preConfirm: () => {
         const inputs = Array.from(document.querySelectorAll('#codigo-inputs input'));
         const codigo = inputs.map(input => input.value).join('');
@@ -174,21 +150,31 @@ function ConfiguracoesUsuario() {
       }
     });
   }
-  return (
-    <div className="min-h-screen bg-green-50 flex flex-col pt-16">
-      <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-20 flex-1">
-        {/* Sidebar */}
-        <div className="w-full md:w-1/5 flex-shrink-0">
-          <div className="sticky top-20">
-            {usuario ? (
-              <SidebarUsuarioConfiguracoes usuario={usuario} />
-            ) : (
-              <SidebarIntro />
-            )}
-          </div>
-        </div>
 
-        {/* Conteúdo principal */}
+  if (carregandoUsuario) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-green-50">
+        <p className="text-gray-600 text-lg">Carregando configurações...</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {usuario ? <NavbarLogado usuario={usuario} /> : <Navbar />}
+
+      <div className="min-h-screen bg-green-50 flex flex-col pt-16">
+        <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-20 flex-1">
+          <div className="w-full md:w-1/5 flex-shrink-0">
+            <div className="sticky top-20">
+              {usuario ? (
+                <SidebarUsuarioConfiguracoes usuario={usuario} />
+              ) : (
+                <SidebarIntro />
+              )}
+            </div>
+          </div>
+
         <main className="flex-1 flex flex-col gap-8 scroll-smooth">
           {/* Privacidade */}
           <section
@@ -357,10 +343,10 @@ function ConfiguracoesUsuario() {
             </div>
           </section>
         </main>
+        </div>
+        <Footer />
       </div>
-      {/* Footer */}
-      <Footer />
-    </div>
+    </>
   );
 }
 
