@@ -8,6 +8,8 @@ import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
 import EmpresasVinculadas from "../components/EmpresasVinculadas";
+import Navbar from "../components/Navbar";
+import NavbarLogado from "../components/Navbar_logado";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -19,9 +21,7 @@ export default function PaginaUsuario() {
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
 
-  // Verifica se é o usuário logado
   const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-  // Se visualizando como público, força isUsuarioLogado para false
   const isUsuarioLogado = !visualizandoPublico && usuarioLogado?.id === usuario?.id;
 
   useEffect(() => {
@@ -30,19 +30,12 @@ export default function PaginaUsuario() {
       setError(null);
       try {
         let url, options;
-        if (!usuarioLogado)
-          {
-          // Visitante ou modo público: rota pública
+        if (!usuarioLogado) {
           url = `http://localhost:3001/api/users/${idUsuario}/public`;
-          options = {
-            headers: { "Content-Type": "application/json" }
-          };
-          
+          options = { headers: { "Content-Type": "application/json" } };
         } else {
-          // Usuário logado e não está em modo público: rota protegida
-          console.log("Buscando usuário logado:", usuarioLogado);
-          url = `http://localhost:3001/api/users/${idUsuario}/profile`;
           const token = sessionStorage.getItem("authToken");
+          url = `http://localhost:3001/api/users/${idUsuario}/profile`;
           options = {
             headers: {
               "Content-Type": "application/json",
@@ -68,7 +61,6 @@ export default function PaginaUsuario() {
     fetchUsuario();
   }, [idUsuario, visualizandoPublico]);
 
-  // Busca empresas vinculadas ao usuário
   useEffect(() => {
     async function fetchEmpresasVinculadas() {
       if (usuario) {
@@ -81,7 +73,6 @@ export default function PaginaUsuario() {
             },
           });
           const empresas = await res.json();
-          // Filtra empresas do usuário
           const vinculadas = empresas.filter(e => e.idUsuario === usuario.id);
           setEmpresasVinculadas(vinculadas);
         } catch {
@@ -92,23 +83,6 @@ export default function PaginaUsuario() {
     fetchEmpresasVinculadas();
   }, [usuario]);
 
-  if (loading) {
-    return (
-      <div className="h-32 flex items-center justify-center">
-        Carregando informações do usuário...
-      </div>
-    );
-  }
-
-  if (error || !usuario) {
-    return (
-      <div className="h-32 flex items-center justify-center">
-        Usuário não encontrado.
-      </div>
-    );
-  }
-
-  // Dados fakes e estáticos para sugestões e empresas recomendadas
   const sugestoes = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
     { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -127,72 +101,78 @@ export default function PaginaUsuario() {
     { id: "6", nome: "Kactus", desc: "Kactus é uma startup inovadora focada em produtos sustentáveis.", img: "/lacta.png" },
   ];
 
-  // Função para alternar visualização pública e atualizar isUsuarioLogado corretamente
   const handleToggleVisualizacaoPublica = () => {
     setVisualizandoPublico((v) => !v);
   };
 
   return (
-    <div className="bg-green-50 min-h-screen py-2 relative">
-      <div className="h-12" />
-      <main className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto mt-8">
-        {/* Coluna principal */}
-        <section className="flex-1 flex flex-col gap-2">
-          {/* Header do perfil */}
-          <PerfilUsuario
-            usuario={usuario}
-            isUsuarioLogado={isUsuarioLogado}
-            visualizandoPublico={visualizandoPublico}
-            onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
+    <>
+      {/* Navbar aparece sempre, dependendo se é o próprio usuário ou não */}
+      {isUsuarioLogado ? <NavbarLogado usuario={usuario} /> : <Navbar />}
+
+      {loading ? (
+        <div className="h-32 flex items-center justify-center">
+          Carregando informações do usuário...
+        </div>
+      ) : error || !usuario ? (
+        <div className="h-32 flex items-center justify-center">
+          Usuário não encontrado.
+        </div>
+      ) : (
+        <div className="bg-green-50 min-h-screen py-2 relative">
+          <div className="h-12" />
+          <main className="flex flex-col lg:flex-row gap-6 max-w-6xl mx-auto mt-8">
+            <section className="flex-1 flex flex-col gap-2">
+              <PerfilUsuario
+                usuario={usuario}
+                isUsuarioLogado={isUsuarioLogado}
+                visualizandoPublico={visualizandoPublico}
+                onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
+              />
+
+              {isUsuarioLogado ? (
+                <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
+                  <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                    <PossuiEmpresa usuario={usuario} cardClass="h-full" />
+                  </div>
+                  <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
+                    <MinhasConexoes usuario={usuario} cardClass="h-full" />
+                  </div>
+                </div>
+              ) : (
+                <EmpresasTrabalhando usuario={usuario} />
+              )}
+
+              {/* <EmpresasVinculadas empresas={empresasVinculadas} /> */}
+              <Salvos usuario={usuario} />
+            </section>
+
+            <aside className="w-full lg:w-80 mt-6 lg:mt-0">
+              <SugestoesEmpresas
+                sugestoes={sugestoes}
+                onVerTodas={() => setShowEmpresasModal(true)}
+              />
+            </aside>
+          </main>
+
+          <EmpresasModal
+            open={showEmpresasModal}
+            onClose={() => setShowEmpresasModal(false)}
+            tab={tab}
+            setTab={setTab}
+            empresasRecomendadas={empresasRecomendadas}
           />
 
-          {/* Cards PossuiEmpresa e MinhasConexoes: empilhados em mobile */}
-          {isUsuarioLogado ? (
-            <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
-              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
-                <PossuiEmpresa usuario={usuario} cardClass="h-full" />
-              </div>
-              <div className="w-full md:flex-1 min-w-[220px] max-w-[420px] h-[160px]">
-                <MinhasConexoes usuario={usuario} cardClass="h-full" />
-              </div>
-            </div>
-          ) : (
-            // Se não for o usuário logado, mostra EmpresasTrabalhando normalmente
-            <EmpresasTrabalhando usuario={usuario} />
+          {visualizandoPublico && (
+            <button
+              onClick={handleToggleVisualizacaoPublica}
+              className="fixed bottom-6 right-6 z-50 bg-green-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition"
+            >
+              Sair do modo de visualização pública
+            </button>
           )}
-
-          {/* --- AQUI ENTRA O CARD DE EMPRESAS VINCULADAS --- */}
-          {/* <EmpresasVinculadas empresas={empresasVinculadas} /> */}
-
-          {/* Salvos */}
-          <Salvos usuario={usuario} />
-        </section>
-
-        {/* Sidebar de empresas sugeridas: empilhada em mobile */}
-        <aside className="w-full lg:w-80 mt-6 lg:mt-0">
-          <SugestoesEmpresas
-            sugestoes={sugestoes}
-            onVerTodas={() => setShowEmpresasModal(true)}
-          />
-        </aside>
-      </main>
-      <EmpresasModal
-        open={showEmpresasModal}
-        onClose={() => setShowEmpresasModal(false)}
-        tab={tab}
-        setTab={setTab}
-        empresasRecomendadas={empresasRecomendadas}
-      />
-
-      {/* Botão flutuante para sair do modo público */}
-      {visualizandoPublico && (
-        <button
-          onClick={handleToggleVisualizacaoPublica}
-          className="fixed bottom-6 right-6 z-50 bg-green-700 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition"
-        >
-          Sair do modo de visualização pública
-        </button>
+        </div>
       )}
-    </div>
+    </>
   );
 }
