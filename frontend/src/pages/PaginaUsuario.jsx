@@ -33,7 +33,7 @@ export default function PaginaUsuario() {
         if (!usuarioLogado)
           {
           // Visitante ou modo público: rota pública
-          url = `http://localhost:3001/api/usuarios/${idUsuario}/publico`;
+          url = `http://localhost:3001/api/users/${idUsuario}/public`;
           options = {
             headers: { "Content-Type": "application/json" }
           };
@@ -41,7 +41,7 @@ export default function PaginaUsuario() {
         } else {
           // Usuário logado e não está em modo público: rota protegida
           console.log("Buscando usuário logado:", usuarioLogado);
-          url = `http://localhost:3001/api/usuario/${idUsuario}`;
+          url = `http://localhost:3001/api/users/${idUsuario}/profile`;
           const token = sessionStorage.getItem("authToken");
           options = {
             headers: {

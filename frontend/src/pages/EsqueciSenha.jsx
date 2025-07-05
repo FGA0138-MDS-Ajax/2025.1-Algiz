@@ -25,7 +25,7 @@ function EsqueciSenha() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/usuarios/forgot-password", {
+      const response = await fetch("http://localhost:3001/api/users/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

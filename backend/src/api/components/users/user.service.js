@@ -255,11 +255,6 @@ async function authenticateUser(email, password) {
 
     const user = userRows[0];
 
-    // Veja o objeto completo do usuário com dados retornados no log do backend
-    // console.log('Usuário encontrado:', user);
-    // Veja o nome exato das propriedades
-    // console.log(Object.keys(user));
-
     const senhaHash = user.senha;
 
     const senhaCorreta = await comparePassword(password, senhaHash);
@@ -374,10 +369,50 @@ export async function updateUserBanner(userId, bannerPerfil) {
   return { message: "Banner de perfil atualizado com sucesso." };
 }
 
+
+// Testar 
+async function updatePassword(userId, currentPassword, newPassword) {
+  try {
+    // Fetch the user from the database
+    const [userRows] = await db.query("SELECT * FROM USUARIO WHERE idUsuario = ?", [userId]);
+
+    if (userRows.length === 0) {
+      return { success: false, message: "Usuário não encontrado." };
+    }
+
+    const user = userRows[0];
+
+    // Verify the current password
+    const isCurrentPasswordValid = await comparePassword(currentPassword, user.senha);
+    if (!isCurrentPasswordValid) {
+      return { success: false, message: "A senha atual está incorreta." };
+    }
+
+    // Validate the new password
+    const erros = [];
+    validateSenha(newPassword, erros);
+    if (erros.length > 0) {
+      return { success: false, message: erros.map((e) => e.mensagem).join(" ") };
+    }
+
+    // Hash the new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    // Update the password in the database
+    await db.query("UPDATE USUARIO SET senha = ? WHERE idUsuario = ?", [hashedPassword, userId]);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Erro ao atualizar senha no serviço:", error);
+    throw error;
+  }
+}
+
 export default {
   createUser,
   findUserProfileById,
   authenticateUser,
+  updatePassword,
   getUserByEmail,
   updateUserPasswordAndClearCode,
   saveResetCode,

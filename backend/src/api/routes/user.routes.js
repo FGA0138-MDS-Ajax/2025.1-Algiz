@@ -7,43 +7,48 @@ import { upload } from "../../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-// 📢 PUBLIC POST ROUTES (no token needed)
-router.post("/register", userController.registerUser);
-router.post("/login", userController.loginUser);
-router.post("/usuarios/forgot-password", userController.forgotPassword);
-router.post("/usuarios/verify-code", userController.verifyResetCode);
-router.post("/usuarios/reset-password", userController.resetPassword);
+/* 📢 ROTAS PÚBLICAS (sem necessidade de autenticação) */
+router.post("/users/register", userController.registerUser); // Registro de novo usuário
+router.post("/users/login", userController.loginUser);       // Login do usuário
+router.post("/users/forgot-password", userController.forgotPassword); // Enviar código de recuperação
+router.post("/users/verify-code", userController.verifyResetCode);    // Verificar código de recuperação
+router.post("/users/reset-password", userController.resetPassword);   // Redefinir senha com código
 
-// 🔐 PROTECTED ROUTES (need valid token)
-router.get("/usuario/:id", verifyToken, userController.getUserProfile);
-router.post("/usuario/:id/edit", verifyToken, userController.editUserProfile);
-router.post("/usuario/:id/foto",
+/* 🔐 ROTAS PROTEGIDAS (requer token de autenticação válido) */
+router.get("/users/:id/profile", verifyToken, userController.getUserProfile); // Obter perfil privado do usuário
+router.put("/users/:id/profile", verifyToken, userController.editUserProfile); // Editar perfil do usuário
+
+router.put(
+  "/users/:id/photo", // Atualizar foto de perfil
   verifyToken,
-  upload.single('fotoPerfil'),  // multer
+  upload.single('fotoPerfil'),
   userController.editUserProfilePhoto
 );
 
-router.post("/usuario/:id/banner",
+router.put(
+  "/users/:id/banner", // Atualizar banner de perfil
   verifyToken,
   upload.single('bannerPerfil'),
   userController.editUserBanner
 );
 
-router.post("/usuario/:id/foto-default", verifyToken, userController.setUserDefaultProfilePhoto);
-router.post("/usuario/:id/banner-default", verifyToken, userController.setUserDefaultBanner);
+router.put("/users/:id/photo/default", verifyToken, userController.setUserDefaultProfilePhoto); // Restaurar foto padrão
+router.put("/users/:id/banner/default", verifyToken, userController.setUserDefaultBanner);      // Restaurar banner padrão
 
-// 🔧 DEBUG/UTILITY: List all users (keep protected if needed)
-router.get("/usuarios", async (req, res) => {
+router.put("/users/:id/update-password", verifyToken, userController.updatePassword); // Atualizar senha do usuário
+
+/* 🔧 UTILITÁRIO/DEBUG: Listar todos os usuários do banco (pode ser mantido protegido) */
+router.get("/users", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM USUARIO");
     res.json(rows);
   } catch (err) {
-    console.error("Error fetching users:", err);
-    res.status(500).json({ error: "Internal server error fetching users" });
+    console.error("Erro ao buscar usuários:", err);
+    res.status(500).json({ error: "Erro interno ao buscar usuários" });
   }
 });
 
-// 📢 PUBLIC GET ROUTES (no token needed)
-router.get("/usuarios/:id/publico", userController.getPublicUserProfile);
+/* 📢 ROTA PÚBLICA: Perfil público de um usuário (sem necessidade de autenticação) */
+router.get("/users/:id/public", userController.getPublicUserProfile); // Obter perfil público
 
 export default router;
