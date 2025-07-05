@@ -27,7 +27,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensures full git history, needed by Sonar
+          fetch-depth: 0  # Ensures full Git history is available for SonarCloud
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -52,6 +52,10 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          projectBaseDir: backend  # Points Sonar to backend folder
+          args: >
+            -Dsonar.projectKey=FGA0138-MDS-Ajax_2025.1-Algiz
+            -Dsonar.organization=fga-mds-ajax
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.projectBaseDir=backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
