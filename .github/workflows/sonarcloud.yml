@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         env:
-          DB_HOST: 127.0.0.1
+          DB_HOST: localhost
           DB_PORT: 3307
           DB_USER: root
           DB_PASSWORD: suasenha
@@ -53,3 +53,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=FGA0138-MDS-Ajax_2025.1-Algiz
+            -Dsonar.organization=fga-mds-ajax
+            -Dsonar.host.url=https://sonarcloud.io
