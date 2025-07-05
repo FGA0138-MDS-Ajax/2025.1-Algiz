@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import PerfilUsuario from "../components/PerfilUsuario";
 import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
@@ -7,10 +7,7 @@ import Salvos from "../components/Salvos";
 import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
-import EmpresasVinculadas from "../components/EmpresasVinculadas";
-import SidebarIntro from "../components/SidebarIntro";
-import SidebarUsuario from "../components/SidebarUsuario";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { AuthContext } from "../context/AuthContext";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -22,7 +19,7 @@ export default function PaginaUsuario() {
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
 
-  const { usuario: usuarioLogado, carregando } = useUsuarioAutenticado();
+  const { usuario: usuarioLogado } = useContext(AuthContext);
 
   const isUsuarioLogado = !visualizandoPublico && usuarioLogado?.id === usuario?.id;
 
@@ -36,7 +33,7 @@ export default function PaginaUsuario() {
           url = `http://localhost:3001/api/users/${idUsuario}/public`;
           options = { headers: { "Content-Type": "application/json" } };
         } else {
-          const token = sessionStorage.getItem("authToken");
+          const token = localStorage.getItem("authToken");
           url = `http://localhost:3001/api/users/${idUsuario}/profile`;
           options = {
             headers: {
@@ -70,7 +67,7 @@ export default function PaginaUsuario() {
     async function fetchEmpresasVinculadas() {
       if (usuario) {
         try {
-          const token = sessionStorage.getItem("authToken");
+          const token = localStorage.getItem("authToken");
           const res = await fetch("http://localhost:3001/api/empresa", {
             headers: {
               "Content-Type": "application/json",
@@ -108,7 +105,7 @@ export default function PaginaUsuario() {
     setVisualizandoPublico((v) => !v);
   };
 
-  if (carregando || loading) {
+  if (loading) {
     return (
       <div className="h-32 flex items-center justify-center">
         Carregando informações do usuário...
