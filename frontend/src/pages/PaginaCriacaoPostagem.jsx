@@ -1,9 +1,9 @@
 import { useState } from "react";
+import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
 import SidebarIntro from "../components/SidebarIntro";
+import SidebarUsuario from "../components/SidebarUsuario";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
-import Footer from "../components/Footer";
 
-// fake empresas
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
   { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -16,37 +16,50 @@ const sugestoesEmpresas = [
 const tags = ["Doação", "Compra", "Venda", "Educacional"];
 
 export default function CriarPostagem() {
-    const [titulo, setTitulo] = useState("");
-    const [descricao, setDescricao] = useState("");
-    const [tag, setTag] = useState("");
-    const [imagem, setImagem] = useState(null);
-    const [preview, setPreview] = useState(null);
+  const [titulo, setTitulo] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [tag, setTag] = useState("");
+  const [imagem, setImagem] = useState(null);
+  const [preview, setPreview] = useState(null);
 
-    const handleImagemChange = (e) => {
-        const file = e.target.files[0];
-        if (file && ["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-            setImagem(file);
-            setPreview(URL.createObjectURL(file));
-        } else {
-            alert("Somente arquivos .jpg, .jpeg, .png, .webp são permitidos");
-        }
-    };
+  const { usuario, carregando } = useUsuarioAutenticado();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!titulo || !descricao || !imagem || !tag) {
-            alert("Preencha todos os campos obrigatorios");
-            return;
-        }
-        console.log({titulo, descricao, tag, imagem});
-        setTitulo("");
-        setDescricao("")
-        setTag("")
-        setImagem(null)
-        setPreview(null);
-    };
+  const handleImagemChange = (e) => {
+    const file = e.target.files[0];
+    if (file && ["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setImagem(file);
+      setPreview(URL.createObjectURL(file));
+    } else {
+      alert("Somente arquivos .jpg, .jpeg, .png, .webp são permitidos");
+    }
+  };
 
-    const podePostar = titulo && descricao && imagem && tag;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!titulo || !descricao || !imagem || !tag) {
+      alert("Preencha todos os campos obrigatórios");
+      return;
+    }
+
+    console.log({ titulo, descricao, tag, imagem });
+
+    // Reset
+    setTitulo("");
+    setDescricao("");
+    setTag("");
+    setImagem(null);
+    setPreview(null);
+  };
+
+  const podePostar = titulo && descricao && imagem && tag;
+
+  if (carregando) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-green-50">
+        <p className="text-gray-600 text-lg">Carregando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-green-50 pt-16">
@@ -54,7 +67,7 @@ export default function CriarPostagem() {
         {/* Sidebar composta */}
         <div className="w-full md:w-1/5 flex flex-col gap-4">
           <div className="sticky top-20">
-            <SidebarIntro />
+            {usuario ? <SidebarUsuario usuario={usuario} /> : <SidebarIntro />}
             <div className="mt-4">
               <SugestoesEmpresas sugestoes={sugestoesEmpresas} />
             </div>
@@ -139,7 +152,6 @@ export default function CriarPostagem() {
           </div>
         </main>
       </div>
-      <Footer />
     </div>
   );
 }
