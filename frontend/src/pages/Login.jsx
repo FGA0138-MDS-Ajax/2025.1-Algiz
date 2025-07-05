@@ -29,9 +29,9 @@ function Login() {
         throw new Error(data.erro || "Erro ao fazer login.");
       }
 
-    // Armazena token e usuário no sessionStorage
-    sessionStorage.setItem("authToken", data.token);
-    sessionStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+    // Armazena token e usuário no localStorage
+    localStorage.setItem("authToken", data.token);
+    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
     navigate("/");
     window.location.reload(); // Força o refresh após navegar
   } catch (err) {
