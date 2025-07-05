@@ -21,19 +21,13 @@ jobs:
           MYSQL_DATABASE: EcoNet_DB
         ports:
           - 3307:3306
-        options: > 
-          --health-cmd="mysqladmin ping -h 127.0.0.1" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=10
-
-    defaults:
-      run:
-        working-directory: backend
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1" --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # IMPORTANT for SonarCloud to access full Git history
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -42,17 +36,11 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        working-directory: backend
         run: npm ci
 
-      - name: Wait for MySQL
-        run: |
-          for i in {1..30}; do
-            mysqladmin ping -h "127.0.0.1" -P 3307 --silent && break;
-            echo "Waiting for MySQL...";
-            sleep 2;
-          done
-
       - name: Run tests
+        working-directory: backend
         env:
           DB_HOST: localhost
           DB_PORT: 3307
@@ -63,10 +51,7 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: backend  # ✅ Tell Sonar to analyze the backend folder
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=FGA0138-MDS-Ajax_2025.1-Algiz
-            -Dsonar.organization=fga-mds-ajax
-            -Dsonar.host.url=https://sonarcloud.io
