@@ -4,7 +4,7 @@ async function sendMessage(req, res) {
     try {
         const idRemetente = req.user.id;
         const { idDestinatario, conteudo } = req.body;
-        const constMensagem = await messageService.createMessage(idRemetente, idDestinatario, conteudo);
+        const novaMensagem = await messageService.createMessage(idRemetente, idDestinatario, conteudo);
 
         res.status(201).json({
             mensagem: "Mensagem enviada com sucesso!",

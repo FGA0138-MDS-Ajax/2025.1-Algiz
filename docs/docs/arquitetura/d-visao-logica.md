@@ -14,3 +14,10 @@ O sistema EcoNet é subdividido nos seguintes módulos principais, que represent
 
 **Camada de Persistência (Dados):** Esta camada é responsável por gerenciar todas as operações de armazenamento, acesso e recuperação dos dados do EcoNet. Ela centraliza a interação com o sistema de gerenciamento de banco de dados, abstraindo os detalhes técnicos sobre onde e como os dados são fisicamente salvos. Nela, são gerenciadas informações essenciais como dados dos usuários (tanto físicos quanto jurídicos), cadastro de empresas, postagens (ofertas e procura de materiais), tags, curtidas, materiais salvos, contratos firmados e configurações do sistema. Essa abordagem garante que os dados sejam organizados, armazenados de forma segura e recuperados de maneira eficiente, facilitando a manutenção e a evolução do sistema e permitindo que as demais camadas interajam com os dados sem se preocupar com os detalhes do armazenamento físico.
 Todas estas camadas no EcoNet são projetadas para serem o mais independentes possíveis, formando uma abstração em torno de suas responsabilidades e do trabalho a ser realizado dentro de uma requisição específica. A comunicação entre as camadas é bem definida, permitindo que cada uma evolua sem impactar diretamente as outras, e podendo ser configurada para ser aberta ou fechada conforme as necessidades de interação e segurança estabelecidas pela equipe de desenvolvimento do EcoNet.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

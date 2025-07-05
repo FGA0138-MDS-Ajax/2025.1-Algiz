@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
+import postRoutes from './src/api/routes/post.routes.js';
 
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
@@ -57,10 +58,6 @@ async function startServer() {
       db: sequelize,
     });
 
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173'
-  ];
 
   app.use(cors({
     origin: true, // Allows all origins
@@ -88,14 +85,13 @@ async function startServer() {
   });
 
   app.use((req, res, next) => {
-    // console.log('📥 Incoming request:', req.method, req.url);
-    // console.log('📦 Content-Type:', req.headers['content-type']);
     next();
   });
 
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
   app.use('/api', empresaRoutes); 
+  app.use('/api', postRoutes);
 
   app.use(
     session({
@@ -124,7 +120,7 @@ async function startServer() {
 
   // Garante usuário admin
   const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
-  const [adminUser, created] = await Usuario.findOrCreate({
+  const [, created] = await Usuario.findOrCreate({
   where: { emailUsuario: process.env.ADMIN_EMAIL || 'admin@example.com' },
     defaults: {
       senha: hashedPassword

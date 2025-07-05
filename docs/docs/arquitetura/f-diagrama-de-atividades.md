@@ -4,11 +4,11 @@ sidebar_position: 6
 ---
 # Diagrama de atividades  
 
-![Representação Visual da Arquitetura](../../static/img/diagrama_atividades.png)
-
 Figura 5: Diagrama de atividades
+![Representação Visual da Arquitetura](../../static/img/diagrama_atividades.png)
+Fonte: De autoria própria
 
-O diagrama de atividade apresentado mapeia de forma clara e dinâmica o fluxo de interações de um usuário dentro do sistema web, desde o acesso inicial até a execução de funcionalidades específicas pós-login.
+O diagrama de atividade apresentado (Figura 5) mapeia de forma clara e dinâmica o fluxo de interações de um usuário dentro do sistema web, desde o acesso inicial até a execução de funcionalidades específicas pós-login.
 
 **Fluxo de Navegação Inicial:**
 
@@ -45,3 +45,11 @@ Dentro da **Home com vínculo**, o fluxo detalha as funcionalidades disponíveis
    Responsável pelo **Gerenciamento de Contratos**, podendo acessar e controlar os acordos firmados.  
 * **Comunicador:**  
    Acessa a **Área de mensagens** e tem a permissão para **Criar postagem**, facilitando a comunicação interna e externa.
+
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

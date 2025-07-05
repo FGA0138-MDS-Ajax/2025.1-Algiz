@@ -11,16 +11,23 @@ on:
 
 jobs:
   sonarcloud:
-    name: SonarCloud Scan - Backend
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: suasenha
+          MYSQL_DATABASE: EcoNet_DB
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1" --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures full Git history is available for SonarCloud
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -30,11 +37,25 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: backend
 
-      - name: Run tests (optional but recommended)
+      - name: Run tests
         run: npm test
+        working-directory: backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 3307
+          DB_USER: root
+          DB_PASSWORD: suasenha
+          DB_NAME: EcoNet_DB
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=FGA0138-MDS-Ajax_2025.1-Algiz
+            -Dsonar.organization=fga-mds-ajax
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.projectBaseDir=backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

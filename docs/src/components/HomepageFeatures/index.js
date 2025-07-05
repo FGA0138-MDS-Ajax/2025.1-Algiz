@@ -4,32 +4,46 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: '💡 Foco Sustentável',
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home1.png').default}
+        alt="Foco Sustentável"
+      />),
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+      A plataforma EcoNet conecta empresas com excedentes de material a organizações que buscam 
+      insumos sustentáveis, promovendo a economia circular no setor industrial e evitando o desperdício.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: '🤝 Conexão e Colaboração',
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home2.png').default}
+        alt="Conexão e Colaboração"
+      />),
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Permitindo que as empresas atuem como fornecedoras e receptores dentro de um mesmo 
+        sistema, a EcoNet facilita parcerias baseadas em transparência 
+        contratual, fortalecendo a comunicação entre as companhias da cadeia produtiva.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: '📂 Gestão de Documentos',
+    Svg: () => (
+      <img
+        src={require('@site/static/img/docs-home3.png').default}
+        alt="Gestão de Documentos"
+      />),
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        O diferencial da EcoNet está na gestão segura de contratos e documentos, 
+        garantindo eficiência operacional no armazenamento e na gestão de documentos relevantes
+        para as empresas.
       </>
     ),
   },

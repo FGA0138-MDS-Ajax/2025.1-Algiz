@@ -32,7 +32,7 @@ function RedefinirSenha() {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/usuarios/reset-password", {
+      const response = await fetch("http://localhost:3001/api/users/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

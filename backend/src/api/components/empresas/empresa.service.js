@@ -1,5 +1,6 @@
 import models from "../../../models/index.model.js";
 const { Empresa } = models;
+const { Juridico } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
 
 function formatarCNPJ(cnpj) {
@@ -33,6 +34,13 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         error.name = 'ValidationError';
         throw error;
     }
+
+    // Validação de entrada
+    if (!validateCNPJ(cnpjJuridico)) {
+        const error = new Error('CNPJ inválido ou não fornecido.');
+        error.name = 'ValidationError';
+        throw error;
+    }
     if (!razaoSocial) {
         const error = new Error('Razão Social é obrigatória.');
         error.name = 'ValidationError';
@@ -43,11 +51,12 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         error.name = 'ValidationError';
         throw error;
     }
+    // Adicione aqui as outras validações...
 
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
 
-    const existingCnpj = await Empresa.findByPk(cnpjLimpo);
-
+    // Verificar duplicidade
+    const existingCnpj = await Juridico.findByPk(cnpjLimpo);
     if (existingCnpj) {
         const error = new Error('Este CNPJ já está cadastrado.');
         error.name = 'ConflictError';
@@ -59,6 +68,8 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         error.name = 'ConflictError';
         throw error;
     }
+    
+    // Inserir no banco de dados
     try {
         const novaEmpresa = await Empresa.create({
             cnpjJuridico: cnpjLimpo,
@@ -76,6 +87,8 @@ async function createEmpresa(idUsuario, dadosEmpresa) {
         throw new Error("Não foi possível salvar a empresa no banco de dados.");
     }
 }
+
+// --- Função para buscar todas as empresas ---
 async function findAllEmpresas() {
     try {
         return await Empresa.findAll();
@@ -84,6 +97,8 @@ async function findAllEmpresas() {
         throw new Error("Erro ao buscar dados das empresas.");
     }
 }
+
+// --- Função para buscar uma empresa pela Chave Primária (CNPJ) ---
 async function findEmpresaByPk(cnpj) {
     try {
         const cnpjFormatado = formatarCNPJ(cnpj);
@@ -93,6 +108,8 @@ async function findEmpresaByPk(cnpj) {
         throw new Error("Erro ao buscar dados da empresa.");
     }
 }
+
+// Exporta um objeto com todas as funções do serviço.
 export default {
     createEmpresa,
     findAllEmpresas,

@@ -96,7 +96,7 @@ function ConfiguracoesUsuario() {
         try {
           const token = sessionStorage.getItem("authToken");
           const res = await fetch(
-            `http://localhost:3001/api/usuario/${usuarioLogado.id}`,
+            `http://localhost:3001/api/users/${usuarioLogado.id}/profile`,
             {
               headers: {
                 "Content-Type": "application/json",
