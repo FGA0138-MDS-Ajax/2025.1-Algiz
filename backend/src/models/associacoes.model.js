@@ -1,5 +1,5 @@
 export default function setupAssociations(models) {
-  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem } = models;
+  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem, Post } = models;
 
   Usuario.hasOne(Fisico, {
     foreignKey: 'idUsuario',
@@ -58,4 +58,15 @@ export default function setupAssociations(models) {
     foreignKey: 'idDestinatario',
     as: 'mensagensRecebidas'
   });
+
+  Empresa.hasMany(Post, { 
+    foreignKey: 'empresaId', 
+    as: 'posts'
+  });
+
+  Post.belongsTo(Empresa, {
+    foreignKey: 'empresaId',
+    as: 'empresa'
+  });
+
 }

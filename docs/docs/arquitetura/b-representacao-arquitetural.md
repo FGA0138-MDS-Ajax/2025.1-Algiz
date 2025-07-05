@@ -55,11 +55,11 @@ Essa divisão modular facilita a manutenção e os testes independentes de cada 
   Utilizamos ferramentas como o Microsoft Teams para reuniões diárias e revisão semanal do progresso (dailys, planning, review e retrospective). Isso possibilita um fluxo constante de feedback, essencial para que cada sprint seja ajustado de acordo com os desafios encontrados, assegurando a consistência e a evolução técnica do sistema.
 
 ### Representação Visual da Arquitetura: 
+Figura 1: Diagrama esquemático da representação arquitetural.
+![Representação Visual da Arquitetura](../../static/img/figura%201.1.png)                             
+Fonte: De autoria própria.
 
-![Representação Visual da Arquitetura](../../static/img/esquematico%20representação%20arquitetural.png)                             
-
-
-Foi elaborado um diagrama arquitetural que ilustra a divisão em camadas, os fluxos de dados e a comunicação entre os componentes. Portanto, nosso modelo arquitetural pode ser resumido como:
+Foi elaborado um diagrama arquitetural que ilustra a divisão em camadas, os fluxos de dados e a comunicação entre os componentes (Figura 1). Portanto, nosso modelo arquitetural pode ser resumido como:
 
 **"Uma arquitetura em 3 camadas (apresentação, negócio e persistência) integrada a um processo de desenvolvimento ágil via SCRUM"**.
 
@@ -69,8 +69,16 @@ Em resumo, a combinação do processo ágil proporcionado pelo SCRUM com uma arq
 
 ## Metas e restrições arquiteturais
 
+Foram propostas algumas metas que visam assegurar que a solução atenda às expectativas de qualidade e confiabilidade desde sua implantação até futuras atualizações.
 - O sistema deverá ser capaz de suportar pelo menos 10 acessos simultâneos de usuários, sem apresentar lentidão ou falhas.  
 - O sistema deve ter vida útil prolongada, sendo capaz de evoluir tecnologicamente.  
 - O site precisa ser responsivo, funcionando adequadamente em navegadores como, Google Chrome e Microsoft Edge.  
 - O sistema deve funcionar em rede local.  
 - O sistema deve ter criptografia de senhas.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

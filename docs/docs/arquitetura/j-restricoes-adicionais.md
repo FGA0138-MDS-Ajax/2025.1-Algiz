@@ -9,3 +9,10 @@ O Software será voltado para rede global, onde qualquer usuário ou empresa pod
 - **Interface:** Contará com padronizações em todas as áreas estéticas, ou seja, cores das páginas, fontes, botões, ícones e caixas.
 - **Eficiência:** Deve apresentar um ambiente totalmente fluido e que minimize os atrasos no processamento de respostas.
 - **Portabilidade:** Deve apresentar compatibilidade com mais de um navegador, sendo eles Google Chrome e Microsoft Edge.
+
+---
+
+## Referência
+### Documento de arquitetura
+Para acessar a versão mais atual (v1.3.0) do documento de arquitetura, consulte o pdf  
+[Documento de arquitetura - EcoNet](../../static/files/documento-de-arquitetura-algiz-2025.1.pdf)

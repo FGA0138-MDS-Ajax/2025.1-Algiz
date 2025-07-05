@@ -7,13 +7,13 @@ import * as empresaController from '../components/empresas/empresa.controller.js
 const router = express.Router();
 
 // ROTA PARA CADASTRAR uma nova empresa (protegida)
-router.post('/empresa', verifyToken, empresaController.registerEmpresa);
+router.post('/', verifyToken, empresaController.registerEmpresa);
 
 // ROTA PARA BUSCAR TODAS as empresas (pública)
-router.get('/empresa', empresaController.getAllEmpresas);
+router.get('/', empresaController.getAllEmpresas);
 
 // ROTA PARA BUSCAR UMA empresa específica pelo seu CNPJ (pública)
 
 router.get('/empresa/:cnpj', empresaController.getEmpresaById);
 
-export default router;
+ export default router;
