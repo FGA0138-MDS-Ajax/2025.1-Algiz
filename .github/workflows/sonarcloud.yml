@@ -21,7 +21,11 @@ jobs:
           MYSQL_DATABASE: EcoNet_DB
         ports:
           - 3307:3306
-        options: --health-cmd="mysqladmin ping -h 127.0.0.1" --health-interval=10s --health-timeout=5s --health-retries=10
+        options: > 
+          --health-cmd="mysqladmin ping -h 127.0.0.1" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=10
 
     defaults:
       run:
@@ -39,6 +43,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h "127.0.0.1" -P 3307 --silent && break;
+            echo "Waiting for MySQL...";
+            sleep 2;
+          done
 
       - name: Run tests
         env:
