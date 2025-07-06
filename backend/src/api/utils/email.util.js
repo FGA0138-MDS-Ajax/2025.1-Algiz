@@ -1,4 +1,3 @@
-// backend/src/utils/email.util.js
 import { Resend } from 'resend';
 
 let emailServiceEnabled = false;

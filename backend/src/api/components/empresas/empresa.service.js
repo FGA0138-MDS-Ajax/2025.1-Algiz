@@ -1,218 +1,72 @@
-import models from "../../../models/index.model.js";
-const { Empresa } = models;
-const { Juridico } = models;
+// Importa o objeto 'db' padrão e depois desestrutura o modelo 'Juridico'.
+import db from '../../../models/index.model.js';
+const { Juridico } = db;
 import { isValidDocument } from '../../utils/validation.util.js';
 
-function formatarCNPJ(cnpj) {
-    // Remove tudo que não for número
-    const numerosCnpj = cnpj.replace(/\D/g, '');
-    
-    // Aplica a formatação XX.XXX.XXX/XXXX-XX
-    return numerosCnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-}
-
-function validateCNPJ(cnpj) {
-    // Validação básica de CNPJ
-    const cnpjLimpo = cnpj.replace(/\D/g, '');
-    return cnpjLimpo.length === 14;
-}
-
+// --- Funções do Serviço ---
 async function createEmpresa(idUsuario, dadosEmpresa) {
-    console.log("Recebido no backend:", dadosEmpresa);
-    const {
-        cnpjJuridico,
-        razaoSocial,
-        nomeComercial,
-        telefoneJuridico,
-        estadoJuridico,
-        enderecoJuridico,
-        areaAtuacao
-    } = dadosEmpresa;
+    const { cnpjJuridico, razaoSocial, nomeComercial, ...outrosDados } = dadosEmpresa;
 
+    // Validações de entrada
     if (!isValidDocument(cnpjJuridico)) {
-        const error = new Error('CNPJ inválido ou não fornecido.');
-        error.name = 'ValidationError';
-        throw error;
+        throw { name: 'ValidationError', message: 'CNPJ inválido ou não fornecido.' };
     }
-
-    // Validação de entrada
-    if (!validateCNPJ(cnpjJuridico)) {
-        const error = new Error('CNPJ inválido ou não fornecido.');
-        error.name = 'ValidationError';
-        throw error;
+    if (!razaoSocial || !nomeComercial) {
+        throw { name: 'ValidationError', message: 'Razão Social e Nome Comercial são obrigatórios.' };
     }
-    if (!razaoSocial) {
-        const error = new Error('Razão Social é obrigatória.');
-        error.name = 'ValidationError';
-        throw error;
-    }
-    if (!nomeComercial) {
-        const error = new Error('Nome Comercial é obrigatório.');
-        error.name = 'ValidationError';
-        throw error;
-    }
-    // Adicione aqui as outras validações...
 
     const cnpjLimpo = cnpjJuridico.replace(/\D/g, '');
 
-    // Verificar duplicidade
+    // Verifica duplicidade
     const existingCnpj = await Juridico.findByPk(cnpjLimpo);
     if (existingCnpj) {
-        const error = new Error('Este CNPJ já está cadastrado.');
-        error.name = 'ConflictError';
-        throw error;
+        throw { name: 'ConflictError', message: 'Este CNPJ já está cadastrado.' };
     }
-    const existingNome = await Empresa.findOne({ where: { nomeComercial } });
+    const existingNome = await Juridico.findOne({ where: { nomeComercial } });
     if (existingNome) {
-        const error = new Error('Este Nome Comercial já está em uso.');
-        error.name = 'ConflictError';
-        throw error;
+        throw { name: 'ConflictError', message: 'Este Nome Comercial já está em uso.' };
     }
     
-    // Inserir no banco de dados
-    try {
-        const novaEmpresa = await Empresa.create({
-            cnpjJuridico: cnpjLimpo,
-            razaoSocial,
-            nomeComercial,
-            telefoneJuridico,
-            estadoJuridico,
-            enderecoJuridico,
-            areaAtuacao,
-            idUsuario
-        });
-        return novaEmpresa;
-    } catch (dbError) {
-        console.error("Erro de banco de dados ao inserir empresa:", dbError);
-        throw new Error("Não foi possível salvar a empresa no banco de dados.");
-    }
+    // Cria a empresa no banco
+    return Juridico.create({ cnpjJuridico: cnpjLimpo, razaoSocial, nomeComercial, ...outrosDados, idUsuario });
 }
 
-// --- Função para buscar todas as empresas ---
 async function findAllEmpresas() {
-    try {
-        return await Empresa.findAll();
-    } catch (error) {
-        console.error("Erro no serviço ao buscar todas as empresas:", error);
-        throw new Error("Erro ao buscar dados das empresas.");
-    }
+    return Juridico.findAll();
 }
 
-// --- Função para buscar uma empresa pela Chave Primária (CNPJ) ---
 async function findEmpresaByPk(cnpj) {
-    try {
-        // ✅ CORREÇÃO: Recebe CNPJ já formatado do controller
-        return await Empresa.findByPk(cnpj);
-    } catch (error) {
-        console.error(`Erro no serviço ao buscar empresa pelo CNPJ ${cnpj}:`, error);
-        throw new Error("Erro ao buscar dados da empresa.");
-    }
+    const cnpjLimpo = cnpj.replace(/\D/g, '');
+    return Juridico.findByPk(cnpjLimpo);
 }
 
-// --- ✅ FUNÇÃO ATUALIZADA: Atualizar dados da empresa ---
-async function updateEmpresa(cnpjFormatado, idUsuario, dadosEmpresa) {
-    try {
-        // ✅ CORREÇÃO: Recebe CNPJ já formatado do controller
-        const cnpjLimpo = cnpjFormatado.replace(/\D/g, '');
-        
-        // Buscar a empresa existente usando CNPJ formatado
-        const empresaExistente = await Empresa.findByPk(cnpjFormatado);
-        if (!empresaExistente) {
-            const error = new Error('Empresa não encontrada.');
-            error.name = 'NotFoundError';
-            throw error;
-        }
+// Função para atualização
+async function updateEmpresa(cnpj, idUsuario, dadosUpdate) {
+    const cnpjLimpo = cnpj.replace(/\D/g, '');
+    const empresa = await Juridico.findByPk(cnpjLimpo);
 
-        // Verificar se o usuário é o dono da empresa
-        if (empresaExistente.idUsuario !== idUsuario) {
-            const error = new Error('Você não tem permissão para editar esta empresa.');
-            error.name = 'UnauthorizedError';
-            throw error;
-        }
-
-        // Validar dados de entrada
-        const {
-            razaoSocial,
-            nomeComercial,
-            telefoneJuridico,
-            estadoJuridico,
-            enderecoJuridico,
-            areaAtuacao
-        } = dadosEmpresa;
-
-        if (!razaoSocial) {
-            const error = new Error('Razão Social é obrigatória.');
-            error.name = 'ValidationError';
-            throw error;
-        }
-        if (!nomeComercial) {
-            const error = new Error('Nome Comercial é obrigatório.');
-            error.name = 'ValidationError';
-            throw error;
-        }
-        if (!telefoneJuridico) {
-            const error = new Error('Telefone é obrigatório.');
-            error.name = 'ValidationError';
-            throw error;
-        }
-        if (!estadoJuridico) {
-            const error = new Error('Estado é obrigatório.');
-            error.name = 'ValidationError';
-            throw error;
-        }
-        if (!enderecoJuridico) {
-            const error = new Error('Endereço é obrigatório.');
-            error.name = 'ValidationError';
-            throw error;
-        }
-
-        // Verificar se o nome comercial já existe (exceto para a própria empresa)
-        if (nomeComercial !== empresaExistente.nomeComercial) {
-            const { Op } = await import('sequelize');
-            const existingNome = await Empresa.findOne({ 
-                where: { 
-                    nomeComercial,
-                    cnpjJuridico: { [Op.ne]: cnpjFormatado }
-                }
-            });
-            if (existingNome) {
-                const error = new Error('Este Nome Comercial já está em uso por outra empresa.');
-                error.name = 'ConflictError';
-                throw error;
-            }
-        }
-
-        // Atualizar os dados da empresa
-        const empresaAtualizada = await empresaExistente.update({
-            razaoSocial,
-            nomeComercial,
-            telefoneJuridico,
-            estadoJuridico,
-            enderecoJuridico,
-            areaAtuacao: areaAtuacao || empresaExistente.areaAtuacao
-        });
-
-        return empresaAtualizada;
-    } catch (error) {
-        console.error(`Erro no serviço ao atualizar empresa ${cnpjFormatado}:`, error);
-        
-        // Re-throw de erros conhecidos
-        if (error.name === 'ValidationError' || 
-            error.name === 'ConflictError' || 
-            error.name === 'NotFoundError' || 
-            error.name === 'UnauthorizedError') {
-            throw error;
-        }
-        
-        // Erro genérico
-        throw new Error("Erro ao atualizar dados da empresa.");
+    if (!empresa) {
+        throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
     }
+    if (empresa.idUsuario !== idUsuario) {
+        throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
+    }
+    // Verifica se o nome comercial está a ser atualizado para um que já existe noutra empresa
+    if (dadosUpdate.nomeComercial) {
+        const existingNome = await Juridico.findOne({ where: { nomeComercial: dadosUpdate.nomeComercial } });
+        // Se encontrou uma empresa com o mesmo nome E o CNPJ é diferente do atual, lança erro
+        if (existingNome && existingNome.cnpjJuridico !== cnpjLimpo) {
+            throw { name: 'ConflictError', message: 'Nome Comercial já está em uso por outra empresa.' };
+        }
+    }
+
+    await empresa.update(dadosUpdate);
+    return empresa;
 }
 
-// Exporta um objeto com todas as funções do serviço.
 export default {
     createEmpresa,
     findAllEmpresas,
     findEmpresaByPk,
-    updateEmpresa
+    updateEmpresa,
 };

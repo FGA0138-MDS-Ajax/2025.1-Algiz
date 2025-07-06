@@ -1,4 +1,3 @@
-// backend/src/api/utils/hash.util.js
 import bcrypt from 'bcrypt';
 import { SALT_ROUNDS } from '../config/auth.config.js';
 
