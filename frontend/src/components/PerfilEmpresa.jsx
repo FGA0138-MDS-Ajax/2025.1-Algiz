@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormEditarEmpresa from "./FormEditarEmpresa";
 
 export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica }) {
@@ -48,7 +48,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
       const cnpjLimpo = empresa.cnpjJuridico.replace(/\D/g, '');
       
       // Obter token de autenticação
-      const token = sessionStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
       
       const response = await fetch(`http://localhost:3001/api/empresa/${cnpjLimpo}/update`, {
         method: 'POST',
