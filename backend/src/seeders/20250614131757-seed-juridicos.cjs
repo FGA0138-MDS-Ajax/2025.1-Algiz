@@ -4,7 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('JURIDICO', [
       {
-        cnpjJuridico: '12.345.678/0001-01',
+        cnpjJuridico: '12345678000101',
         razaoSocial: 'RECICLATECH SOLUCOES AMBIENTAIS LTDA',
         nomeComercial: 'ReciclaTech',
         telefoneJuridico: '(11) 98765-0001',
@@ -14,7 +14,7 @@ module.exports = {
         idUsuario: 2
       },
       {
-        cnpjJuridico: '98.765.432/0001-02',
+        cnpjJuridico: '98765432000102',
         razaoSocial: 'ECOPAPER INDUSTRIA DE PAPEL SA',
         nomeComercial: 'EcoPaper',
         telefoneJuridico: '(21) 98765-0002',
@@ -24,7 +24,7 @@ module.exports = {
         idUsuario: 3
       },
       {
-        cnpjJuridico: '45.678.901/0001-03',
+        cnpjJuridico: '45678901000103',
         razaoSocial: 'SUCATA CENTER COMERCIO DE MATERIAIS LTDA',
         nomeComercial: 'SucataCenter',
         telefoneJuridico: '(31) 98765-0003',
@@ -34,7 +34,7 @@ module.exports = {
         idUsuario: 4
       },
       {
-        cnpjJuridico: '65.432.198/0001-04',
+        cnpjJuridico: '65432198000104',
         razaoSocial: 'VERDE METAL RECICLADORA EIRELI',
         nomeComercial: 'VerdeMetal',
         telefoneJuridico: '(41) 98765-0004',
@@ -44,7 +44,7 @@ module.exports = {
         idUsuario: 5
       },
       {
-        cnpjJuridico: '78.901.234/0001-05',
+        cnpjJuridico: '78901234000105',
         razaoSocial: 'PLASTINOVOS INDUSTRIA E COMERCIO LTDA',
         nomeComercial: 'PlastiNovos',
         telefoneJuridico: '(51) 98765-0005',

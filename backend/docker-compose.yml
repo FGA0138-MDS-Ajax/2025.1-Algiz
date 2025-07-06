@@ -6,30 +6,40 @@ services:
       - "3001:3001"
     volumes:
       - .:/app
+      - /app/node_modules  # Evita sobreposição no desenvolvimento
     depends_on:
-      - db
+      db:
+        condition: service_healthy  # Só inicia após DB estar pronto
     environment:
       DB_HOST: db
       DB_USER: root
       DB_PASSWORD: suasenha
       DB_NAME: EcoNet_DB
+      NODE_ENV: development  # Adicione ambiente
+      TZ: America/Sao_Paulo
 
   db:
-    image: mysql:8.0
+    image: mysql:8.0.33  # Versão LTS estável
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 10s
       retries: 10
-    restart: always
+      start_period: 30s  # Tempo inicial antes de começar checks
+    restart: unless-stopped  # Mais seguro que 'always'
     environment:
       MYSQL_ROOT_PASSWORD: suasenha
       MYSQL_DATABASE: EcoNet_DB
+      MYSQL_INITDB_SKIP_TZINFO: 1  # Evita problemas de timezone
+      TZ: America/Sao_Paulo
     ports:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d
+    tmpfs:  # Melhora performance em desenvolvimento
+      - /var/lib/mysql-files
 
 volumes:
   db_data:
+    name: econet_db_data  # Nome explícito para o volume
