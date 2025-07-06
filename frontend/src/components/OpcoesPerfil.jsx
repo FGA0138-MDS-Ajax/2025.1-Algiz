@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function OpcoesPerfil({ fotoPerfil }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const { logout } = useContext(AuthContext); // Get logout function from context
 
   // Fecha o dropdown ao clicar fora
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function OpcoesPerfil({ fotoPerfil }) {
   }, [isOpen]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("usuarioLogado");
+    logout(); // Use the logout function from context
     navigate("/Login");
     setIsOpen(false);
   };

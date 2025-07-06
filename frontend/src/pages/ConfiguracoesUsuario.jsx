@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import SidebarUsuarioConfiguracoes from "../components/SidebarUsuarioConfiguracoes";
 import SidebarIntro from "../components/SidebarIntro";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import PropTypes from "prop-types";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { AuthContext } from "../context/AuthContext";
 
 // TailwindSwitch
 function TailwindSwitch({ checked, onChange }) {
@@ -80,7 +80,7 @@ PasswordInput.propTypes = {
 };
 
 export default function ConfiguracoesUsuario() {
-  const { usuario, carregando } = useUsuarioAutenticado();
+  const { usuario } = useContext(AuthContext);
 
   const [postSalvos, setPostSalvos] = useState(true);
   const [compartilharLocalizacao, setCompartilharLocalizacao] = useState(true);
@@ -134,7 +134,7 @@ export default function ConfiguracoesUsuario() {
     });
   }
 
-  if (carregando) {
+  if (!usuario) {
     return (
       <div className="h-screen flex items-center justify-center bg-green-50">
         <p className="text-gray-600 text-lg">Carregando configurações...</p>
@@ -156,7 +156,7 @@ export default function ConfiguracoesUsuario() {
           </div>
         </div>
 
-        {/* Main content: stays unchanged */}
+        {/* Main content */}
         <main className="flex-1 flex flex-col gap-8 scroll-smooth">
           {/* Privacidade */}
           <section
@@ -282,7 +282,7 @@ export default function ConfiguracoesUsuario() {
                 <div className="font-semibold text-base text-gray-800 mb-2">Editar email</div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm text-gray-700">
-                    Email atual <span className="font-bold text-gray-800">email.do.usuario@gmail.com</span>
+                    Email atual <span className="font-bold text-gray-800">{usuario.email}</span>
                   </span>
                   {/* Ícone de verificado */}
                   <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">

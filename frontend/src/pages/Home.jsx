@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { AuthContext } from "../context/AuthContext"; // Novo
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const navigate = useNavigate();
 
-  const { usuario, carregando } = useUsuarioAutenticado();
+  const { usuario } = useContext(AuthContext); // Novo
 
   const sugestoesEmpresas = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -28,14 +28,6 @@ export default function HomePublica() {
     img: e.logo,
     desc: "Empresa recomendada para você",
   }));
-
-  if (carregando) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-green-50">
-        <p className="text-gray-600 text-lg">Carregando...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col pt-16">
@@ -124,7 +116,6 @@ export default function HomePublica() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
-
     </div>
   );
 }
