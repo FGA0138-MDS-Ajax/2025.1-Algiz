@@ -13,27 +13,47 @@ import CodigoAutenticacao from './pages/CodigoAutenticacao';
 import RedefinirSenha from './pages/RedefinirSenha';
 import ConfiguracoesUsuario from './pages/ConfiguracoesUsuario';
 import CriarPostagem from './pages/PaginaCriacaoPostagem';
+import ProtectedRoute from './components/ProtectedRoute';
+import AuthListener from './components/AuthListener';
 
-import { AuthProvider } from './context/AuthContext'; // <-- importado o AuthProvider
+import AuthProvider from './context/AuthContext'; // <-- importado o AuthProvider
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <AuthListener /> {/* Ensures routing reacts to login/logout */}
         <Layout>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Home />} />
             <Route path="/sobrenos" element={<Sobrenos />} />
-            <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/empresa/:idEmpresa" element={<Empresas />} />
             <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
+            <Route path="/post" element={<PaginaPost />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/esqueci-senha" element={<EsqueciSenha />} />
             <Route path="/codigo-autenticacao" element={<CodigoAutenticacao />} />
             <Route path="/redefinir-senha" element={<RedefinirSenha />} />
-            <Route path="/post" element={<PaginaPost />} />
-            <Route path="/configuracoesusuario" element={<ConfiguracoesUsuario />} />
-            <Route path="/empresa/criar-postagem" element={<CriarPostagem />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/configuracoesusuario"
+              element={
+                <ProtectedRoute>
+                  <ConfiguracoesUsuario />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/empresa/criar-postagem"
+              element={
+                <ProtectedRoute>
+                  <CriarPostagem />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Layout>
       </AuthProvider>
