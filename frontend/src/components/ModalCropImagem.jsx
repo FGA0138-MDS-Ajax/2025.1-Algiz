@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -75,7 +75,7 @@ export default function ModalCropImagem({
       
       formData.append(fieldName, croppedBlob, "imagem.jpg");
 
-      const token = sessionStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
 
       // ✅ CORREÇÃO: Usar PUT em vez de POST e rota correta
       const response = await axios.put(
@@ -89,14 +89,14 @@ export default function ModalCropImagem({
         }
       );
 
-      // ✅ CORREÇÃO: Atualizar sessionStorage com URL do Cloudinary
-      const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
+      // ✅ CORREÇÃO: Atualizar localStorage com URL do Cloudinary
+      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
       if (tipo === "foto") {
         usuarioLogado.fotoPerfil = response.data.fotoPerfil || croppedBase64;
       } else {
         usuarioLogado.bannerPerfil = response.data.bannerPerfil || croppedBase64;
       }
-      sessionStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+      localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
 
       // ✅ CORREÇÃO: Callback com URL do Cloudinary
       if (onCropSave) onCropSave(response.data.fotoPerfil || response.data.bannerPerfil || croppedBase64);
