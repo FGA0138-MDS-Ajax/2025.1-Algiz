@@ -2,16 +2,15 @@ import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
 
-  // Load user on mount
-  useEffect(() => {
+  const fetchUsuario = async () => {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
     const token = localStorage.getItem("authToken");
 
-    async function fetchUsuario() {
-      if (usuarioLogado?.id && token) {
+    if (usuarioLogado?.id && token) {
+      try {
         const res = await fetch(
           `http://localhost:3001/api/users/${usuarioLogado.id}/profile`,
           {
@@ -21,27 +20,60 @@ export function AuthProvider({ children }) {
             },
           }
         );
+
         if (res.ok) {
           const data = await res.json();
           setUsuario(data);
         } else {
           setUsuario(null);
         }
+      } catch (error) {
+        console.error("Erro ao buscar o usuário:", error);
+        setUsuario(null);
       }
+    } else {
+      setUsuario(null);
     }
+  };
 
+  useEffect(() => {
     fetchUsuario();
+
+    const handleStorageChange = (event) => {
+      if (
+        event.key === "authToken" ||
+        event.key === "usuarioLogado" ||
+        event.key === "authEvent"
+      ) {
+        fetchUsuario();
+        window.location.reload();
+      }
+    };
+
+    const handleFocus = () => {
+      fetchUsuario();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   const login = (user, token) => {
     localStorage.setItem("usuarioLogado", JSON.stringify(user));
     localStorage.setItem("authToken", token);
+    localStorage.setItem("authEvent", Date.now().toString());
     setUsuario(user);
   };
 
   const logout = () => {
     localStorage.removeItem("usuarioLogado");
     localStorage.removeItem("authToken");
+    localStorage.setItem("authEvent", Date.now().toString());
     setUsuario(null);
   };
 
@@ -50,4 +82,6 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
+
+export default AuthProvider;
