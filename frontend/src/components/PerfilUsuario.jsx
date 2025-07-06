@@ -282,7 +282,7 @@ export default function PerfilUsuario({
       </div>
       {/* Modal de edição de dados */}
       {isEditing && (
-        <FormEditarUsuario
+        <FormEditarUsuario      
           formData={formData}
           erro={erro}
           onChange={handleChange}

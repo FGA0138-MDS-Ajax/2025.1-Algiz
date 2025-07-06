@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import EstadoDropdown from "./EstadoDropdown";
 import GeneroDropdown from "./GeneroDropdown";
@@ -55,14 +56,13 @@ export default function FormEditarUsuario({
             disabled
           />
           <div className="flex justify-end mt-1">
-            <button
-              type="button"
-              onClick={onEditEmail}
-              className="text-blue-600 text-xs underline hover:text-blue-800"
+            <Link
+              to="/configuracoesusuario#seguranca"
+              className="text-blue-600 text-xs underline hover:text-blue-800 cursor-pointer"
               tabIndex={-1}
             >
               Editar email
-            </button>
+            </Link>
           </div>
         </div>
         <div>
