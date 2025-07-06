@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import Footer from "../components/Footer";
 
 function Sobrenos() {
   const { usuario } = useContext(AuthContext);
