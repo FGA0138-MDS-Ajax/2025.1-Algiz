@@ -5,27 +5,27 @@ module.exports = {
     await queryInterface.bulkInsert('VINCULO_JURIDICO_FISICO', [
       {
         cpfFisico: '111.222.333-01',
-        cnpjJuridico: '12.345.678/0001-01',
+        cnpjJuridico: '12345678000101',
         cargo: 'Analista Ambiental'
       },
       {
         cpfFisico: '222.333.444-02',
-        cnpjJuridico: '98.765.432/0001-02',
+        cnpjJuridico: '98765432000102',
         cargo: 'Engenheira de Processos'
       },
       {
         cpfFisico: '333.444.555-03',
-        cnpjJuridico: '45.678.901/0001-03',
+        cnpjJuridico: '45678901000103',
         cargo: 'Gerente de Operações'
       },
       {
         cpfFisico: '444.555.666-04',
-        cnpjJuridico: '65.432.198/0001-04',
+        cnpjJuridico: '65432198000104',
         cargo: 'Assistente Técnica'
       },
       {
         cpfFisico: '555.666.777-05',
-        cnpjJuridico: '78.901.234/0001-05',
+        cnpjJuridico: '78901234000105',
         cargo: 'Supervisor de Logística'
       }
     ], {});
