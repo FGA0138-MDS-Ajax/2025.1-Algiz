@@ -107,7 +107,7 @@ export default function PaginaUsuario() {
 
   if (loading) {
     return (
-      <div className="h-32 flex items-center justify-center">
+      <div className="h-32 flex items-center justify-center pt-16">
         Carregando informações do usuário...
       </div>
     );
