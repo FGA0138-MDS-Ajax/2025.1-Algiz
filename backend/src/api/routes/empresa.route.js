@@ -1,6 +1,6 @@
 import express from 'express';
 import verifyToken from '../../middleware/auth.middleware.js';
-import * as empresaController from '../components/empresa/empresa.controller.js';
+import * as empresaController from '../components/empresas/empresa.controller.js';
 
 const router = express.Router();
 
