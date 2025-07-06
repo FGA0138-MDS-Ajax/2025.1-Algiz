@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
 
-export default (sequelize) => { 
+export default (sequelize) => {
   const Juridico = sequelize.define('Juridico', {
     cnpjJuridico: {
-      type: DataTypes.STRING(14), 
+      type: DataTypes.STRING(14),
       primaryKey: true,
       allowNull: false
     },
@@ -36,13 +36,13 @@ export default (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Usuarios', 
-        key: 'idUsuario'   
+        model: 'Usuarios',
+        key: 'idUsuario'
       }
     }
   }, {
     tableName: 'JURIDICO',
-    timestamps: false 
+    timestamps: false
   });
 
   Juridico.associate = (models) => {
