@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { AuthContext } from "../context/AuthContext";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import PerfilEmpresa from "../components/PerfilEmpresa";
@@ -22,7 +22,7 @@ const sugestoesEmpresas = [
 
 function Empresas() {
   const { idEmpresa } = useParams();
-  const { usuario: usuarioLogado } = useUsuarioAutenticado();
+  const { usuario: usuarioLogado } = useContext(AuthContext);
 
   const [empresa, setEmpresa] = useState(null);
   const [seguindo, setSeguindo] = useState(false);

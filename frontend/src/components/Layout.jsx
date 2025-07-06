@@ -2,12 +2,13 @@ import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import Navbar from "./Navbar";
 import NavbarLogado from "./Navbar_logado";
-import Footer from "./Footer"; // ✅ Add Footer here
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import Footer from "./Footer";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Layout({ children }) {
   const location = useLocation();
-  const { usuario, carregando } = useUsuarioAutenticado();
+  const { usuario } = useContext(AuthContext);
 
   const noNavbarRoutes = [
     "/login",
@@ -20,21 +21,12 @@ function Layout({ children }) {
 
   const hideNavbar = noNavbarRoutes.includes(location.pathname);
 
-  if (!hideNavbar && carregando) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-white">
-        <p className="text-gray-600 text-lg">Carregando...</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      {!hideNavbar && (usuario ? <NavbarLogado usuario={usuario} /> : <Navbar />)}
+      {!hideNavbar && (usuario ? <NavbarLogado /> : <Navbar />)}
 
-      <div className="min-h-screen  flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <main className="flex-grow">{children}</main>
-        {/* ✅ Always show the footer after content */}
         <Footer />
       </div>
     </>

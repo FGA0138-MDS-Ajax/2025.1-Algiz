@@ -1,8 +1,8 @@
-import { useState } from "react";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { useState, useContext } from "react";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
+import { AuthContext } from "../context/AuthContext"; // Novo
 
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -22,7 +22,7 @@ export default function CriarPostagem() {
   const [imagem, setImagem] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  const { usuario, carregando } = useUsuarioAutenticado();
+  const { usuario } = useContext(AuthContext); // Novo
 
   const handleImagemChange = (e) => {
     const file = e.target.files[0];
@@ -53,14 +53,6 @@ export default function CriarPostagem() {
 
   const podePostar = titulo && descricao && imagem && tag;
 
-  if (carregando) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-green-50">
-        <p className="text-gray-600 text-lg">Carregando...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-green-50 pt-16">
       <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-6">
@@ -88,7 +80,9 @@ export default function CriarPostagem() {
             />
 
             <div className="mb-4">
-              <label htmlFor="upload-imagem" className="block mb-1 font-semibold">Upload da imagem</label>
+              <label htmlFor="upload-imagem" className="block mb-1 font-semibold">
+                Upload da imagem
+              </label>
               <div className="bg-gray-200 rounded-xl h-48 flex justify-center items-center relative overflow-hidden">
                 <input
                   id="upload-imagem"
@@ -112,7 +106,9 @@ export default function CriarPostagem() {
               </div>
             </div>
 
-            <label htmlFor="descricao-post" className="block mb-1 font-semibold">Descrição do post:</label>
+            <label htmlFor="descricao-post" className="block mb-1 font-semibold">
+              Descrição do post:
+            </label>
             <textarea
               id="descricao-post"
               className="w-full border border-gray-300 rounded-xl px-4 py-2 mb-4"

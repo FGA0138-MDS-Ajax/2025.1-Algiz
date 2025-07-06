@@ -1,16 +1,8 @@
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
-import Footer from "../components/Footer";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Sobrenos() {
-  const { usuario, carregando } = useUsuarioAutenticado();
-
-  if (carregando) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600 text-lg">Carregando...</p>
-      </div>
-    );
-  }
+  const { usuario } = useContext(AuthContext);
 
   return (
     <div className="min-h-screen bg-gray-50 px-20 pt-20">

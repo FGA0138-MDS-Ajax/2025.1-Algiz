@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
-import useUsuarioAutenticado from "../hooks/useUsuarioAutenticado";
+import { AuthContext } from "../context/AuthContext"; // ✅ NEW
 
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -40,7 +40,7 @@ export default function PaginaPost() {
   const [modalOpen, setModalOpen] = useState(false);
   const [tab, setTab] = useState("recomendadas");
 
-  const { usuario, carregando } = useUsuarioAutenticado();
+  const { usuario } = useContext(AuthContext); // ✅ use context instead of custom hook
 
   const post = {
     empresaNome: "Relog",
@@ -57,14 +57,6 @@ export default function PaginaPost() {
     nome: e.nome,
     desc: "Empresa recomendada para você",
   }));
-
-  if (carregando) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-green-50">
-        <p className="text-gray-600 text-lg">Carregando post...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-green-50 min-h-screen pt-16">
