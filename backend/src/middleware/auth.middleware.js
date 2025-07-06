@@ -5,6 +5,8 @@ function verifyToken(req, res, next) {
     // Fix: req.header['authorization'] → req.headers['authorization']
     const authHeader = req.headers['authorization'];
     const token = authHeader?.split(' ')[1];
+    console.log("Authorization Header:", authHeader);
+    console.log("Extracted token:", token);
 
     if (!token) {
         return res.status(401).json({ erro: 'Acesso negado. Nenhum token fornecido.' });

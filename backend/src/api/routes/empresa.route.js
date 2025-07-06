@@ -13,7 +13,9 @@ router.post('/', verifyToken, empresaController.registerEmpresa);
 router.get('/', empresaController.getAllEmpresas);
 
 // ROTA PARA BUSCAR UMA empresa específica pelo seu CNPJ (pública)
-
 router.get('/empresa/:cnpj', empresaController.getEmpresaById);
 
- export default router;
+// ✅ CORREÇÃO: Usar POST em vez de PUT
+router.post('/empresa/:cnpj/update', verifyToken, empresaController.updateEmpresa);
+
+export default router;

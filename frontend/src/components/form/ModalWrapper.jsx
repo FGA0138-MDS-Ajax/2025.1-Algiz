@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export default function ModalWrapper({ title, onClose, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-2xl p-0 w-full max-w-lg mx-4 border border-gray-100">
+      <div className="bg-emerald-50 rounded-2xl shadow-2xl p-0 w-full max-w-3xl mx-4 border border-gray-100">
         <div className="flex items-center justify-between px-8 py-5 border-b border-gray-100 bg-green-50 rounded-t-2xl">
           <h2 className="text-2xl font-bold text-green-900">{title}</h2>
           <button

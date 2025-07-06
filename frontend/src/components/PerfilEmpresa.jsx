@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormEditarEmpresa from "./FormEditarEmpresa";
 
 export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica }) {
@@ -7,11 +7,10 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     nomeComercial: empresa?.nomeComercial || "",
     razaoSocial: empresa?.razaoSocial || "",
     cnpjJuridico: empresa?.cnpjJuridico || "",
-    telefone: empresa?.telefoneJuridico || "",
-    email: empresa?.email || "",
-    endereco: empresa?.enderecoJuridico || "",
-    estado: empresa?.estado || "",
-    setor: empresa?.setor || "",
+    telefoneJuridico: empresa?.telefoneJuridico || "",
+    enderecoJuridico: empresa?.enderecoJuridico || "",
+    estadoJuridico: empresa?.estadoJuridico || "",
+    areaAtuacao: empresa?.areaAtuacao || "",
   });
   const [erro, setErro] = useState("");
 
@@ -20,11 +19,10 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
       nomeComercial: empresa?.nomeComercial || "",
       razaoSocial: empresa?.razaoSocial || "",
       cnpjJuridico: empresa?.cnpjJuridico || "",
-      telefone: empresa?.telefoneJuridico || "",
-      email: empresa?.email || "",
-      endereco: empresa?.enderecoJuridico || "",
-      estado: empresa?.estado || "",
-      setor: empresa?.setor || "",
+      telefoneJuridico: empresa?.telefoneJuridico || "",
+      enderecoJuridico: empresa?.enderecoJuridico || "",
+      estadoJuridico: empresa?.estadoJuridico || "",
+      areaAtuacao: empresa?.areaAtuacao || "",
     });
     setModalEditarAberto(true);
   };
@@ -46,39 +44,38 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     try {
       setErro("");
       
-      // TODO: Implementar endpoint no backend para atualizar dados da empresa
-      /*
-      const cnpjFormatado = empresa.cnpjJuridico.replace(/\D/g, '').replace(
-        /(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
-        '$1.$2.$3/$4-$5'
-      );
+      // ✅ CORREÇÃO: Passar CNPJ limpo (apenas números) na URL
+      const cnpjLimpo = empresa.cnpjJuridico.replace(/\D/g, '');
       
-      const response = await fetch(`http://localhost:3001/api/empresa/${cnpjFormatado}`, {
-        method: 'PUT',
+      // Obter token de autenticação
+      const token = localStorage.getItem("authToken");
+      
+      const response = await fetch(`http://localhost:3001/api/empresa/${cnpjLimpo}/update`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
+        const resultado = await response.json();
+        
         // Atualizar o objeto empresa localmente
         Object.assign(empresa, formData);
         setModalEditarAberto(false);
-        console.log('Dados da empresa atualizados com sucesso!');
+        
+        console.log('Dados da empresa atualizados com sucesso!', resultado);
       } else {
-        throw new Error('Erro ao salvar dados da empresa');
+        const errorData = await response.json();
+        throw new Error(errorData.erro || 'Erro ao salvar dados da empresa');
       }
-      */
-      
-      // Simulação temporária - atualizar localmente
-      Object.assign(empresa, formData);
-      setModalEditarAberto(false);
-      console.log('Dados da empresa atualizados localmente (temporário):', formData);
       
     } catch (error) {
       console.error('Erro ao salvar dados da empresa:', error);
-      setErro('Erro ao salvar dados da empresa. Tente novamente.');
+      setErro(error.message || 'Erro ao salvar dados da empresa. Tente novamente.');
     }
   };
 
@@ -155,28 +152,12 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
           <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">
             {empresa.nomeComercial}
           </h2>
-          {isOwner ? (
-            <>
-              <p className="text-gray-600 text-sm break-words">
-                Email: {empresa.email || "emaildousuario@econet.com"}
-              </p>
-              <p className="text-gray-600 text-sm break-words">
-                Contato: {empresa.telefoneJuridico || "(85) 9 ########"}
-              </p>
-              <p className="text-gray-500 text-sm break-words">
-                {empresa.enderecoJuridico || "Brasília, Distrito Federal"}
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-gray-600 break-words">
-                Contato: {empresa.telefoneJuridico || "(85) 9 ########"}
-              </p>
-              <p className="text-gray-500 break-words">
-                {empresa.enderecoJuridico || "Brasília, Distrito Federal"}
-              </p>
-            </>
-          )}
+          <p className="text-gray-600 text-sm break-words">
+            Contato: {empresa.telefoneJuridico || "(85) 9 ########"}
+          </p>
+          <p className="text-gray-500 text-sm break-words">
+            {empresa.enderecoJuridico || "Brasília, Distrito Federal"}
+          </p>
         </div>
 
         {/* Botão Perfil público - posicionado como no PerfilUsuario */}

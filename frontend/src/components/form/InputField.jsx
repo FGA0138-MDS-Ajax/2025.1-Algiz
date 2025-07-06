@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export default function InputField({ id, label, ...props }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-white mb-1">
+      <label htmlFor={id} className="block text-gray-700 font-semibold mb-1">
         {label}
       </label>
       <input

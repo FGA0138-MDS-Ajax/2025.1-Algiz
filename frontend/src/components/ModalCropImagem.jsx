@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -60,71 +60,52 @@ export default function ModalCropImagem({
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  // Função para enviar a imagem cortada ao backend
+  // ✅ CORREÇÃO: Função única e correta para upload
   const handleSave = async () => {
     if (!croppedAreaPixels) return;
-    const croppedBase64 = await getCroppedImg(image, croppedAreaPixels, outputWidth, outputHeight);
-    const croppedBlob = await (await fetch(croppedBase64)).blob();
-    const formData = new FormData();
-
-    const endpoint = tipo === "foto" ? "foto" : "banner";
-    formData.append(tipo === "foto" ? "fotoPerfil" : "bannerPerfil", croppedBlob, "imagem.jpg");
-
-    const token = sessionStorage.getItem("authToken");
-
-    await axios.post(
-      `http://localhost:3001/api/usuario/${usuarioId}/${endpoint}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    // Atualiza a imagem localmente com a URL nova vinda do Cloudinary
-    if (onCropSave) onCropSave(croppedBase64);
-    onClose();
-    window.location.reload();
 
     try {
-      const token = sessionStorage.getItem("authToken");
+      const croppedBase64 = await getCroppedImg(image, croppedAreaPixels, outputWidth, outputHeight);
+      const croppedBlob = await (await fetch(croppedBase64)).blob();
+      const formData = new FormData();
+
+      // ✅ CORREÇÃO: Usar nomes corretos dos campos
+      const fieldName = tipo === "foto" ? "fotoPerfil" : "bannerPerfil";
+      const endpoint = tipo === "foto" ? "photo" : "banner";
+      
+      formData.append(fieldName, croppedBlob, "imagem.jpg");
+
+      const token = localStorage.getItem("authToken");
+
+      // ✅ CORREÇÃO: Usar PUT em vez de POST e rota correta
+      const response = await axios.put(
+        `http://localhost:3001/api/users/${usuarioId}/${endpoint}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // ✅ CORREÇÃO: Atualizar localStorage com URL do Cloudinary
+      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
       if (tipo === "foto") {
-        await axios.post(
-          `http://localhost:3001/api/usuario/${usuarioId}/foto`,
-          { fotoPerfil: croppedImg },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          }
-        );
-        // Atualize o sessionStorage
-        const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-        sessionStorage.setItem(
-          "usuarioLogado",
-          JSON.stringify({ ...usuarioLogado, fotoPerfil: croppedImg })
-        );
-      } else if (tipo === "banner") {
-        await axios.post(
-          `http://localhost:3001/api/usuario/${usuarioId}/banner`,
-          { bannerPerfil: croppedImg },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          }
-        );
-        const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-        sessionStorage.setItem(
-          "usuarioLogado",
-          JSON.stringify({ ...usuarioLogado, bannerPerfil: croppedImg })
-        );
+        usuarioLogado.fotoPerfil = response.data.fotoPerfil || croppedBase64;
+      } else {
+        usuarioLogado.bannerPerfil = response.data.bannerPerfil || croppedBase64;
       }
-      if (onCropSave) onCropSave(croppedImg); // callback opcional
+      localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+
+      // ✅ CORREÇÃO: Callback com URL do Cloudinary
+      if (onCropSave) onCropSave(response.data.fotoPerfil || response.data.bannerPerfil || croppedBase64);
+      
       onClose();
       window.location.reload();
+
     } catch (err) {
+      console.error("Erro ao fazer upload da imagem:", err);
       setErro(
         err.response?.data?.erro ||
         err.response?.data?.message ||
@@ -209,6 +190,7 @@ export default function ModalCropImagem({
     </div>
   );
 }
+
 ModalCropImagem.propTypes = {
   open: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
