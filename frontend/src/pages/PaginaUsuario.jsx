@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import PerfilUsuario from "../components/PerfilUsuario";
 import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
@@ -18,6 +18,8 @@ export default function PaginaUsuario() {
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
+ 
+  const perfilUsuarioRef = useRef();
 
   const { usuario: usuarioLogado } = useContext(AuthContext);
 
@@ -25,6 +27,10 @@ export default function PaginaUsuario() {
 
   useEffect(() => {
     async function fetchUsuario() {
+      // Só faz fetch se o crop NÃO estiver aberto
+      if (perfilUsuarioRef.current?.isCropOpen && perfilUsuarioRef.current.isCropOpen()) {
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -106,6 +112,8 @@ export default function PaginaUsuario() {
     setVisualizandoPublico((v) => !v);
   };
 
+ 
+
   if (loading) {
     return (
       <div className="h-32 flex items-center justify-center pt-16">
@@ -128,6 +136,7 @@ export default function PaginaUsuario() {
         {/* Coluna principal */}
         <section className="flex-1 flex flex-col gap-2">
           <PerfilUsuario
+            ref={perfilUsuarioRef}
             usuario={usuario}
             isUsuarioLogado={isUsuarioLogado}
             visualizandoPublico={visualizandoPublico}
