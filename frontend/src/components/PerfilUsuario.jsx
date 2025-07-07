@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
-import ModalCropImagem from "./ModalCropImagem";
 import ModalFotoPerfil from "./ModalFotoPerfil";
+import ModalCropImagem from "./ModalCropImagem";
 import axios from "axios";
+import PropTypes from "prop-types";
 
-export default function PerfilUsuario({
-  usuario,
-  isUsuarioLogado,
-  visualizandoPublico = false,
-  onToggleVisualizacaoPublica,
-}) {
-  // Estados
+// Componente principal do perfil do usuário
+const PerfilUsuario = forwardRef((props, ref) => {
+  const {
+    usuario,
+    isUsuarioLogado,
+    visualizandoPublico = false,
+    onToggleVisualizacaoPublica,
+  } = props;
+
+  // Estado para controle de edição do perfil
   const [isEditing, setIsEditing] = useState(false);
+
+  // Estado do formulário de edição
   const [formData, setFormData] = useState({
     nome: usuario.nome,
     sobrenome: usuario.sobrenome,
@@ -22,16 +28,34 @@ export default function PerfilUsuario({
     dataNascimento: usuario.data_nascimento,
     email: usuario.email,
   });
+
+  // Estado para mensagens de erro
   const [erro, setErro] = useState("");
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto");
-  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Estado para controle dos modais de foto e banner
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
-  const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
-  const [banner, setBanner] = useState(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
-  const defaultProfileURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
-  const defaultBannerURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
+
+  // Estado das imagens de perfil e banner
+  const [fotoPerfil, setFotoPerfil] = useState(
+    usuario.fotoPerfil ||
+      "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"
+  );
+  const [banner, setBanner] = useState(
+    usuario.bannerPerfil ||
+      "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png"
+  );
+
+  // URLs padrão para foto e banner
+  const defaultProfileURL =
+    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  const defaultBannerURL =
+    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
+
+  // Estados para o modal de crop de imagem
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropModalType, setCropModalType] = useState("foto"); // "foto" ou "banner"
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -47,7 +71,7 @@ export default function PerfilUsuario({
     return dateStr.split("T")[0];
   };
 
-  // ✅ CORREÇÃO: Usar PUT em vez de POST e rota correta
+  // Salva as alterações do usuário
   const handleSave = async () => {
     if (!formData.nome.trim() || !formData.sobrenome.trim()) {
       setErro("Nome e sobrenome são obrigatórios.");
@@ -56,7 +80,7 @@ export default function PerfilUsuario({
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:3001/api/users/${usuario.id}/profile`, 
+        `http://localhost:3001/api/users/${usuario.id}/profile`,
         {
           nome: formData.nome,
           sobrenome: formData.sobrenome,
@@ -69,51 +93,27 @@ export default function PerfilUsuario({
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       );
       setIsEditing(false);
-      window.location.reload();
+      window.location.reload(); // Atualiza a página após salvar
     } catch (err) {
       setErro(
         err.response?.data?.erro ||
-        err.response?.data?.message ||
-        "Erro ao atualizar usuário."
+          err.response?.data?.message ||
+          "Erro ao atualizar usuário."
       );
     }
   };
 
-  // Trocar foto
-  const handleTrocarFoto = (file) => {
-    setModalFotoOpen(false);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType("foto");
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Trocar banner
-  const handleTrocarBanner = (file) => {
-    setModalBannerOpen(false);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType("banner");
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // ✅ CORREÇÃO: Usar PUT e rota correta
+  // Remove a foto de perfil do usuário
   const handleRemoverFoto = async () => {
     setModalFotoOpen(false);
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:3001/api/users/${usuario.id}/photo/default`, 
+        `http://localhost:3001/api/users/${usuario.id}/photo/default`,
         {},
         {
           headers: {
@@ -124,19 +124,20 @@ export default function PerfilUsuario({
       const updatedUsuario = { ...usuario, fotoPerfil: defaultProfileURL };
       localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
       setFotoPerfil(defaultProfileURL);
+      window.location.reload(); // Atualiza a página após remover
     } catch (err) {
       console.error("Erro ao remover foto de perfil:", err);
       setErro("Erro ao remover foto de perfil.");
     }
   };
 
-  // ✅ CORREÇÃO: Usar PUT e rota correta
+  // Remove o banner do usuário
   const handleRemoverBanner = async () => {
     setModalBannerOpen(false);
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:3001/api/users/${usuario.id}/banner/default`, 
+        `http://localhost:3001/api/users/${usuario.id}/banner/default`,
         {},
         {
           headers: {
@@ -147,17 +148,19 @@ export default function PerfilUsuario({
       const updatedUsuario = { ...usuario, bannerPerfil: defaultBannerURL };
       localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
       setBanner(defaultBannerURL);
+      window.location.reload(); // Atualiza a página após remover
     } catch (err) {
       console.error("Erro ao remover banner:", err);
       setErro("Erro ao remover banner.");
     }
   };
 
-  // Exibe telefone mascarado
+  // Formata o telefone para exibição
   const telefoneFormatado = usuario.telefone
     ? usuario.telefone.replace(/(\d{2})\d{5}(\d{4})/, "($1) 9 ####-$2")
     : "";
 
+  // Atualiza os estados quando o usuário muda
   useEffect(() => {
     setFormData({
       nome: usuario.nome || "",
@@ -168,13 +171,53 @@ export default function PerfilUsuario({
       dataNascimento: usuario.data_nascimento || "",
       email: usuario.email || "",
     });
-    setBanner(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
-    setFotoPerfil(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
+    setBanner(usuario.bannerPerfil || defaultBannerURL);
+    setFotoPerfil(usuario.fotoPerfil || defaultProfileURL);
   }, [usuario]);
 
+  // Abre o modal de crop para foto ou banner
+  const handleAbrirCrop = (file, tipo) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+      setCropModalType(tipo);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Handler para troca de foto de perfil
+  const handleTrocarFoto = (file) => {
+    setModalFotoOpen(false);
+    handleAbrirCrop(file, "foto");
+  };
+
+  // Handler para troca de banner
+  const handleTrocarBanner = (file) => {
+    setModalBannerOpen(false);
+    handleAbrirCrop(file, "banner");
+  };
+
+  // Salva a imagem recortada (foto ou banner)
+  const handleCropSave = (url) => {
+    if (cropModalType === "foto") {
+      setFotoPerfil(url);
+      // Atualize o usuário local, localStorage, etc, se necessário
+    } else {
+      setBanner(url);
+    }
+    setCropModalOpen(false);
+  };
+
+  // Exponha o estado do crop para o componente pai (para evitar fetch durante crop)
+  useImperativeHandle(ref, () => ({
+    isCropOpen: () => cropModalOpen,
+  }));
+
+  // Renderização do componente
   return (
     <div className="bg-white rounded-xl shadow p-0 overflow-hidden mb-6 relative w-full">
-      {/* Banner */}
+      {/* Banner do usuário */}
       <div className="relative group w-full">
         <img
           src={banner}
@@ -241,27 +284,29 @@ export default function PerfilUsuario({
           </button>
         )}
 
-         {/* Dados do usuário logado */}        
-         {isUsuarioLogado && 
-        (
-         
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{usuario.nome} {usuario.sobrenome}</h2>
-          <p className="text-gray-600 break-words">{getEstadoCompleto(usuario.estado)}</p>
-          <p className="text-gray-600 break-words">Email: {usuario.email}</p>
-          <p className="text-gray-600 break-words">Contato: {telefoneFormatado}</p>
-        </div>
+        {/* Dados do usuário logado */}
+        {isUsuarioLogado && (
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">
+              {usuario.nome} {usuario.sobrenome}
+            </h2>
+            <p className="text-gray-600 break-words">
+              {getEstadoCompleto(usuario.estado)}
+            </p>
+            <p className="text-gray-600 break-words">Email: {usuario.email}</p>
+            <p className="text-gray-600 break-words">
+              Contato: {telefoneFormatado}
+            </p>
+          </div>
         )}
         {/* Dados do usuário não logado */}
-         {!isUsuarioLogado && 
-        (
-         
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{usuario.nome} {usuario.sobrenome}</h2>
-          
-        </div>
+        {!isUsuarioLogado && (
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2 break-words">
+              {usuario.nome} {usuario.sobrenome}
+            </h2>
+          </div>
         )}
-        
 
         {/* Botão Visualizar como público */}
         {isUsuarioLogado && !visualizandoPublico && (
@@ -282,7 +327,7 @@ export default function PerfilUsuario({
       </div>
       {/* Modal de edição de dados */}
       {isEditing && (
-        <FormEditarUsuario      
+        <FormEditarUsuario
           formData={formData}
           erro={erro}
           onChange={handleChange}
@@ -290,26 +335,6 @@ export default function PerfilUsuario({
           onClose={() => setIsEditing(false)}
         />
       )}
-      {/* Modal de crop para foto e banner */}
-      <ModalCropImagem
-        open={cropModalOpen}
-        image={selectedImage}
-        onClose={() => setCropModalOpen(false)}
-        aspect={cropModalType === "foto" ? 1 : 3.5}
-        cropShape={cropModalType === "foto" ? "round" : "rect"}
-        outputWidth={cropModalType === "foto" ? 160 : 1050}
-        outputHeight={cropModalType === "foto" ? 160 : 300}
-        label="Salvar"
-        tipo={cropModalType}
-        usuarioId={usuario.id}
-        onCropSave={(url) => {
-          if (cropModalType === "foto") {
-            setFotoPerfil(url);
-          } else {
-            setBanner(url);
-          }
-        }}
-      />
 
       {/* Modal para trocar/remover foto de perfil */}
       <ModalFotoPerfil
@@ -329,12 +354,27 @@ export default function PerfilUsuario({
         fotoAtual={banner}
         tipo="banner"
       />
+      {/* Modal de crop de imagem */}
+      <ModalCropImagem
+        open={cropModalOpen}
+        image={selectedImage}
+        onClose={() => setCropModalOpen(false)}
+        aspect={cropModalType === "foto" ? 1 : 3.5}
+        cropShape={cropModalType === "foto" ? "round" : "rect"}
+        outputWidth={cropModalType === "foto" ? 160 : 1050}
+        outputHeight={cropModalType === "foto" ? 160 : 300}
+        label="Salvar"
+        tipo={cropModalType}
+        usuarioId={usuario.id}
+        onCropSave={handleCropSave}
+      />
     </div>
   );
-}
+});
 
-import PropTypes from "prop-types";
+export default PerfilUsuario;
 
+// Tipagem das props para maior segurança
 PerfilUsuario.propTypes = {
   usuario: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
