@@ -8,6 +8,7 @@ import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
 import { AuthContext } from "../context/AuthContext";
+import ConexoesUsuarios from "../components/ConexoesUsuarios";
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -20,6 +21,8 @@ export default function PaginaUsuario() {
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
  
   const perfilUsuarioRef = useRef();
+
+  const [showConexoesModal, setShowConexoesModal] = useState(false);
 
   const { usuario: usuarioLogado } = useContext(AuthContext);
 
@@ -159,6 +162,8 @@ export default function PaginaUsuario() {
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
       />
+
+      <ConexoesUsuarios open={showConexoesModal} onClose={() => setShowConexoesModal(false)} />
 
       {visualizandoPublico && (
         <button
