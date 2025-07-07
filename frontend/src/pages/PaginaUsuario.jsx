@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import PerfilUsuario from "../components/PerfilUsuario";
 import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
@@ -8,7 +8,6 @@ import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
 import { AuthContext } from "../context/AuthContext";
-import ModalCropImagem from "../components/ModalCropImagem"; // Adicione este import
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -19,9 +18,8 @@ export default function PaginaUsuario() {
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto");
-  const [selectedImage, setSelectedImage] = useState(null);
+ 
+  const perfilUsuarioRef = useRef();
 
   const { usuario: usuarioLogado } = useContext(AuthContext);
 
@@ -29,6 +27,10 @@ export default function PaginaUsuario() {
 
   useEffect(() => {
     async function fetchUsuario() {
+      // Só faz fetch se o crop NÃO estiver aberto
+      if (perfilUsuarioRef.current?.isCropOpen && perfilUsuarioRef.current.isCropOpen()) {
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -110,16 +112,7 @@ export default function PaginaUsuario() {
     setVisualizandoPublico((v) => !v);
   };
 
-  // Handler para abrir o crop modal
-  const handleAbrirCrop = (file, tipo) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType(tipo);
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
+ 
 
   if (loading) {
     return (
@@ -143,12 +136,11 @@ export default function PaginaUsuario() {
         {/* Coluna principal */}
         <section className="flex-1 flex flex-col gap-2">
           <PerfilUsuario
+            ref={perfilUsuarioRef}
             usuario={usuario}
             isUsuarioLogado={isUsuarioLogado}
             visualizandoPublico={visualizandoPublico}
             onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
-            onTrocarFoto={(file) => handleAbrirCrop(file, "foto")}
-            onTrocarBanner={(file) => handleAbrirCrop(file, "banner")}
           />
 
           {isUsuarioLogado ? (
@@ -189,28 +181,6 @@ export default function PaginaUsuario() {
         tab={tab}
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
-      />
-
-      {/* Modal de crop controlado pelo pai */}
-      <ModalCropImagem
-        open={cropModalOpen}
-        image={selectedImage}
-        onClose={() => setCropModalOpen(false)}
-        aspect={cropModalType === "foto" ? 1 : 3.5}
-        cropShape={cropModalType === "foto" ? "round" : "rect"}
-        outputWidth={cropModalType === "foto" ? 160 : 1050}
-        outputHeight={cropModalType === "foto" ? 160 : 300}
-        label="Salvar"
-        tipo={cropModalType}
-        usuarioId={usuario?.id}
-        onCropSave={(url) => {
-          if (cropModalType === "foto") {
-            setUsuario((prev) => ({ ...prev, fotoPerfil: url }));
-          } else {
-            setUsuario((prev) => ({ ...prev, bannerPerfil: url }));
-          }
-          setCropModalOpen(false);
-        }}
       />
 
       {visualizandoPublico && (
