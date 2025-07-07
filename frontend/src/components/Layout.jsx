@@ -10,7 +10,7 @@ function Layout({ children }) {
   const location = useLocation();
   const { usuario } = useContext(AuthContext);
 
-  const noNavbarRoutes = [
+  const hiddenLayoutRoutes = [
     "/login",
     "/Login",
     "/cadastro",
@@ -19,15 +19,15 @@ function Layout({ children }) {
     "/redefinir-senha",
   ];
 
-  const hideNavbar = noNavbarRoutes.includes(location.pathname);
+  const hideLayout = hiddenLayoutRoutes.includes(location.pathname);
 
   return (
     <>
-      {!hideNavbar && (usuario ? <NavbarLogado /> : <Navbar />)}
+      {!hideLayout && (usuario ? <NavbarLogado /> : <Navbar />)}
 
       <div className="min-h-screen flex flex-col">
         <main className="flex-grow">{children}</main>
-        <Footer />
+        {!hideLayout && <Footer />}
       </div>
     </>
   );
