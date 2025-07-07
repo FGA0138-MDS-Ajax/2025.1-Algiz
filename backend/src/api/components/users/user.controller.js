@@ -3,6 +3,8 @@ import * as hashUtil from "../../utils/hash.util.js"; // Utilitário para hash d
 import axios from "axios"; // Biblioteca para requisições HTTP
 import { sendCodeEmail, isEmailServiceEnabled } from "../../utils/email.util.js"; // Utilitários para envio de email
 import cloudinary from "../../utils/cloudinary.util.js"; // Serviço de upload de imagens
+import jwt from 'jsonwebtoken';
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.util.js";
 
 // Variáveis de configuração
 const isDevRecoveryMode = process.env.DEV_RECOVERY_MODE === "true"; // Modo de recuperação em desenvolvimento
@@ -34,16 +36,55 @@ async function registerUser(req, res) {
 // Função para autenticar o usuário (login)
 async function loginUser(req, res) {
   try {
-    const { email, password } = req.body; // Dados de login enviados pelo cliente
-    const { token, user } = await userService.authenticateUser(email, password); // Autentica o usuário
-    res.json({ token, user }); // Retorna o token e os dados do usuário
+    const { email, password } = req.body;
+
+    // Reutiliza seu serviço atual que retorna user e token (modificaremos ele também)
+    const user = await userService.authenticateUser(email, password);
+
+    const accessToken = generateAccessToken({ id: user.id });
+    const refreshToken = generateRefreshToken({ id: user.id });
+
+    // Envia o refresh token em um cookie seguro
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Em prod use HTTPS
+      sameSite: 'Strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+    });
+
+    // Envia apenas o access token + user para o frontend
+    return res.json({ token: accessToken, user });
+
   } catch (error) {
     if (error.name === "AuthenticationError") {
       console.error("Erro de autenticação:", error);
-      return res.status(401).json({ erro: error.message }); // Erro de autenticação
+      return res.status(401).json({ erro: error.message });
     }
-    res.status(500).json({ erro: "Ocorreu um erro interno no servidor." }); // Erro interno
+    console.error("Erro interno:", error);
+    return res.status(500).json({ erro: "Erro interno no servidor." });
   }
+}
+
+export function refreshToken(req, res) {
+  const token = req.cookies.refreshToken;
+  if (!token) return res.status(401).json({ erro: "Sem token de atualização" });
+
+  jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ erro: "Refresh token inválido" });
+
+    const newAccessToken = generateAccessToken({ id: user.id });
+    return res.json({ token: newAccessToken });
+  });
+}
+
+export function logout(req, res) {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
+
+  res.status(200).json({ message: "Logout realizado com sucesso." });
 }
 
 // Função para buscar o perfil do usuário autenticado
@@ -403,6 +444,8 @@ export async function setUserDefaultBanner(req, res) {
 export default {
   registerUser,
   loginUser,
+  refreshToken,
+  logout,
   getUserProfile,
   forgotPassword,
   updatePassword,

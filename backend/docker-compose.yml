@@ -17,6 +17,7 @@ services:
       DB_NAME: EcoNet_DB
       NODE_ENV: development  # Adicione ambiente
       TZ: America/Sao_Paulo
+    command: sh -c "npm install && npm run start"
 
   db:
     image: mysql:8.0.33  # Versão LTS estável

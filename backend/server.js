@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import session from 'express-session';
 import connectSessionSequelize from 'connect-session-sequelize';
 import postRoutes from './src/api/routes/post.routes.js';
-
+import cookieParser from 'cookie-parser';
 
 // Importa a instância do sequelize e os modelos do arquivo models/index.js
 import models, { sequelize } from './src/models/index.model.js';
@@ -65,6 +65,7 @@ async function startServer() {
   }));
 
   app.use(express.json());
+  app.use(cookieParser());
   
   app.use((req, res, next) => {
   if (req.headers['content-type']?.includes('application/json') && !req.body) {
@@ -89,7 +90,7 @@ async function startServer() {
   });
 
   // ✅ Usa as rotas definidas no user.routes.js
-  app.use('/api', userRoutes);
+  app.use('/api/users', userRoutes);
   app.use('/api/company', empresaRoutes); 
   app.use('/api', postRoutes);
 
