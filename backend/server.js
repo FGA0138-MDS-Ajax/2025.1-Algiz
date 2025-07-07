@@ -90,7 +90,7 @@ async function startServer() {
 
   // ✅ Usa as rotas definidas no user.routes.js
   app.use('/api', userRoutes);
-  app.use('/api', empresaRoutes); 
+  app.use('/api/company', empresaRoutes); 
   app.use('/api', postRoutes);
 
   app.use(
