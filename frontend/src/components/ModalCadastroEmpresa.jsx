@@ -1,23 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-
+import axios from "axios";
 import InputField from "./form/InputField";
 import FormFooterButtons from "./form/FormFooterButtons";
 import EstadoDropdown from "./EstadoDropdown";
 
 export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
   const [formData, setFormData] = useState({
-    nome: "",
+    nomeComercial: "",
     razaoSocial: "",
-    cnpj: "",
+    cnpjJuridico: "",
     email: "",
-    telefone: "",
-    endereco: "",
-    estado: "",
+    telefoneJuridico: "",
+    enderecoJuridico: "",
+    estadoJuridico: "",
     areaAtuacao: "",
   });
 
   const [erroLocal, setErroLocal] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,38 +28,33 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErroLocal("");
-
-    const dadosParaBackend = {
-      nomeComercial: formData.nome,
-      razaoSocial: formData.razaoSocial,
-      cnpjJuridico: formData.cnpj,
-      email: formData.email,
-      telefoneJuridico: formData.telefone,
-      enderecoJuridico: formData.endereco,
-      estadoJuridico: formData.estado,
-      areaAtuacao: formData.areaAtuacao,
-    };
+    setIsSubmitting(true);
 
     try {
       const token = localStorage.getItem("authToken");
-      const res = await fetch("http://localhost:3001/api/empresa/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(dadosParaBackend),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        onSave?.(data.empresa);
+      const response = await axios.post(
+        "http://localhost:3001/api/company/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data) {
+        onSave?.(response.data.empresa);
         onClose();
-      } else {
-        setErroLocal(data.erro || "Erro ao cadastrar empresa.");
       }
     } catch (err) {
       console.error("Erro ao cadastrar empresa:", err);
-      setErroLocal("Erro ao conectar com o servidor.");
+      setErroLocal(
+        err.response?.data?.erro ||
+        "Erro ao cadastrar empresa. Verifique os dados e tente novamente."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -78,10 +74,10 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
         <form className="px-8 py-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             <InputField
-              id="nome"
+              id="nomeComercial"
               label="Nome Comercial"
-              name="nome"
-              value={formData.nome}
+              name="nomeComercial"
+              value={formData.nomeComercial}
               onChange={handleChange}
               placeholder="Nome fantasia"
               required
@@ -96,10 +92,10 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               required
             />
             <InputField
-              id="cnpj"
+              id="cnpjJuridico"
               label="CNPJ"
-              name="cnpj"
-              value={formData.cnpj}
+              name="cnpjJuridico"
+              value={formData.cnpjJuridico}
               onChange={handleChange}
               placeholder="00.000.000/0000-00"
               required
@@ -114,19 +110,19 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
               required
             />
             <InputField
-              id="telefone"
+              id="telefoneJuridico"
               label="Telefone"
-              name="telefone"
-              value={formData.telefone}
+              name="telefoneJuridico"
+              value={formData.telefoneJuridico}
               onChange={handleChange}
               placeholder="ex: 61 912345678"
               required
             />
             <InputField
-              id="endereco"
+              id="enderecoJuridico"
               label="Endereço"
-              name="endereco"
-              value={formData.endereco}
+              name="enderecoJuridico"
+              value={formData.enderecoJuridico}
               onChange={handleChange}
               placeholder="ex: Qr ## Cnj ###"
               required
@@ -134,12 +130,14 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
             <div>
               <label className="block text-gray-700 font-semibold mb-1">Estado</label>
               <EstadoDropdown
-                value={formData.estado}
-                onChange={(value) => setFormData((prev) => ({ ...prev, estado: value }))}
+                value={formData.estadoJuridico}
+                onChange={(value) => 
+                  setFormData((prev) => ({ ...prev, estadoJuridico: value }))
+                }
               />
             </div>
             <InputField
-              id="segmento"
+              id="areaAtuacao"
               label="Área de Atuação"
               name="areaAtuacao"
               value={formData.areaAtuacao}
@@ -151,7 +149,11 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
           {(erroLocal || erro) && (
             <div className="text-red-500 text-sm mb-4">{erroLocal || erro}</div>
           )}
-          <FormFooterButtons onClose={onClose} onSave={handleSubmit} />
+          <FormFooterButtons 
+            onClose={onClose} 
+            onSave={handleSubmit} 
+            isSubmitting={isSubmitting}
+          />
         </form>
       </div>
     </div>
@@ -160,6 +162,6 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
 
 ModalCadastroEmpresa.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
+  onSave: PropTypes.func,
   erro: PropTypes.string,
 };
