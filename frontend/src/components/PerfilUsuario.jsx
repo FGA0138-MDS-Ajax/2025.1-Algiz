@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
-import ModalCropImagem from "./ModalCropImagem";
 import ModalFotoPerfil from "./ModalFotoPerfil";
 import axios from "axios";
 
@@ -10,6 +9,8 @@ export default function PerfilUsuario({
   isUsuarioLogado,
   visualizandoPublico = false,
   onToggleVisualizacaoPublica,
+  onTrocarFoto,      // NOVO: handler vindo do pai
+  onTrocarBanner,    // NOVO: handler vindo do pai
 }) {
   // Estados
   const [isEditing, setIsEditing] = useState(false);
@@ -23,9 +24,6 @@ export default function PerfilUsuario({
     email: usuario.email,
   });
   const [erro, setErro] = useState("");
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto");
-  const [selectedImage, setSelectedImage] = useState(null);
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
   const [fotoPerfil, setFotoPerfil] = useState(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
@@ -81,30 +79,6 @@ export default function PerfilUsuario({
         "Erro ao atualizar usuário."
       );
     }
-  };
-
-  // Trocar foto
-  const handleTrocarFoto = (file) => {
-    setModalFotoOpen(false);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType("foto");
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Trocar banner
-  const handleTrocarBanner = (file) => {
-    setModalBannerOpen(false);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType("banner");
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
   };
 
   // ✅ CORREÇÃO: Usar PUT e rota correta
@@ -168,8 +142,8 @@ export default function PerfilUsuario({
       dataNascimento: usuario.data_nascimento || "",
       email: usuario.email || "",
     });
-    setBanner(usuario.bannerPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png");
-    setFotoPerfil(usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png");
+    setBanner(usuario.bannerPerfil || defaultBannerURL);
+    setFotoPerfil(usuario.fotoPerfil || defaultProfileURL);
   }, [usuario]);
 
   return (
@@ -290,32 +264,12 @@ export default function PerfilUsuario({
           onClose={() => setIsEditing(false)}
         />
       )}
-      {/* Modal de crop para foto e banner */}
-      <ModalCropImagem
-        open={cropModalOpen}
-        image={selectedImage}
-        onClose={() => setCropModalOpen(false)}
-        aspect={cropModalType === "foto" ? 1 : 3.5}
-        cropShape={cropModalType === "foto" ? "round" : "rect"}
-        outputWidth={cropModalType === "foto" ? 160 : 1050}
-        outputHeight={cropModalType === "foto" ? 160 : 300}
-        label="Salvar"
-        tipo={cropModalType}
-        usuarioId={usuario.id}
-        onCropSave={(url) => {
-          if (cropModalType === "foto") {
-            setFotoPerfil(url);
-          } else {
-            setBanner(url);
-          }
-        }}
-      />
 
       {/* Modal para trocar/remover foto de perfil */}
       <ModalFotoPerfil
         open={modalFotoOpen}
         onClose={() => setModalFotoOpen(false)}
-        onTrocar={handleTrocarFoto}
+        onTrocar={onTrocarFoto} // Usa handler do pai!
         onRemover={handleRemoverFoto}
         fotoAtual={fotoPerfil}
         tipo="foto"
@@ -324,7 +278,7 @@ export default function PerfilUsuario({
       <ModalFotoPerfil
         open={modalBannerOpen}
         onClose={() => setModalBannerOpen(false)}
-        onTrocar={handleTrocarBanner}
+        onTrocar={onTrocarBanner} // Usa handler do pai!
         onRemover={handleRemoverBanner}
         fotoAtual={banner}
         tipo="banner"
@@ -351,4 +305,6 @@ PerfilUsuario.propTypes = {
   isUsuarioLogado: PropTypes.bool.isRequired,
   visualizandoPublico: PropTypes.bool,
   onToggleVisualizacaoPublica: PropTypes.func,
+  onTrocarFoto: PropTypes.func,      // NOVO
+  onTrocarBanner: PropTypes.func,    // NOVO
 };

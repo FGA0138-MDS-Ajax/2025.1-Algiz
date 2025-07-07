@@ -8,6 +8,7 @@ import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
 import { AuthContext } from "../context/AuthContext";
+import ModalCropImagem from "../components/ModalCropImagem"; // Adicione este import
 
 export default function PaginaUsuario() {
   const { idUsuario } = useParams();
@@ -18,6 +19,9 @@ export default function PaginaUsuario() {
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropModalType, setCropModalType] = useState("foto");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { usuario: usuarioLogado } = useContext(AuthContext);
 
@@ -106,6 +110,17 @@ export default function PaginaUsuario() {
     setVisualizandoPublico((v) => !v);
   };
 
+  // Handler para abrir o crop modal
+  const handleAbrirCrop = (file, tipo) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+      setCropModalType(tipo);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (loading) {
     return (
       <div className="h-32 flex items-center justify-center pt-16">
@@ -132,6 +147,8 @@ export default function PaginaUsuario() {
             isUsuarioLogado={isUsuarioLogado}
             visualizandoPublico={visualizandoPublico}
             onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
+            onTrocarFoto={(file) => handleAbrirCrop(file, "foto")}
+            onTrocarBanner={(file) => handleAbrirCrop(file, "banner")}
           />
 
           {isUsuarioLogado ? (
@@ -172,6 +189,28 @@ export default function PaginaUsuario() {
         tab={tab}
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
+      />
+
+      {/* Modal de crop controlado pelo pai */}
+      <ModalCropImagem
+        open={cropModalOpen}
+        image={selectedImage}
+        onClose={() => setCropModalOpen(false)}
+        aspect={cropModalType === "foto" ? 1 : 3.5}
+        cropShape={cropModalType === "foto" ? "round" : "rect"}
+        outputWidth={cropModalType === "foto" ? 160 : 1050}
+        outputHeight={cropModalType === "foto" ? 160 : 300}
+        label="Salvar"
+        tipo={cropModalType}
+        usuarioId={usuario?.id}
+        onCropSave={(url) => {
+          if (cropModalType === "foto") {
+            setUsuario((prev) => ({ ...prev, fotoPerfil: url }));
+          } else {
+            setUsuario((prev) => ({ ...prev, bannerPerfil: url }));
+          }
+          setCropModalOpen(false);
+        }}
       />
 
       {visualizandoPublico && (
