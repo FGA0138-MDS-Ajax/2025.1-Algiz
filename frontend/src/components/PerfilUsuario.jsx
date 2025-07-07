@@ -54,7 +54,7 @@ export default function PerfilUsuario({
       return;
     }
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
       await axios.put(
         `http://localhost:3001/api/users/${usuario.id}/profile`, 
         {
@@ -111,7 +111,7 @@ export default function PerfilUsuario({
   const handleRemoverFoto = async () => {
     setModalFotoOpen(false);
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
       await axios.put(
         `http://localhost:3001/api/users/${usuario.id}/photo/default`, 
         {},
@@ -122,7 +122,7 @@ export default function PerfilUsuario({
         }
       );
       const updatedUsuario = { ...usuario, fotoPerfil: defaultProfileURL };
-      sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
       setFotoPerfil(defaultProfileURL);
     } catch (err) {
       console.error("Erro ao remover foto de perfil:", err);
@@ -134,7 +134,7 @@ export default function PerfilUsuario({
   const handleRemoverBanner = async () => {
     setModalBannerOpen(false);
     try {
-      const token = sessionStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken");
       await axios.put(
         `http://localhost:3001/api/users/${usuario.id}/banner/default`, 
         {},
@@ -145,7 +145,7 @@ export default function PerfilUsuario({
         }
       );
       const updatedUsuario = { ...usuario, bannerPerfil: defaultBannerURL };
-      sessionStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
       setBanner(defaultBannerURL);
     } catch (err) {
       console.error("Erro ao remover banner:", err);
