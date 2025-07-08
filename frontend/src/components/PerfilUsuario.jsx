@@ -2,7 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from "rea
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalFotoPerfil from "./ModalFotoPerfil";
-import ModalCropImagem from "./ModalCropImagem";
+import { useModal } from "../context/ModalContext";
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -14,6 +14,7 @@ const PerfilUsuario = forwardRef((props, ref) => {
     visualizandoPublico = false,
     onToggleVisualizacaoPublica,
   } = props;
+  const { openCropModal, isCropOpen } = useModal();
 
   // Estado para controle de edição do perfil
   const [isEditing, setIsEditing] = useState(false);
@@ -51,11 +52,6 @@ const PerfilUsuario = forwardRef((props, ref) => {
     "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
   const defaultBannerURL =
     "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
-
-  // Estados para o modal de crop de imagem
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto"); // "foto" ou "banner"
-  const [selectedImage, setSelectedImage] = useState(null);
 
   // Atualiza campos do formulário de edição
   const handleChange = (e) => {
@@ -175,43 +171,21 @@ const PerfilUsuario = forwardRef((props, ref) => {
     setFotoPerfil(usuario.fotoPerfil || defaultProfileURL);
   }, [usuario]);
 
-  // Abre o modal de crop para foto ou banner
-  const handleAbrirCrop = (file, tipo) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType(tipo);
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
   // Handler para troca de foto de perfil
   const handleTrocarFoto = (file) => {
     setModalFotoOpen(false);
-    handleAbrirCrop(file, "foto");
+    openCropModal(file, "foto", usuario.id);
   };
 
   // Handler para troca de banner
   const handleTrocarBanner = (file) => {
     setModalBannerOpen(false);
-    handleAbrirCrop(file, "banner");
+    openCropModal(file, "banner", usuario.id);
   };
 
-  // Salva a imagem recortada (foto ou banner)
-  const handleCropSave = (url) => {
-    if (cropModalType === "foto") {
-      setFotoPerfil(url);
-      // Atualize o usuário local, localStorage, etc, se necessário
-    } else {
-      setBanner(url);
-    }
-    setCropModalOpen(false);
-  };
-
-  // Exponha o estado do crop para o componente pai (para evitar fetch durante crop)
+  // Exponha o estado do crop para o componente pai
   useImperativeHandle(ref, () => ({
-    isCropOpen: () => cropModalOpen,
+    isCropOpen,
   }));
 
   // Renderização do componente
@@ -353,20 +327,6 @@ const PerfilUsuario = forwardRef((props, ref) => {
         onRemover={handleRemoverBanner}
         fotoAtual={banner}
         tipo="banner"
-      />
-      {/* Modal de crop de imagem */}
-      <ModalCropImagem
-        open={cropModalOpen}
-        image={selectedImage}
-        onClose={() => setCropModalOpen(false)}
-        aspect={cropModalType === "foto" ? 1 : 3.5}
-        cropShape={cropModalType === "foto" ? "round" : "rect"}
-        outputWidth={cropModalType === "foto" ? 160 : 1050}
-        outputHeight={cropModalType === "foto" ? 160 : 300}
-        label="Salvar"
-        tipo={cropModalType}
-        usuarioId={usuario.id}
-        onCropSave={handleCropSave}
       />
     </div>
   );

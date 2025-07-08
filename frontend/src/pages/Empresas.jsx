@@ -37,7 +37,7 @@ function Empresas() {
       setLoading(true);
       try {
         const idEmpresaLimpo = idEmpresa.replace(/[.\-/]/g, "");
-        const res = await fetch(`http://localhost:3001/api/empresa/${idEmpresaLimpo}`);
+        const res = await fetch(`http://localhost:3001/api/company/${idEmpresaLimpo}`);
         if (!res.ok) throw new Error("Empresa não encontrada");
         const data = await res.json();
 

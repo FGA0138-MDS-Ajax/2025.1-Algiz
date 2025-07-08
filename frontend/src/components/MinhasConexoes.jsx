@@ -32,13 +32,13 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
           </>
         )}
       </div>
-      <button
-        onClick={onVerTodas}
+      <Link
+        to="/conexoes"
         className="text-green-600 font-semibold hover:underline text-xs absolute bottom-4 right-6"
         style={{ padding: 0, margin: 0, background: "transparent" }}
       >
-        Ver todas
-      </button>
+        Ver todos
+      </Link>
     </div>
   );
 }
@@ -54,5 +54,4 @@ MinhasConexoes.propTypes = {
     ),
   }).isRequired,
   cardClass: PropTypes.string,
-  onVerTodas: PropTypes.func.isRequired,
 }; 
