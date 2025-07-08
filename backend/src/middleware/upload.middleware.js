@@ -9,3 +9,19 @@ export const uploadMiddleware = (req, res, next) => {
     next();
   });
 };
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true); // Aceita o ficheiro
+  } else {
+    cb(new Error('Tipo de ficheiro não suportado. Apenas PDFs são permitidos.'), false);
+  }
+};
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Limite de 10MB
+  },
+});
+
+export default upload;
