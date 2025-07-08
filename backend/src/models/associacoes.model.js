@@ -1,6 +1,7 @@
 export default function setupAssociations(models) {
-  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem, Post } = models;
+  const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem, Post, Tag } = models;
 
+  // Associações do usuário
   Usuario.hasOne(Fisico, {
     foreignKey: 'idUsuario',
     as: 'dadosFisicos',
@@ -23,21 +24,67 @@ export default function setupAssociations(models) {
     as: 'usuario'
   });
 
+  // ✅ ALTERADO: Associações Empresa-Fisico usando idEmpresa
   Fisico.belongsToMany(Empresa, {
     through: VinculoEmpresaFisico,
     foreignKey: 'cpfFisico',
-    otherKey: 'cnpjJuridico',
+    otherKey: 'idEmpresa',                          // ✅ ALTERADO
+    sourceKey: 'cpfFisico',
+    targetKey: 'idEmpresa',                         // ✅ ALTERADO
     as: 'empresas'
   });
 
   Empresa.belongsToMany(Fisico, {
     through: VinculoEmpresaFisico,
-    foreignKey: 'cnpjJuridico',
+    foreignKey: 'idEmpresa',                        // ✅ ALTERADO
     otherKey: 'cpfFisico',
+    sourceKey: 'idEmpresa',                         // ✅ ALTERADO
+    targetKey: 'cpfFisico',
     as: 'funcionarios'
   });
-  
-   // 🔗 NOVAS associações para Mensagem
+
+  // ✅ ALTERADO: Associações Post-Empresa usando idEmpresa
+  Empresa.hasMany(Post, {
+    foreignKey: 'idEmpresa',                        // ✅ ALTERADO
+    as: 'postagens'
+  });
+
+  Post.belongsTo(Empresa, {
+    foreignKey: 'idEmpresa',                        // ✅ ALTERADO
+    as: 'empresa'
+  });
+
+  // Associações Post-Tag
+  Post.belongsToMany(Tag, {
+    through: 'POSTAGEM_TAG',
+    foreignKey: 'idPost',
+    otherKey: 'idTag',
+    as: 'tags'
+  });
+
+  Tag.belongsToMany(Post, {
+    through: 'POSTAGEM_TAG',
+    foreignKey: 'idTag',
+    otherKey: 'idPost',
+    as: 'posts'
+  });
+
+  // Associações Post-Usuario (curtidas e salvos)
+  Post.belongsToMany(Usuario, {
+    through: 'CURTE',
+    foreignKey: 'idPost',
+    otherKey: 'idUsuario',
+    as: 'curtidas'
+  });
+
+  Post.belongsToMany(Usuario, {
+    through: 'SALVA',
+    foreignKey: 'idPost',
+    otherKey: 'idUsuario',
+    as: 'salvos'
+  });
+
+  // Associações de mensagem
   Mensagem.belongsTo(Usuario, {
     foreignKey: 'idRemetente',
     as: 'remetente'
@@ -48,7 +95,6 @@ export default function setupAssociations(models) {
     as: 'destinatario'
   });
 
-  // (Opcional) Se quiser relações reversas:
   Usuario.hasMany(Mensagem, {
     foreignKey: 'idRemetente',
     as: 'mensagensEnviadas'
@@ -58,15 +104,4 @@ export default function setupAssociations(models) {
     foreignKey: 'idDestinatario',
     as: 'mensagensRecebidas'
   });
-
-  Empresa.hasMany(Post, { 
-    foreignKey: 'empresaId', 
-    as: 'posts'
-  });
-
-  Post.belongsTo(Empresa, {
-    foreignKey: 'empresaId',
-    as: 'empresa'
-  });
-
 }

@@ -1,7 +1,7 @@
 // backend/src/api/routes/user.routes.js
 import express from "express";
 import userController from "../components/users/user.controller.js";
-import verifyToken from "../../middleware/auth.middleware.js";
+import verifyToken from "../../middleware/auth.middleware.js";        // ✅ USAR DEFAULT IMPORT
 import db from "../config/db.js";
 import { upload } from "../../middleware/upload.middleware.js";
 
@@ -19,8 +19,9 @@ router.get('/refresh', userController.refreshToken); // Rota para refresh de tok
 router.post("/logout", userController.logout);
 
 /* 🔐 ROTAS PROTEGIDAS (requer token de autenticação válido) */
-router.get("/:id/profile", verifyToken, userController.getUserProfile); // Obter perfil privado do usuário
-router.put("/:id/profile", verifyToken, userController.editUserProfile); // Editar perfil do usuário
+router.get("/:id/profile", verifyToken, userController.getUserProfile);
+router.get("/:id/empresas", verifyToken, userController.getEmpresasAssociadas); // ✅ NOVA ROTA
+router.put("/:id/profile", verifyToken, userController.editUserProfile);
 
 router.put(
   "/:id/photo", // Atualizar foto de perfil

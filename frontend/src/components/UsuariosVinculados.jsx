@@ -1,12 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function UsuariosVinculados({ empresa, isOwner }) {
-  // Mock de dados de usuários vinculados (posteriormente será substituído por dados reais da API)
-  const usuariosVinculados = empresa?.usuariosVinculados || [];
+  const [usuariosVinculados, setUsuariosVinculados] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const buscarUsuariosVinculados = async () => {
+      if (!empresa?.idEmpresa) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:3001/api/company/${empresa.idEmpresa}/usuarios`);
+        
+        if (response.data && Array.isArray(response.data)) {
+          console.log("✅ Usuários vinculados recebidos:", response.data);
+          setUsuariosVinculados(response.data);
+        } else {
+          console.warn("⚠️ Formato de resposta inesperado:", response.data);
+          setUsuariosVinculados([]);
+        }
+      } catch (error) {
+        console.error("❌ Erro ao buscar usuários vinculados:", error);
+        setError("Não foi possível carregar os usuários vinculados.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    buscarUsuariosVinculados();
+  }, [empresa?.idEmpresa]);
+
+  // Se está carregando, mostrar spinner
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl shadow p-6 mt-6">
+        <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
+        <div className="flex justify-center my-8">
+          <LoadingSpinner size="md" message="Carregando usuários..." />
+        </div>
+      </div>
+    );
+  }
+
+  // Se houver erro, mostrar mensagem
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl shadow p-6 mt-6">
+        <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
+        <p className="text-red-500 text-center py-4">{error}</p>
+      </div>
+    );
+  }
 
   // Se não há usuários vinculados, não renderizar o componente
-  if (usuariosVinculados.length === 0) {
-    return null;
+  if (!usuariosVinculados || usuariosVinculados.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow p-6 mt-6">
+        <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
+        <p className="text-gray-500 text-center py-4">Nenhum usuário vinculado encontrado.</p>
+      </div>
+    );
   }
 
   return (
@@ -14,29 +75,33 @@ export default function UsuariosVinculados({ empresa, isOwner }) {
       <h3 className="font-bold text-lg mb-4">Usuários vinculados</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {usuariosVinculados.map((usuario, index) => (
-          <div key={usuario.id || index} className="bg-gray-50 rounded-lg p-4">
+        {usuariosVinculados.map((usuario) => (
+          <div key={usuario.id || usuario.idUsuario} className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center gap-3 mb-3">
               <img
-                src={usuario.fotoPerfil || `https://randomuser.me/api/portraits/${usuario.genero || 'men'}/${usuario.id || index + 10}.jpg`}
-                alt={`${usuario.nome || 'Usuário'}`}
+                src={usuario.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"}
+                alt={`${usuario.nome || usuario.nomeCompleto || 'Usuário'}`}
                 className="w-12 h-12 rounded-full object-cover border-2 border-green-200"
               />
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-gray-900 truncate">
-                  {usuario.nome || 'Nome do usuário'}
+                  {usuario.nome || usuario.nomeCompleto || 'Nome do usuário'}
                 </h4>
                 <p className="text-sm text-gray-600 truncate">
-                  {usuario.cargo || 'Cargo/função'}
+                  {usuario.cargo || 'Colaborador'}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {usuario.dataVinculacao || '25/09/2023'} - {usuario.status || 'Presente'}
+                  {usuario.dataVinculo && new Date(usuario.dataVinculo).toLocaleDateString('pt-BR')}
+                  {usuario.status && ` - ${usuario.status}`}
                 </p>
               </div>
             </div>
             
             <div className="flex justify-end">
-              <button className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-green-200 transition">
+              <button 
+                className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-green-200 transition"
+                onClick={() => navigate(`/usuario/${usuario.id || usuario.idUsuario}`)}
+              >
                 Perfil Usuário
               </button>
             </div>

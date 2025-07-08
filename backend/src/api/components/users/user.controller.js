@@ -440,6 +440,34 @@ export async function setUserDefaultBanner(req, res) {
   }
 }
 
+// ✅ NOVA FUNÇÃO: Buscar empresas associadas
+async function getEmpresasAssociadas(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    const authenticatedUserId = req.user.id;
+
+    // Verifica se o usuário está acessando suas próprias empresas ou se é público
+    if (userId !== authenticatedUserId) {
+      // Para outros usuários, retornar apenas empresas públicas (sem cargo)
+      const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+      const empresasPublicas = empresas.map(empresa => ({
+        id: empresa.idEmpresa,
+        nomeComercial: empresa.nomeComercial,
+        fotoEmpresa: empresa.fotoEmpresa,
+        areaAtuacao: empresa.areaAtuacao
+      }));
+      return res.json(empresasPublicas);
+    }
+
+    // Para o próprio usuário, retornar empresas completas
+    const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+    res.json(empresas);
+  } catch (error) {
+    console.error("Erro ao buscar empresas associadas:", error);
+    res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
 // Exporta todas as funções do controller
 export default {
   registerUser,
@@ -456,5 +484,6 @@ export default {
   editUserProfilePhoto,
   editUserBanner,
   setUserDefaultProfilePhoto,
-  setUserDefaultBanner
+  setUserDefaultBanner,
+  getEmpresasAssociadas  // ✅ ADICIONAR
 };

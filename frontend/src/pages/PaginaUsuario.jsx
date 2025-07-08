@@ -7,6 +7,7 @@ import Salvos from "../components/Salvos";
 import EmpresasModal from "../components/EmpresasModal";
 import PossuiEmpresa from "../components/PossuiEmpresa";
 import MinhasConexoes from "../components/MinhasConexoes";
+import EmpresasAssociadas from "../components/EmpresasAssociadas"; // ✅ NOVO IMPORT
 import { AuthContext } from "../context/AuthContext";
 
 export default function PaginaUsuario() {
@@ -156,7 +157,6 @@ export default function PaginaUsuario() {
             <EmpresasTrabalhando usuario={usuario} />
           )}
 
-          {/* <EmpresasVinculadas empresas={empresasVinculadas} /> */}
           <Salvos usuario={usuario} />
         </section>
 
@@ -168,6 +168,15 @@ export default function PaginaUsuario() {
             </svg>
             <span className="text-base">Configurações</span>
           </Link>
+          
+          {/* ✅ NOVO COMPONENTE: Empresas Associadas */}
+          <div className="mb-6">
+            <EmpresasAssociadas 
+              usuario={usuario} 
+              isUsuarioLogado={isUsuarioLogado} 
+            />
+          </div>
+          
           <SugestoesEmpresas
             sugestoes={sugestoes}
             onVerTodas={() => setShowEmpresasModal(true)}
@@ -193,4 +202,4 @@ export default function PaginaUsuario() {
       )}
     </div>
   );
-} 
+}

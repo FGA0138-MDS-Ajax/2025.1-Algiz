@@ -174,13 +174,13 @@ const PerfilUsuario = forwardRef((props, ref) => {
   // Handler para troca de foto de perfil
   const handleTrocarFoto = (file) => {
     setModalFotoOpen(false);
-    openCropModal(file, "foto", usuario.id);
+    openCropModal(file, "foto", usuario.id, "usuario");
   };
 
   // Handler para troca de banner
   const handleTrocarBanner = (file) => {
     setModalBannerOpen(false);
-    openCropModal(file, "banner", usuario.id);
+    openCropModal(file, "banner", usuario.id, "usuario");
   };
 
   // Exponha o estado do crop para o componente pai

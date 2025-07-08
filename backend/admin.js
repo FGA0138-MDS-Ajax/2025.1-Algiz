@@ -5,8 +5,8 @@ import expressSession from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import bcrypt from 'bcrypt';
 
-import models from './src/models/index.model.js'; // Importa os modelos do Sequelize
-const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem } = models;
+import models from './src/models/index.model.js';
+const { Usuario, Fisico, Empresa, VinculoEmpresaFisico, Mensagem, Post, Tag } = models; // ✅ ADICIONAR Tag
 
 AdminJS.registerAdapter(AdminJSSequelize);
 
@@ -86,22 +86,25 @@ const adminOptions = {
       resource: Empresa,
       options: {
         properties: {
-          idUsuario: {
-            reference: 'USUARIO'
+          idEmpresa: {
+            isVisible: { list: true, show: true, edit: false, filter: true },
+            isTitle: true
           },
-          fotoPerfil: {
+          cnpjJuridico: {
+            isVisible: { list: true, show: true, edit: true, filter: true }
+          },
+          fotoEmpresa: {
             type: 'string',
-            isVisible: {
-              list: false,
-              edit: true,
-              show: true,
-              filter: false
-            }
+            isVisible: { list: false, edit: true, show: true, filter: false }
+          },
+          bannerEmpresa: {
+            type: 'string',
+            isVisible: { list: false, edit: true, show: true, filter: false }
           }
         },
-        listProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
-        showProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao'],
-        editProperties: ['idUsuario', 'nomeComercial', 'razaoSocial', 'cnpjJuridico', 'telefoneJuridico', 'enderecoJuridico', 'estadoJuridico', 'areaAtuacao']
+        listProperties: ['idEmpresa', 'nomeComercial', 'cnpjJuridico', 'areaAtuacao'],
+        showProperties: ['idEmpresa', 'cnpjJuridico', 'razaoSocial', 'nomeComercial', 'fotoEmpresa', 'bannerEmpresa'],
+        editProperties: ['cnpjJuridico', 'razaoSocial', 'nomeComercial', 'telefoneJuridico', 'estadoJuridico', 'enderecoJuridico', 'areaAtuacao', 'fotoEmpresa', 'bannerEmpresa']
       }
     },
     {
@@ -113,7 +116,7 @@ const adminOptions = {
             reference: 'FISICO',
             isTitle: true
           },
-          cnpjJuridico: {
+          idEmpresa: {                                    // ✅ ALTERADO: cnpjJuridico → idEmpresa
             reference: 'JURIDICO',
             isTitle: true
           },
@@ -121,9 +124,9 @@ const adminOptions = {
             type: 'string'
           }
         },
-        listProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
-        showProperties: ['cpfFisico', 'cnpjJuridico', 'cargo'],
-        editProperties: ['cpfFisico', 'cnpjJuridico', 'cargo']
+        listProperties: ['cpfFisico', 'idEmpresa', 'cargo'],      // ✅ ALTERADO: cnpjJuridico → idEmpresa
+        showProperties: ['cpfFisico', 'idEmpresa', 'cargo'],      // ✅ ALTERADO: cnpjJuridico → idEmpresa
+        editProperties: ['cpfFisico', 'idEmpresa', 'cargo']       // ✅ ALTERADO: cnpjJuridico → idEmpresa
       }
     },
     {
@@ -151,6 +154,49 @@ const adminOptions = {
         listProperties: ['idMensagem', 'idRemetente', 'idDestinatario', 'visualizada', 'enviada_em'],
         showProperties: ['idMensagem', 'idRemetente', 'idDestinatario', 'conteudo', 'visualizada', 'enviada_em'],
         editProperties: ['idRemetente', 'idDestinatario', 'conteudo', 'visualizada']
+      }
+    },
+    {
+      resource: Post,
+      options: {
+        properties: {
+          idEmpresa: {
+            reference: 'Empresa',
+            isVisible: { list: true, show: true, edit: true, filter: true }
+          },
+          titulo: {
+            isTitle: true
+          },
+          imagemURL: {
+            type: 'string',
+            isVisible: { list: false, edit: true, show: true, filter: false }
+          }
+        },
+        listProperties: ['id', 'titulo', 'idEmpresa', 'tipo', 'criado_em'],
+        showProperties: ['id', 'titulo', 'conteudo', 'idEmpresa', 'imagemURL', 'tipo', 'criado_em'],
+        editProperties: ['titulo', 'conteudo', 'idEmpresa', 'tipo']
+      }
+    },
+    // ✅ ADICIONAR: Recurso Tags
+    {
+      resource: Tag,
+      options: {
+        properties: {
+          idTag: {
+            isVisible: { list: true, show: true, edit: false, filter: true }
+          },
+          nome: {
+            isTitle: true,
+            isRequired: true
+          },
+          cor: {
+            type: 'string',
+            isVisible: { list: true, show: true, edit: true, filter: false }
+          }
+        },
+        listProperties: ['idTag', 'nome', 'cor'],
+        showProperties: ['idTag', 'nome', 'cor'],
+        editProperties: ['nome', 'cor']
       }
     }
   ],

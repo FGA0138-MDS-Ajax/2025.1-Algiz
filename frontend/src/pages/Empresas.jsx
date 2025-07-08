@@ -41,6 +41,7 @@ function Empresas() {
         if (!res.ok) throw new Error("Empresa não encontrada");
         const data = await res.json();
 
+        // Configuração de usuários vinculados para exibição
         data.usuariosVinculados = [
           { id: 1, nome: "João Silva", cargo: "Dev", fotoPerfil: "/user/foto-perfil-padrao-1.png", dataVinculacao: "25/09/2023", status: "Presente", genero: "men" },
           { id: 2, nome: "Maria Santos", cargo: "Designer", fotoPerfil: "/user/foto-perfil-padrao-1.png", dataVinculacao: "15/08/2023", status: "Presente", genero: "women" },
@@ -100,7 +101,9 @@ function Empresas() {
           />
           <SobreEmpresa empresa={empresa} isOwner={isOwnerAtual} />
           <UsuariosVinculados empresa={empresa} isOwner={isOwnerAtual} />
-          <Salvos />
+          
+          {/* ✅ MODIFICADO: Passando a empresa para o componente Salvos */}
+          <Salvos empresa={empresa} />
         </section>
 
         <aside className="w-80">

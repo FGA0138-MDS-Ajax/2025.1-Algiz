@@ -9,6 +9,7 @@ import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.model.js';
 import setupAssociations from './associacoes.model.js';
 import MensagemDef from './mensagem.model.js';
 import PostDef from './post.model.js';
+import TagDef from './tag.model.js'; // ADICIONE ESTA IMPORTAÇÃO
 
 dotenv.config();
 
@@ -35,7 +36,8 @@ const models = {
   Empresa: EmpresaDef(sequelize, DataTypes),
   VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize, DataTypes),
   Mensagem: MensagemDef(sequelize, DataTypes),
-  Post: PostDef(sequelize, DataTypes), 
+  Post: PostDef(sequelize, DataTypes),
+  Tag: TagDef(sequelize, DataTypes), // ADICIONE ESTA LINHA
 };
 
 // Configura as associações entre os modelos

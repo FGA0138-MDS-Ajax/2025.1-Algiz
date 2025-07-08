@@ -1,40 +1,73 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Post from "./Post";
+import axios from "axios";
 
-export default function Salvos({ usuario }) {
-  const usuarioId = usuario?.id;
+export default function Salvos({ usuario, empresa }) {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
   const [isUsuarioLogado, setIsUsuarioLogado] = useState(false);
   const [visivel, setVisivel] = useState(true);
 
+  // Determinar o contexto: perfil de empresa ou perfil de usuário
+  const isEmpresaContext = !!empresa;
+  const isUsuarioContext = !!usuario && !empresa;
+
   useEffect(() => {
-    const usuarioLogado = JSON.parse(sessionStorage.getItem("usuarioLogado"));
-    setIsUsuarioLogado(
-      usuarioLogado?.id?.toString() === usuarioId?.toString()
-    );
+    const fetchPosts = async () => {
+      setLoading(true);
+      setErro(null);
+      
+      try {
+        let data = [];
+        
+        // ✅ CONTEXTO DE EMPRESA: mostrar posts criados pela empresa
+        if (isEmpresaContext) {
+          console.log("📊 Carregando posts criados pela empresa");
+          const empresaId = empresa.idEmpresa || empresa.id;
+          const response = await axios.get(`http://localhost:3001/api/company/${empresaId}/postagens`);
+          
+          // ✅ CORRIGIDO: Extrair corretamente as postagens do objeto retornado
+          if (response.data && response.data.postagens) {
+            data = response.data.postagens;
+            console.log(`✅ Encontradas ${data.length} postagens da empresa:`, data);
+          } else {
+            console.log("⚠️ Não foram encontradas postagens na resposta da API:", response.data);
+            data = [];
+          }
+          
+          // Verificamos se o usuário está logado e é o dono da empresa
+          const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+          setIsUsuarioLogado(usuarioLogado && (empresa.idUsuario === usuarioLogado.id));
+          setVisivel(true); // Posts da empresa são sempre visíveis
+        }
+        // ✅ CONTEXTO DE USUÁRIO: mostrar posts salvos pelo usuário
+        else if (isUsuarioContext) {
+          console.log("📚 Carregando posts salvos pelo usuário");
+          const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+          setIsUsuarioLogado(usuarioLogado?.id?.toString() === usuario.id?.toString());
 
-    const users = JSON.parse(sessionStorage.getItem("fakeUsers") || "[]");
-    const usuarioCompleto = users.find(
-      (u) => u.id?.toString() === usuarioId?.toString()
-    );
-    if (usuarioCompleto) {
-      setPosts(usuarioCompleto.posts || []);
-      setVisivel(
-      );
-    }
-    
-    Salvos.propTypes = {
-      usuario: PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        // add other properties if needed
-      }),
+          // Se for o usuário logado, busca os posts salvos
+          if (isUsuarioLogado) {
+            const response = await axios.get(`http://localhost:3001/api/users/${usuario.id}/salvos`);
+            data = response.data || [];
+          }
+        }
+        
+        setPosts(data);
+      } catch (error) {
+        console.error("Erro ao carregar posts:", error);
+        setErro("Não foi possível carregar os posts");
+      } finally {
+        setLoading(false);
+      }
     };
-  }, [usuario]);
 
+    fetchPosts();
+  }, [empresa, usuario, isUsuarioLogado, isEmpresaContext, isUsuarioContext]);
 
-
-  // Grid Alternado
+  // Grid Alternado (código existente)
   function renderMosaic(posts) {
     const rows = [];
     for (let i = 0; i < posts.length; i += 3) {
@@ -79,13 +112,28 @@ export default function Salvos({ usuario }) {
   const podeVerPosts = visivel || isUsuarioLogado;
 
   let postsContent;
-  if (podeVerPosts) {
+  
+  if (loading) {
+    postsContent = (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  } else if (erro) {
+    postsContent = (
+      <div className="text-center text-red-500 py-12">
+        {erro}
+      </div>
+    );
+  } else if (podeVerPosts) {
     if (posts.length > 0) {
       postsContent = <>{renderMosaic(posts)}</>;
     } else {
       postsContent = (
         <div className="text-center text-gray-400 py-12 italic">
-          Não há nenhum post salvo no momento.
+          {isEmpresaContext 
+            ? "Esta empresa ainda não possui postagens." 
+            : "Não há nenhum post salvo no momento."}
         </div>
       );
     }
@@ -97,13 +145,23 @@ export default function Salvos({ usuario }) {
     );
   }
 
+  // ✅ DISTINÇÃO DE TÍTULO E ÍCONE BASEADA NO CONTEXTO
+  const titulo = isEmpresaContext ? "Postagens da Empresa" : "Meus Salvos";
+  const icone = isEmpresaContext ? (
+    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+    </svg>
+  ) : (
+    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+    </svg>
+  );
+
   return (
     <div className="mt-6">
       <div className="flex items-center gap-2 mb-2">
-        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-        </svg>
-        <div className="font-bold text-lg text-gray-700">Salvos</div>
+        {icone}
+        <div className="font-bold text-lg text-gray-700">{titulo}</div>
       </div>
       <hr className="border-gray-300 mb-6" />
       <div>
@@ -112,3 +170,14 @@ export default function Salvos({ usuario }) {
     </div>
   );
 }
+
+Salvos.propTypes = {
+  usuario: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+  empresa: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    idEmpresa: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    idUsuario: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+};

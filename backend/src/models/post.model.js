@@ -7,15 +7,44 @@ export default (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
+      field: 'idPost'
     },
     titulo: {
-      type: DataTypes.STRING,
-      allowNull: false, // O título da postagem é obrigatório
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      field: 'titulo'
+    },
+    idEmpresa: {                                    // ✅ ALTERADO: usar idEmpresa
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: 'idEmpresa'
     },
     conteudo: {
       type: DataTypes.TEXT,
-      allowNull: false, // O conteúdo da postagem é obrigatório
+      allowNull: false,
+      field: 'conteudo'
     },
+    imagemURL: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      field: 'imagemURL'
+    },
+    tipo: {
+      type: DataTypes.ENUM('doacao', 'oferta', 'demanda'),
+      allowNull: false,
+      defaultValue: 'oferta',
+      field: 'tipo'
+    },
+    criado_em: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+      field: 'criado_em'
+    }
+  }, {
+    tableName: 'POSTAGENS',
+    timestamps: false,
+    freezeTableName: true
   });
 
   return Post;

@@ -1,18 +1,48 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageSquare, Share2, Bookmark } from "lucide-react";
+import axios from "axios";
+import Post from "../components/Post";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
 import EmpresasModal from "../components/EmpresasModal";
 import SidebarIntro from "../components/SidebarIntro";
 import SidebarUsuario from "../components/SidebarUsuario";
-import { AuthContext } from "../context/AuthContext"; // Novo
+import { AuthContext } from "../context/AuthContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function HomePublica() {
   const [modalAberto, setModalAberto] = useState(false);
   const [tab, setTab] = useState("recomendadas");
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const navigate = useNavigate();
+  const { usuario } = useContext(AuthContext);
 
-  const { usuario } = useContext(AuthContext); // Novo
+  // Buscar todos os posts quando a página carregar
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:3001/api/posts");
+        
+        if (response.data) {
+          console.log("✅ Resposta da API:", response.data);
+          // Correção: extrair o array de posts da resposta
+          const postsArray = response.data.posts || [];
+          console.log("✅ Posts extraídos:", postsArray);
+          setPosts(postsArray);
+        }
+      } catch (error) {
+        console.error("❌ Erro ao carregar posts:", error);
+        setError("Não foi possível carregar os posts. Tente novamente mais tarde.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   const sugestoesEmpresas = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -31,7 +61,7 @@ export default function HomePublica() {
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col pt-16">
-      <div className="container mx-auto px-20 py-6 flex flex-col md:flex-row gap-2 flex-1">
+      <div className="container mx-auto px-4 md:px-20 py-6 flex flex-col md:flex-row gap-1 flex-1">
         {/* Sidebar esquerda */}
         <div className="order-1 md:order-1 w-full md:w-1/5 flex-shrink-0">
           <div className="sticky top-20">
@@ -39,91 +69,50 @@ export default function HomePublica() {
           </div>
         </div>
 
+        {/* Feed central - Corrigido para posts mais altos e menos largos */}
+        <main className="order-3 md:order-2 flex-1 flex flex-col max-w-[450px] mx-auto items-center gap-6">
+          {loading ? (
+            <LoadingSpinner size="lg" message="Carregando posts..." />
+          ) : error ? (
+            <div className="bg-white p-6 rounded-xl shadow-md text-center w-full">
+              <p className="text-red-500 mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          ) : posts.length > 0 ? (
+            <div className="flex flex-col w-full gap-8">
+              {/* Posts com proporções ajustadas */}
+              {posts.map((post, index) => (
+                <div 
+                  key={post.id || index} 
+                  className="min-h-[450px] w-full"
+                >
+                  <Post 
+                    post={post}
+                    completo={false}
+                    big={true}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white p-6 rounded-xl shadow-md text-center w-full">
+              <p className="text-gray-500">Nenhum post encontrado.</p>
+            </div>
+          )}
+        </main>
+
         {/* Menu de sugestões */}
-        <div className="order-2 md:order-3 w-80 flex-shrink-0 md:block">
+        <div className="order-2 md:order-3 w-full md:w-80 flex-shrink-0 md:block">
           <SugestoesEmpresas
             sugestoes={sugestoesEmpresas}
             onVerTodas={() => setModalAberto(true)}
           />
         </div>
-
-        {/* Feed central */}
-        <main className="order-3 md:order-2 flex-1 flex flex-col items-center gap-6">
-          {[1, 2].map((i) => (
-            <div
-              key={i}
-              className="bg-white p-4 rounded-xl shadow-md cursor-pointer transition hover:shadow-lg w-full max-w-[520px] text-left"
-              title="Ver post completo"
-            >
-              {/* Área clicável para ir ao post */}
-              <div
-                className="cursor-pointer"
-                onClick={() => navigate("/post")}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <img
-                    src="/empresa1.png"
-                    className="h-10 w-10 rounded-full"
-                    alt="Logo empresa"
-                  />
-                  <div>
-                    <p className="font-semibold text-sm">Relog</p>
-                    <p className="text-xs text-gray-500">Promovido</p>
-                  </div>
-                </div>
-
-                <h3 className="font-semibold text-base mb-2">
-                  Uso massivo de aparelhos eletrônicos
-                </h3>
-
-                <img
-                  src="/post.png"
-                  className="w-full rounded-xl object-cover mb-3"
-                  alt="Imagem do post"
-                />
-
-                <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                  Com o uso massivo de aparelhos eletrônicos...
-                </p>
-
-                <span className="inline-block text-xs bg-green-100 text-green-700 px-2 py-1 rounded mb-3">
-                  Doação
-                </span>
-              </div>
-
-              {/* Botões de interação - agora fora da área clicável */}
-              <div className="flex items-center justify-between mt-4 text-gray-600">
-                <div className="flex items-center gap-4 text-xl">
-                  <button
-                    title="Curtir"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Heart className="w-5 h-5 cursor-pointer hover:text-green-700" />
-                  </button>
-                  <button
-                    title="Comentar"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MessageSquare className="w-5 h-5 cursor-pointer hover:text-green-700" />
-                  </button>
-                  <button
-                    title="Compartilhar"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Share2 className="w-5 h-5 cursor-pointer hover:text-green-700" />
-                  </button>
-                </div>
-
-                <button
-                  title="Salvar"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Bookmark className="w-5 h-5 cursor-pointer hover:text-green-700" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </main>
       </div>
 
       <EmpresasModal

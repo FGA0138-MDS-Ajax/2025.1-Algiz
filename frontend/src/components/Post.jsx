@@ -1,196 +1,397 @@
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Tag from "./Tag";
 import PropTypes from "prop-types";
+import { AuthContext } from "../context/AuthContext";
+import { toggleLike, toggleSave } from "../services/postService";
+import Tag from "./Tag";
+import { formatDistance } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import axios from "axios";
+import Comments from './Comments';
 
-export default function Post({ post, big, small, completo, comentarios = [] }) {
+export default function Post({ post, big, small, completo = false }) {
   const navigate = useNavigate();
-
-  // As partes comentadas sao dados mutaveis, enquanto que por enquanto estamos usando dados estaticos
-  const titulo = post?.titulo || "Uso massivo de eletronicos";
-  const descricao =
-    post?.descricao ||
-    "Com o uso massivo de aparelhos eletrônicoss simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a... ";
-  const imagem = post?.imagem || "/post.png";
-
-  // post completo (para serem usados na pagina de post)
-  if (completo) {
-    return (
-      <div className="bg-white rounded-2xl shadow-md p-4 pb-3 flex flex-col min-h-[400px] w-full max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <img
-              src={post?.empresaLogo || "/coca.png"}
-              alt={post?.empresaNome || "Empresa"}
-              className="h-10 w-10 rounded-full"
-            />
-            <div>
-              <div className="font-semibold text-sm">{post?.empresaNome || "Relog"}</div>
-              <div className="text-gray-500 text-xs">contato@email.com</div>
-            </div>
-          </div>
-          <button className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 font-semibold text-sm">
-            Seguir +
-          </button>
-        </div>
-        {/* Título */}
-        {/* <div className="font-bold mb-2">{post.titulo}</div> */}
-        <div className="font-semibold text-base mb-2">{titulo}</div>
-        {/* Imagem do post */}
-        <img
-          src={imagem}
-          alt="Imagem do post"
-          className="rounded-xl w-full object-cover mb-4 max-h-722"
-          style={{ minHeight: "220px" }}
-        />
-        {/* Tags */}
-        <div className="flex gap-2 mb-2">
-          {(post?.tags || []).map((tag) => (
-            <Tag key={tag} nome={tag} />
-          ))}
-        </div>
-        {/* Descrição completa */}
-        <div className="text-black-500 text-sm mb-4">{descricao}</div>
-        {/* Barra de ações */}
-        <div className="flex items-center gap-5 mt-2 mb-6">
-          <button className="text-green-700 hover:text-green-900" title="Curtir">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-            </svg>
-          </button>
-          {/* Removido o botão de comentar */}
-          <button className="text-green-700 hover:text-green-900" title="Compartilhar">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10.5l18-7-7 18-2.5-7L3 10.5z" />
-            </svg>
-          </button>
-          <button className="ml-auto text-green-700 hover:text-green-900" title="Salvar">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-            </svg>
-          </button>
-        </div>
-        {/* Linha divisória */}
-        <hr className="my-4 border-gray-200" />
-        {/* Comentários */}
-        {comentarios.length > 0 && (
-          <div className="mt-2">
-            <h3 className="font-bold text-lg mb-4">Comentários</h3>
-            <ul className="space-y-6">
-              {comentarios.map((comentario) => (
-                <li key={comentario.id} className="flex items-start gap-4">
-                  <img
-                    src={comentario.avatar}
-                    alt={comentario.nome}
-                    className="w-10 h-10 rounded-full border"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div className="font-semibold">{comentario.nome}</div>
-                      <button
-                        className="text-gray-400 hover:text-gray-700 ml-2 p-0"
-                        style={{ alignSelf: "flex-start" }}
-                        title="Mais opções"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <circle cx="5" cy="12" r="2" />
-                          <circle cx="12" cy="12" r="2" />
-                          <circle cx="19" cy="12" r="2" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="text-gray-700">{comentario.texto}</div>
-                    <div className="flex gap-2 mt-2">
-                      <button className="text-green-700 hover:text-green-900" title="Curtir comentário">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  }
+  const { usuario } = useContext(AuthContext);
   
-  Post.propTypes = {
-    post: PropTypes.object,
-    big: PropTypes.bool,
-    small: PropTypes.bool,
-    completo: PropTypes.bool,
-    comentarios: PropTypes.array
+  const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [feedback, setFeedback] = useState({ mensagem: "", visivel: false });
+  const [empresaData, setEmpresaData] = useState(null); // Novo estado para dados da empresa
+  
+  // Verificar curtidas e salvos
+  useEffect(() => {
+    if (post?.curtidas && usuario) {
+      const isLiked = post.curtidas.some(u => u.id === usuario.id);
+      setLiked(isLiked);
+      setLikeCount(post.curtidas.length);
+    }
+    
+    if (post?.salvos && usuario) {
+      const isSaved = post.salvos.some(u => u.id === usuario.id);
+      setSaved(isSaved);
+    }
+  }, [post, usuario]);
+  
+  // Carregar dados da empresa
+  useEffect(() => {
+    const carregarDetalhesEmpresa = async () => {
+      // Se já temos os dados da empresa no post, usamos eles
+      if (post.empresa?.nomeComercial) {
+        setEmpresaData(post.empresa);
+        console.log("✅ Empresa já carregada no post:", post.empresa);
+        return;
+      }
+      
+      // Se temos apenas o ID da empresa, buscamos os detalhes
+      if (post.idEmpresa) {
+        try {
+          console.log("🔍 Buscando detalhes da empresa:", post.idEmpresa);
+          const response = await axios.get(`http://localhost:3001/api/company/${post.idEmpresa}`);
+          
+          if (response.data) {
+            console.log("✅ Detalhes da empresa obtidos:", response.data);
+            setEmpresaData(response.data);
+          }
+        } catch (error) {
+          console.error("❌ Erro ao buscar detalhes da empresa:", error);
+        }
+      }
+    };
+    
+    carregarDetalhesEmpresa();
+  }, [post]);
+  
+  // Oculta o feedback após 3 segundos
+  useEffect(() => {
+    if (feedback.visivel) {
+      const timer = setTimeout(() => {
+        setFeedback({ mensagem: "", visivel: false });
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [feedback.visivel]);
+
+  // Manipuladores de eventos
+  const mostrarFeedback = (mensagem) => {
+    setFeedback({ mensagem, visivel: true });
   };
 
-  // preview dos posts (para serem usados nos perfil)
+  const handleLikeClick = async (e) => {
+    e.stopPropagation();
+    
+    if (!usuario) {
+      mostrarFeedback("Faça login para curtir este post");
+      return;
+    }
+    
+    try {
+      await toggleLike(post.id);
+      setLiked(prev => !prev);
+      setLikeCount(prev => liked ? prev - 1 : prev + 1);
+    } catch (error) {
+      console.error("Erro ao curtir/descurtir:", error);
+      mostrarFeedback("Não foi possível processar sua solicitação");
+    }
+  };
+
+  const handleSaveClick = async (e) => {
+    e.stopPropagation();
+    
+    if (!usuario) {
+      mostrarFeedback("Faça login para salvar este post");
+      return;
+    }
+    
+    try {
+      await toggleSave(post.id);
+      setSaved(!saved);
+      mostrarFeedback(saved ? "Post removido dos salvos" : "Post salvo com sucesso");
+    } catch (error) {
+      console.error("Erro ao salvar/dessalvar:", error);
+      mostrarFeedback("Não foi possível processar sua solicitação");
+    }
+  };
+
+  const handleShareClick = (e) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/post/${post.id}`;
+    navigator.clipboard.writeText(shareUrl)
+      .then(() => mostrarFeedback("Link copiado para a área de transferência"))
+      .catch(() => mostrarFeedback("Não foi possível copiar o link"));
+  };
+
+  const handlePostClick = () => {
+    if (!completo) {
+      navigate(`/post/${post.id}`);
+    }
+  };
+  
+  // ✅ CORREÇÃO: Preferir dados do empresaData sobre post.empresa
+  const empresa = empresaData || post.empresa || {};
+  
+  // Obter imagem da empresa (com fallbacks)
+  const empresaImagem = empresa.fotoEmpresa || 
+                        empresa.logoURL || 
+                        "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  
+  // Obter nome da empresa (com fallbacks)
+  const empresaNome = empresa.nomeComercial || 
+                      empresa.nome || 
+                      "Empresa";
+  
+  // Obter ID da empresa para navegação
+  const empresaId = post.idEmpresa || 
+                   empresa.idEmpresa || 
+                   empresa.id;
+  
+  // URL da imagem do post
+  const imagemPost = post.banner || post.imagemURL;
+
+  // Formato para postagem completa
+  if (completo) {
+    return (
+      <>
+        {feedback.visivel && (
+          <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg z-50 animate-fade-in-out">
+            {feedback.mensagem}
+          </div>
+        )}
+        
+        <div className="bg-white rounded-2xl shadow-md p-4 pb-3 flex flex-col min-h-[400px] w-full max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2" onClick={() => navigate(`/empresa/${empresaId}`)} style={{ cursor: 'pointer' }}>
+              <img
+                src={empresaImagem}
+                alt={empresaNome}
+                className="h-10 w-10 rounded-full object-cover border border-gray-200"
+              />
+              <div>
+                <div className="font-semibold text-sm">{empresaNome}</div>
+                <div className="text-gray-500 text-xs">
+                  {formatDistance(new Date(post.criado_em), new Date(), { locale: ptBR, addSuffix: true })}
+                </div>
+              </div>
+            </div>
+            <button 
+              className="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 font-semibold text-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/empresa/${empresaId}`);
+              }}
+            >
+              Seguir +
+            </button>
+          </div>
+          
+          {/* Título */}
+          <div className="font-semibold text-lg mb-2">{post.titulo}</div>
+          
+          {/* Imagem do post */}
+          {imagemPost && (
+            <img
+              src={imagemPost}
+              alt={post.titulo}
+              className="rounded-xl w-full object-cover mb-4 max-h-[500px]"
+            />
+          )}
+          
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {post.tags.map((tag) => (
+                <Tag key={tag.id} nome={tag.nome} />
+              ))}
+            </div>
+          )}
+          
+          {/* Descrição completa */}
+          <div className="text-gray-800 mb-4 whitespace-pre-line">{post.conteudo}</div>
+          
+          {/* Barra de ações */}
+          <div className="flex items-center gap-5 mt-auto py-3">
+            <button 
+              className={`flex items-center gap-1 ${liked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'}`} 
+              onClick={handleLikeClick}
+              title={liked ? "Descurtir" : "Curtir"}
+            >
+              {liked ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+                </svg>
+              )}
+              <span>{likeCount > 0 ? likeCount : ""}</span>
+            </button>
+            
+            <button 
+              className="text-gray-500 hover:text-blue-500" 
+              onClick={handleShareClick}
+              title="Compartilhar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
+            
+            <button 
+              className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500 hover:text-yellow-500'}`} 
+              onClick={handleSaveClick}
+              title={saved ? "Remover dos salvos" : "Salvar"}
+            >
+              {saved ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+                </svg>
+              )}
+            </button>
+          </div>
+          
+          {/* Seção de comentários quando o post estiver em modo completo */}
+          {completo && <Comments postId={post.id || post.idPost} />}
+        </div>
+      </>
+    );
+  }
+
+  // Formato para preview (card) em feeds
   return (
-    <button
-      type="button"
-      className={`bg-white rounded-2xl shadow-md p-5 flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200
-        ${big ? "min-h-[500px]" : "min-h-[241px]"}
-      `}
-      onClick={() => navigate("/post")}
-      title="Ver post completo"
-      style={{ textAlign: "left" }}
-    >
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-2">
-        <img
-          src={post?.empresaLogo || "/coca.png"}
-          alt={post?.empresaNome || "Empresa"}
-          className="w-8 h-8 rounded-full"
-        />
-        <div>
-          <div className="font-semibold text-sm">{post?.empresaNome || "Relog"}</div>
-          <div className="text-xs text-green-700 font-semibold">Promovido</div>
+    <>
+      {feedback.visivel && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg z-50">
+          {feedback.mensagem}
+        </div>
+      )}
+      
+      <div
+        className={`bg-white rounded-2xl shadow-md p-4 flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-200
+          ${big ? "min-h-[400px]" : small ? "min-h-[200px]" : "min-h-[280px]"}
+        `}
+        onClick={handlePostClick}
+        title="Ver post completo"
+      >
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-2">
+          <img
+            src={empresaImagem}
+            alt={empresaNome}
+            className="w-8 h-8 rounded-full object-cover border border-gray-200"
+          />
+          <div>
+            <div className="font-semibold text-sm">{empresaNome}</div>
+            <div className="text-xs text-gray-500">
+              {post.criado_em && formatDistance(new Date(post.criado_em), new Date(), { locale: ptBR, addSuffix: true })}
+            </div>
+          </div>
+        </div>
+        
+        {/* Título */}
+        <div className="font-bold mb-2">{post.titulo}</div>
+        
+        {/* Imagem do post - RESTAURADO: apenas para posts grandes */}
+        {big && imagemPost && (
+          <img
+            src={imagemPost}
+            alt={post.titulo}
+            className="rounded-xl w-full object-cover mb-3 max-h-[200px]"
+          />
+        )}
+        
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && !small && (
+          <div className="flex flex-wrap gap-1 mb-2">
+            {post.tags.slice(0, 2).map((tag) => (
+              <Tag key={tag.id} nome={tag.nome} small />
+            ))}
+            {post.tags.length > 2 && <span className="text-xs text-gray-500">+{post.tags.length - 2}</span>}
+          </div>
+        )}
+        
+        {/* Texto sempre na parte de baixo */}
+        <div className="text-gray-700 text-sm mb-4 mt-auto line-clamp-3">
+          {post.conteudo}
+        </div>
+        
+        {/* Barra de ações */}
+        <div className="flex items-center gap-5 mt-auto">
+          <button 
+            className={`${liked ? 'text-red-500' : 'text-gray-500'}`} 
+            onClick={handleLikeClick}
+          >
+            {liked ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+              </svg>
+            )}
+          </button>
+          
+          <button className="text-gray-500" onClick={handleShareClick}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+          </button>
+          
+          <button 
+            className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500'}`} 
+            onClick={handleSaveClick}
+          >
+            {saved ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
-      {/* Título */}
-      {/* <div className="font-bold mb-2">{post.titulo}</div> */}
-      <div className="font-bold mb-2">{titulo}</div>
-      {/* Imagem do post (apenas para big) */}
-      {big && (
-        <img
-          src={imagem}
-          alt="Imagem do post"
-          className="rounded-xl w-full object-cover mb-3 max-h-72"
-          style={{ minHeight: "220px" }}
-        />
-      )}
-      {/* Texto sempre na parte de baixo */}
-      <div className="text-gray-700 text-sm mb-4 mt-auto line-clamp-3">
-        {descricao}
-      </div>
-      {/* Barra de ações */}
-      <div className="flex items-center gap-5 mt-auto">
-        <button className="text-green-700 hover:text-green-900">
-          {/* Coração */}
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-          </svg>
-        </button>
-        <button className="text-green-700 hover:text-green-900">
-          {/* Comentário */}
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4.39-1.02L3 21l1.02-4.39A8.96 8.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-        </button>
-        <button className="text-green-700 hover:text-green-900">
-          {/* Compartilhar */}
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10.5l18-7-7 18-2.5-7L3 10.5z" />
-          </svg>
-        </button>
-        <button className="ml-auto text-green-700 hover:text-green-900">
-          {/* Ícone de bookmark SVG */}
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-          </svg>
-        </button>
-      </div>
-    </button>
+    </>
   );
 }
+
+Post.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    titulo: PropTypes.string.isRequired,
+    conteudo: PropTypes.string.isRequired,
+    banner: PropTypes.string,
+    imagemURL: PropTypes.string,
+    tipo: PropTypes.string,
+    criado_em: PropTypes.string,
+    idEmpresa: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    empresa: PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      idEmpresa: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      nomeComercial: PropTypes.string,
+      cnpjJuridico: PropTypes.string,
+      logoURL: PropTypes.string,
+      fotoEmpresa: PropTypes.string
+    }),
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        nome: PropTypes.string
+      })
+    ),
+    curtidas: PropTypes.array,
+    salvos: PropTypes.array
+  }).isRequired,
+  big: PropTypes.bool,
+  small: PropTypes.bool,
+  completo: PropTypes.bool
+};
