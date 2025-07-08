@@ -13,25 +13,41 @@ export default function Post({ post, big, small, completo = false }) {
   const navigate = useNavigate();
   const { usuario } = useContext(AuthContext);
   
+  // Garantir que post.curtidas sempre exista
+  const postSeguro = {
+    ...post,
+    curtidas: post.curtidas || []
+  };
+  
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(postSeguro.curtidas.length);
   const [feedback, setFeedback] = useState({ mensagem: "", visivel: false });
   const [empresaData, setEmpresaData] = useState(null); // Novo estado para dados da empresa
   
   // Verificar curtidas e salvos
   useEffect(() => {
-    if (post?.curtidas && usuario) {
-      const isLiked = post.curtidas.some(u => u.id === usuario.id);
+    // Sempre inicializar o contador de likes
+    setLikeCount(postSeguro.curtidas.length);
+    
+    // Verificar se o post está curtido pelo usuário logado
+    if (usuario) {
+      const isLiked = postSeguro.curtidas.some(u => 
+        u.idUsuario === usuario.id || u.id === usuario.id
+      );
       setLiked(isLiked);
-      setLikeCount(post.curtidas.length);
+      console.log("✅ Verificação de curtida:", { 
+        curtidas: postSeguro.curtidas, 
+        usuarioId: usuario.id, 
+        curtido: isLiked 
+      });
     }
     
     if (post?.salvos && usuario) {
-      const isSaved = post.salvos.some(u => u.id === usuario.id);
+      const isSaved = post.salvos.some(u => u.idUsuario === usuario.id || u.id === usuario.id);
       setSaved(isSaved);
     }
-  }, [post, usuario]);
+  }, [postSeguro, usuario]);
   
   // Carregar dados da empresa
   useEffect(() => {
@@ -87,10 +103,33 @@ export default function Post({ post, big, small, completo = false }) {
     }
     
     try {
-      await toggleLike(post.id);
+      // Atualização otimista da UI
       setLiked(prev => !prev);
       setLikeCount(prev => liked ? prev - 1 : prev + 1);
+      
+      // Chamada à API
+      const response = await toggleLike(postSeguro.id || postSeguro.idPost);
+      
+      // Atualizar com os dados reais da API
+      setLiked(response.liked);
+      setLikeCount(response.likeCount);
+      
+      // Atualizar o objeto postSeguro para que a informação persista
+      if (response.liked) {
+        // Se curtiu, adicionar usuário à lista de curtidas
+        if (!postSeguro.curtidas.some(u => u.idUsuario === usuario.id || u.id === usuario.id)) {
+          postSeguro.curtidas.push({ idUsuario: usuario.id });
+        }
+      } else {
+        // Se descurtiu, remover usuário da lista de curtidas
+        postSeguro.curtidas = postSeguro.curtidas.filter(u => 
+          (u.idUsuario !== usuario.id) && (u.id !== usuario.id)
+        );
+      }
     } catch (error) {
+      // Reverter a atualização otimista em caso de erro
+      setLiked(prev => !prev);
+      setLikeCount(prev => liked ? prev - 1 : prev + 1);
       console.error("Erro ao curtir/descurtir:", error);
       mostrarFeedback("Não foi possível processar sua solicitação");
     }
@@ -324,7 +363,7 @@ export default function Post({ post, big, small, completo = false }) {
         {/* Barra de ações */}
         <div className="flex items-center gap-5 mt-auto">
           <button 
-            className={`${liked ? 'text-red-500' : 'text-gray-500'}`} 
+            className={`${liked ? 'text-red-500' : 'text-gray-500'} flex items-center gap-1`} 
             onClick={handleLikeClick}
           >
             {liked ? (
@@ -336,6 +375,8 @@ export default function Post({ post, big, small, completo = false }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
               </svg>
             )}
+            {/* Adicionar o contador de likes */}
+            <span className="text-sm">{likeCount > 0 ? likeCount : ""}</span>
           </button>
           
           <button className="text-gray-500" onClick={handleShareClick}>

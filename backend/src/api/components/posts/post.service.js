@@ -196,47 +196,69 @@ async function getPostById(id) {
 }
 
 /**
- * Curtir/Descurtir uma postagem
+ * Toggle like em um post
  */
 async function toggleLike(postId, userId) {
-  // Verificar se o post existe
-  const post = await Post.findByPk(postId);
-  if (!post) {
-    const error = new Error('Postagem não encontrada.');
-    error.name = 'NotFoundError';
-    throw error;
-  }
-
-  // Verificar se o usuário existe
-  const usuario = await Usuario.findByPk(userId);
-  if (!usuario) {
-    const error = new Error('Usuário não encontrado.');
-    error.name = 'NotFoundError';
-    throw error;
-  }
-
-  // Verificar se o usuário já curtiu o post
-  const curtidaExistente = await models.sequelize.models.CURTE.findOne({
-    where: {
-      idUsuario: userId,
-      idPost: postId
+  try {
+    // Verificar se o post existe
+    const post = await models.Post.findByPk(postId);
+    if (!post) {
+      throw new Error('Post não encontrado');
     }
-  });
-
-  // Se já curtiu, remove a curtida
-  if (curtidaExistente) {
-    await curtidaExistente.destroy();
-    return { liked: false, message: 'Curtida removida com sucesso.' };
+    
+    // Verificar se já curtiu usando sequelize direto do model
+    const [alreadyLiked] = await models.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM CURTE 
+      WHERE idUsuario = ? AND idPost = ?
+    `, {
+      replacements: [userId, postId],
+      type: models.sequelize.QueryTypes.SELECT
+    });
+    
+    let liked = false;
+    
+    // Se já curtiu, remove a curtida
+    if (alreadyLiked.count > 0) {
+      await models.sequelize.query(`
+        DELETE FROM CURTE 
+        WHERE idUsuario = ? AND idPost = ?
+      `, {
+        replacements: [userId, postId]
+      });
+    } 
+    // Se não curtiu, adiciona a curtida
+    else {
+      await models.sequelize.query(`
+        INSERT INTO CURTE (idUsuario, idPost) 
+        VALUES (?, ?)
+      `, {
+        replacements: [userId, postId]
+      });
+      liked = true;
+    }
+    
+    // Contar total de curtidas
+    const [likeCountResult] = await models.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM CURTE 
+      WHERE idPost = ?
+    `, {
+      replacements: [postId],
+      type: models.sequelize.QueryTypes.SELECT
+    });
+    
+    const likeCount = likeCountResult.count;
+    
+    return { 
+      liked, 
+      likeCount,
+      message: liked ? 'Post curtido com sucesso' : 'Curtida removida com sucesso' 
+    };
+  } catch (error) {
+    console.error('Erro ao processar curtida:', error);
+    throw error;
   }
-
-  // Se não curtiu, adiciona a curtida
-  await models.sequelize.models.CURTE.create({
-    idUsuario: userId,
-    idPost: postId,
-    curtido_em: new Date()
-  });
-
-  return { liked: true, message: 'Post curtido com sucesso.' };
 }
 
 /**
@@ -346,7 +368,6 @@ export {
   createPost,
   listPosts,
   getPostById,
-  toggleLike,
   toggleSave,
   getSavedPosts
 };

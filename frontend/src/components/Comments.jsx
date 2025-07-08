@@ -107,6 +107,7 @@ export default function Comments({ postId }) {
             className="w-full border border-gray-300 rounded-lg p-2 mb-2"
             placeholder="Escreva um comentário..."
             rows="2"
+            maxLength={1000} // Limitar o tamanho do comentário
           />
           {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
           <div className="flex justify-end">
@@ -141,25 +142,33 @@ export default function Comments({ postId }) {
               <div className="flex">
                 <img 
                   src={comment.usuario?.fotoPerfil || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"} 
-                  alt={comment.usuario?.emailUsuario || "Usuário"} 
-                  className="w-8 h-8 rounded-full mr-2"
+                  alt="Foto de perfil" 
+                  className="w-8 h-8 rounded-full mr-2 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+                  }}
                 />
-                <div className="flex-1">
+                <div className="flex-1 min-w-0"> {/* min-width para evitar que o texto saia do container */}
                   <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm">{comment.usuario?.emailUsuario || "Usuário"}</span>
-                    <span className="text-xs text-gray-500">
+                    <span className="font-medium text-sm truncate max-w-[70%]">
+                      {comment.usuario?.nome || comment.usuario?.emailUsuario || "Usuário"}
+                    </span>
+                    <span className="text-xs text-gray-500 flex-shrink-0">
                       {comment.criado_em && formatDistance(new Date(comment.criado_em), new Date(), { 
                         addSuffix: true, 
                         locale: ptBR 
                       })}
                     </span>
                   </div>
-                  <p className="text-sm mt-1">{comment.texto}</p>
+                  <p className="text-sm mt-1 break-words whitespace-pre-wrap">
+                    {comment.texto}
+                  </p>
                 </div>
                 {usuario && comment.idUsuario === usuario.id && (
                   <button
                     onClick={() => handleDelete(comment.idComentario)}
-                    className="text-gray-400 hover:text-red-500"
+                    className="text-gray-400 hover:text-red-500 ml-2 flex-shrink-0"
                     title="Excluir comentário"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

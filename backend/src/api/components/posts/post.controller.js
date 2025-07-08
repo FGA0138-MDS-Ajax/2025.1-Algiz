@@ -1,5 +1,6 @@
 import * as postService from './post.service.js';
 import models from '../../../models/index.model.js';
+const { Post } = models; // Adicionar esta linha
 
 /**
  * Cria uma nova postagem
@@ -67,20 +68,48 @@ async function create(req, res) {
  */
 async function list(req, res) {
   try {
-    const { page, limit, empresa, tipo, tag } = req.query;
+    const userId = req.user?.id; // Pegar o ID do usuário se estiver logado
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
     
-    const result = await postService.listPosts({
-      page: parseInt(page) || 1,
-      limit: parseInt(limit) || 10,
-      empresaId: empresa,
-      tipo,
-      tagId: tag
-    });
-
-    return res.status(200).json(result);
+    const { posts, meta } = await postService.listPosts({ page, limit });
+    
+    // Se temos um usuário logado, verificar quais posts ele curtiu
+    if (userId) {
+      // Para cada post, verificar se o usuário o curtiu
+      for (const post of posts) {
+        // Verificar se o usuário curtiu este post
+        const [curtidaResult] = await Post.sequelize.query(`
+          SELECT COUNT(*) as count 
+          FROM CURTE 
+          WHERE idUsuario = ? AND idPost = ?
+        `, {
+          replacements: [userId, post.id],
+          type: Post.sequelize.QueryTypes.SELECT
+        });
+        
+        // Adicionar flag "curtido" diretamente no post
+        post.curtido = curtidaResult.count > 0;
+        
+        // Contar número total de curtidas
+        const [likeCountResult] = await Post.sequelize.query(`
+          SELECT COUNT(*) as count 
+          FROM CURTE 
+          WHERE idPost = ?
+        `, {
+          replacements: [post.id],
+          type: Post.sequelize.QueryTypes.SELECT
+        });
+        
+        // Adicionar contagem total como propriedade numérica
+        post.totalCurtidas = parseInt(likeCountResult.count);
+      }
+    }
+    
+    return res.status(200).json({ posts, meta });
   } catch (error) {
-    console.error("Erro ao listar postagens:", error);
-    return res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+    console.error("Erro ao listar posts:", error);
+    return res.status(500).json({ erro: "Erro ao listar posts" });
   }
 }
 
@@ -90,7 +119,43 @@ async function list(req, res) {
 async function getById(req, res) {
   try {
     const { id } = req.params;
-    const post = await postService.getPostById(id);
+    const userId = req.user?.id; // ID do usuário logado, se disponível
+    
+    // Buscar o post pelo ID
+    let post = await postService.getPostById(id);
+    
+    // Adicionar informações de curtidas quando há um usuário logado
+    if (userId) {
+      // Verificar se o usuário curtiu este post
+      const [curtidaResult] = await Post.sequelize.query(`
+        SELECT COUNT(*) as count 
+        FROM CURTE 
+        WHERE idUsuario = ? AND idPost = ?
+      `, {
+        replacements: [userId, id],
+        type: Post.sequelize.QueryTypes.SELECT
+      });
+      
+      // Adicionar campo para indicar se o usuário curtiu o post
+      post = {
+        ...post.get({ plain: true }),
+        curtido: curtidaResult.count > 0
+      };
+    }
+    
+    // Contar número total de curtidas
+    const [likeCountResult] = await Post.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM CURTE 
+      WHERE idPost = ?
+    `, {
+      replacements: [id],
+      type: Post.sequelize.QueryTypes.SELECT
+    });
+    
+    // Adicionar o total de curtidas ao post
+    post.totalCurtidas = parseInt(likeCountResult.count);
+    
     return res.status(200).json(post);
   } catch (error) {
     if (error.name === 'NotFoundError') {
@@ -102,21 +167,71 @@ async function getById(req, res) {
 }
 
 /**
- * Curtir/Descurtir uma postagem
+ * Toggle like em um post
  */
 async function toggleLike(req, res) {
   try {
-    const { id } = req.params;
+    const { id: postId } = req.params;
     const userId = req.user.id;
     
-    const result = await postService.toggleLike(id, userId);
-    return res.status(200).json(result);
-  } catch (error) {
-    if (error.name === 'NotFoundError') {
-      return res.status(404).json({ erro: error.message });
+    // Verificar se o post existe
+    const post = await Post.findByPk(postId);
+    if (!post) {
+      return res.status(404).json({ erro: 'Post não encontrado' });
     }
-    console.error("Erro ao curtir/descurtir postagem:", error);
-    return res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+    
+    // Usar o sequelize do modelo Post em vez de models.sequelize
+    const [alreadyLikedResult] = await Post.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM CURTE 
+      WHERE idUsuario = ? AND idPost = ?
+    `, {
+      replacements: [userId, postId],
+      type: Post.sequelize.QueryTypes.SELECT
+    });
+    
+    let liked = false;
+    
+    // Se já curtiu, remove a curtida
+    if (alreadyLikedResult.count > 0) {
+      await Post.sequelize.query(`
+        DELETE FROM CURTE 
+        WHERE idUsuario = ? AND idPost = ?
+      `, {
+        replacements: [userId, postId]
+      });
+    } 
+    // Se não curtiu, adiciona a curtida
+    else {
+      await Post.sequelize.query(`
+        INSERT INTO CURTE (idUsuario, idPost) 
+        VALUES (?, ?)
+      `, {
+        replacements: [userId, postId]
+      });
+      liked = true;
+    }
+    
+    // Contar total de curtidas
+    const [likeCountResult] = await Post.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM CURTE 
+      WHERE idPost = ?
+    `, {
+      replacements: [postId],
+      type: Post.sequelize.QueryTypes.SELECT
+    });
+    
+    const likeCount = parseInt(likeCountResult.count);
+    
+    return res.status(200).json({ 
+      liked, 
+      likeCount,
+      message: liked ? 'Post curtido com sucesso' : 'Curtida removida com sucesso' 
+    });
+  } catch (error) {
+    console.error('Erro ao processar curtida:', error);
+    return res.status(500).json({ erro: 'Ocorreu um erro ao processar sua solicitação' });
   }
 }
 

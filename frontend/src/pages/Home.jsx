@@ -28,10 +28,17 @@ export default function HomePublica() {
         
         if (response.data) {
           console.log("✅ Resposta da API:", response.data);
-          // Correção: extrair o array de posts da resposta
+          // Extrair o array de posts da resposta
           const postsArray = response.data.posts || [];
-          console.log("✅ Posts extraídos:", postsArray);
-          setPosts(postsArray);
+          
+          // Garantir que todos os posts tenham a propriedade curtidas
+          const postsProcessados = postsArray.map(post => ({
+            ...post,
+            curtidas: post.curtidas || [] // Garantir que curtidas seja sempre um array
+          }));
+          
+          console.log("✅ Posts processados:", postsProcessados);
+          setPosts(postsProcessados);
         }
       } catch (error) {
         console.error("❌ Erro ao carregar posts:", error);

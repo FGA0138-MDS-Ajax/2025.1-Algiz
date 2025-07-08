@@ -85,7 +85,9 @@ export const createPost = async (postData) => {
 };
 
 /**
- * Curtir/Descurtir uma postagem
+ * Curtir ou descurtir uma publicação
+ * @param {number} postId - ID do post
+ * @returns {Promise} - Resposta da API
  */
 export const toggleLike = async (postId) => {
   try {
