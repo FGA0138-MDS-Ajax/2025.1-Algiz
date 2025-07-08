@@ -262,8 +262,75 @@ async function toggleLike(postId, userId) {
 }
 
 /**
+ * Toggle save em um post
+ */
+ async function toggleSave(postId, userId) {
+  try {
+    // Verificar se o post existe
+    const post = await models.Post.findByPk(postId);
+    if (!post) {
+      throw new Error('Post não encontrado');
+    }
+    
+    // Verificar se já salvou usando sequelize
+    const [alreadySaved] = await models.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM SALVA 
+      WHERE idUsuario = ? AND idPost = ?
+    `, {
+      replacements: [userId, postId],
+      type: models.sequelize.QueryTypes.SELECT
+    });
+    
+    let saved = false;
+    
+    // Se já salvou, remove
+    if (alreadySaved.count > 0) {
+      await models.sequelize.query(`
+        DELETE FROM SALVA 
+        WHERE idUsuario = ? AND idPost = ?
+      `, {
+        replacements: [userId, postId]
+      });
+    } 
+    // Se não salvou, adiciona
+    else {
+      await models.sequelize.query(`
+        INSERT INTO SALVA (idUsuario, idPost) 
+        VALUES (?, ?)
+      `, {
+        replacements: [userId, postId]
+      });
+      saved = true;
+    }
+    
+    // Contar total de salvamentos (opcional)
+    const [saveCountResult] = await models.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM SALVA 
+      WHERE idPost = ?
+    `, {
+      replacements: [postId],
+      type: models.sequelize.QueryTypes.SELECT
+    });
+    
+    const saveCount = parseInt(saveCountResult.count);
+    
+    return { 
+      saved, 
+      saveCount,
+      message: saved ? 'Post salvo com sucesso' : 'Post removido dos salvos com sucesso' 
+    };
+  } catch (error) {
+    console.error('Erro ao processar salvamento:', error);
+    throw error;
+  }
+}
+
+/**
  * Salvar/Dessalvar uma postagem
  */
+{/*
 async function toggleSave(postId, userId) {
   // Verificar se o post existe
   const post = await Post.findByPk(postId);
@@ -304,7 +371,7 @@ async function toggleSave(postId, userId) {
 
   return { saved: true, message: 'Post salvo com sucesso.' };
 }
-
+*/}
 /**
  * Listar posts salvos por um usuário
  */

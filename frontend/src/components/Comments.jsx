@@ -165,7 +165,7 @@ export default function Comments({ postId }) {
                     {comment.texto}
                   </p>
                 </div>
-                {usuario && comment.idUsuario === usuario.id && (
+                {/*{usuario && comment.idUsuario === usuario.id && (
                   <button
                     onClick={() => handleDelete(comment.idComentario)}
                     className="text-gray-400 hover:text-red-500 ml-2 flex-shrink-0"
@@ -175,7 +175,7 @@ export default function Comments({ postId }) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                )}
+                )}*/}
               </div>
             </div>
           ))}

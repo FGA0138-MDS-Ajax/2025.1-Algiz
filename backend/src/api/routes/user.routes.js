@@ -56,4 +56,42 @@ router.get("/all", async (req, res) => {
 /* 📢 ROTA PÚBLICA: Perfil público de um usuário (sem necessidade de autenticação) */
 router.get("/:id/public", userController.getPublicUserProfile); // Obter perfil público
 
+// Rota pública para acessar posts salvos por um usuário
+router.get("/:userId/salvos", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Primeiro, verificar se existem posts salvos por este usuário
+    const [salvos] = await db.query(`
+      SELECT idPost FROM SALVA WHERE idUsuario = ?
+    `, [userId]);
+    
+    if (salvos.length === 0) {
+      console.log(`Usuário ${userId} não tem posts salvos.`);
+      return res.status(200).json([]);
+    }
+    
+    // Extrair IDs dos posts salvos
+    const postIds = salvos.map(s => s.idPost);
+    
+    // Usar POSTAGENS (nome correto da tabela) em vez de POST
+    const [posts] = await db.query(`
+      SELECT p.*, j.nomeComercial, j.cnpjJuridico, s.salvo_em
+      FROM POSTAGENS p
+      INNER JOIN SALVA s ON p.idPost = s.idPost
+      LEFT JOIN JURIDICO j ON p.idEmpresa = j.idEmpresa
+      WHERE p.idPost IN (?)
+      ORDER BY s.salvo_em DESC
+    `, [postIds]);
+    
+    console.log(`✅ Encontrados ${posts.length} posts salvos para o usuário ${userId}`);
+    
+    return res.status(200).json(posts);
+    
+  } catch (error) {
+    console.error("Erro ao buscar posts salvos:", error);
+    return res.status(500).json({ erro: "Ocorreu um erro ao buscar os posts salvos" });
+  }
+});
+
 export default router;

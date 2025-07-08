@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Post from "./Post";
 import axios from "axios";
+import { getUserSavedPosts } from "../services/postService";
 
 export default function Salvos({ usuario, empresa }) {
   const [posts, setPosts] = useState([]);
@@ -22,8 +23,30 @@ export default function Salvos({ usuario, empresa }) {
       try {
         let data = [];
         
+        // ✅ CONTEXTO DE USUÁRIO: mostrar posts salvos pelo usuário
+        if (isUsuarioContext && usuario?.id) {
+          console.log("📚 Carregando posts salvos pelo usuário:", usuario.id);
+          
+          try {
+            // Usar o método de serviço atualizado
+            let postsData = await getUserSavedPosts(usuario.id);
+            console.log(`✅ Posts salvos encontrados: ${postsData.length}`, postsData);
+            
+            // ✅ REMOVER DUPLICATAS - Usar um Map para garantir posts únicos
+            // Identificar pelo ID do post ou combinação de propriedades únicas
+            const uniquePosts = Array.from(
+              new Map(postsData.map(post => [post.idPost || post.id, post])).values()
+            );
+            
+            console.log(`✅ Posts após remover duplicatas: ${uniquePosts.length}`, uniquePosts);
+            data = uniquePosts;
+          } catch (err) {
+            console.error("❌ Erro ao buscar posts salvos:", err);
+            setErro("Erro ao carregar posts salvos");
+          }
+        } 
         // ✅ CONTEXTO DE EMPRESA: mostrar posts criados pela empresa
-        if (isEmpresaContext) {
+        else if (isEmpresaContext) {
           console.log("📊 Carregando posts criados pela empresa");
           const empresaId = empresa.idEmpresa || empresa.id;
           const response = await axios.get(`http://localhost:3001/api/company/${empresaId}/postagens`);
@@ -42,18 +65,6 @@ export default function Salvos({ usuario, empresa }) {
           setIsUsuarioLogado(usuarioLogado && (empresa.idUsuario === usuarioLogado.id));
           setVisivel(true); // Posts da empresa são sempre visíveis
         }
-        // ✅ CONTEXTO DE USUÁRIO: mostrar posts salvos pelo usuário
-        else if (isUsuarioContext) {
-          console.log("📚 Carregando posts salvos pelo usuário");
-          const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-          setIsUsuarioLogado(usuarioLogado?.id?.toString() === usuario.id?.toString());
-
-          // Se for o usuário logado, busca os posts salvos
-          if (isUsuarioLogado) {
-            const response = await axios.get(`http://localhost:3001/api/users/${usuario.id}/salvos`);
-            data = response.data || [];
-          }
-        }
         
         setPosts(data);
       } catch (error) {
@@ -65,7 +76,12 @@ export default function Salvos({ usuario, empresa }) {
     };
 
     fetchPosts();
-  }, [empresa, usuario, isUsuarioLogado, isEmpresaContext, isUsuarioContext]);
+    
+    // Adicionar um timer para recarregar periodicamente
+    const intervalId = setInterval(fetchPosts, 30000); // A cada 30 segundos
+    
+    return () => clearInterval(intervalId); // Limpar o intervalo ao desmontar
+  }, [empresa, usuario, isEmpresaContext, isUsuarioContext]);
 
   // Grid Alternado (código existente)
   function renderMosaic(posts) {

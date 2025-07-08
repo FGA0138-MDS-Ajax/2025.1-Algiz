@@ -13,10 +13,11 @@ export default function Post({ post, big, small, completo = false }) {
   const navigate = useNavigate();
   const { usuario } = useContext(AuthContext);
   
-  // Garantir que post.curtidas sempre exista
+  // Garantir que post.curtidas e post.salvos sempre existam
   const postSeguro = {
     ...post,
-    curtidas: post.curtidas || []
+    curtidas: post.curtidas || [],
+    salvos: post.salvos || []
   };
   
   const [liked, setLiked] = useState(false);
@@ -43,9 +44,24 @@ export default function Post({ post, big, small, completo = false }) {
       });
     }
     
-    if (post?.salvos && usuario) {
-      const isSaved = post.salvos.some(u => u.idUsuario === usuario.id || u.id === usuario.id);
-      setSaved(isSaved);
+    // Verificar se o post está salvo pelo usuário
+    if (usuario) {
+      // Primeiro, verificar diretamente a propriedade salvo se existir
+      if (postSeguro.salvo !== undefined) {
+        setSaved(postSeguro.salvo);
+      } 
+      // Caso contrário, verificar na lista de salvos
+      else if (postSeguro.salvos && Array.isArray(postSeguro.salvos)) {
+        const isSaved = postSeguro.salvos.some(u => 
+          u.idUsuario === usuario.id || u.id === usuario.id
+        );
+        setSaved(isSaved);
+        console.log("✅ Verificação de salvo:", { 
+          salvos: postSeguro.salvos, 
+          usuarioId: usuario.id, 
+          salvo: isSaved 
+        });
+      }
     }
   }, [postSeguro, usuario]);
   
@@ -144,11 +160,45 @@ export default function Post({ post, big, small, completo = false }) {
     }
     
     try {
-      await toggleSave(post.id);
-      setSaved(!saved);
-      mostrarFeedback(saved ? "Post removido dos salvos" : "Post salvo com sucesso");
+      // Atualização otimista da UI
+      setSaved(prev => !prev);
+      
+      // Chamada à API
+      const response = await toggleSave(postSeguro.id || postSeguro.idPost);
+      
+      // Debug adicional
+      console.log("✅ Resposta ao salvar/remover:", {
+        postId: postSeguro.id || postSeguro.idPost,
+        saved: response.saved,
+        message: response.message
+      });
+      
+      // Atualizar com os dados reais da API
+      setSaved(response.saved);
+      
+      // Atualizar o objeto postSeguro para que a informação persista
+      if (!postSeguro.salvos) {
+        postSeguro.salvos = [];
+      }
+      
+      if (response.saved) {
+        // Se salvou, adicionar usuário à lista de salvos
+        if (!postSeguro.salvos.some(u => u.idUsuario === usuario.id || u.id === usuario.id)) {
+          postSeguro.salvos.push({ idUsuario: usuario.id });
+        }
+      } else {
+        // Se removeu, remover usuário da lista de salvos
+        postSeguro.salvos = postSeguro.salvos.filter(u => 
+          (u.idUsuario !== usuario.id) && (u.id !== usuario.id)
+        );
+      }
+      
+      // Feedback visual
+      mostrarFeedback(response.saved ? "Post salvo com sucesso" : "Post removido dos salvos");
     } catch (error) {
-      console.error("Erro ao salvar/dessalvar:", error);
+      // Reverter a atualização otimista em caso de erro
+      setSaved(prev => !prev);
+      console.error("Erro ao salvar/remover:", error);
       mostrarFeedback("Não foi possível processar sua solicitação");
     }
   };
@@ -162,8 +212,23 @@ export default function Post({ post, big, small, completo = false }) {
   };
 
   const handlePostClick = () => {
-    if (!completo) {
-      navigate(`/post/${post.id}`);
+    // Obter o ID do post, considerando diferentes formatos
+    const postId = post.idPost || post.id;
+    
+    // Log para depuração
+    console.log("Clicou no post:", { 
+      post, 
+      postId, 
+      idPost: post.idPost, 
+      id: post.id 
+    });
+    
+    if (postId) {
+      navigate(`/post/${postId}`);
+    } else {
+      console.error("ID do post não encontrado:", post);
+      // Mostrar mensagem de erro ao usuário
+      alert("Não foi possível abrir este post. ID inválido.");
     }
   };
   
@@ -278,21 +343,21 @@ export default function Post({ post, big, small, completo = false }) {
               </svg>
             </button>
             
-            <button 
-              className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500 hover:text-yellow-500'}`} 
-              onClick={handleSaveClick}
-              title={saved ? "Remover dos salvos" : "Salvar"}
-            >
-              {saved ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-                </svg>
-              )}
-            </button>
+           <button 
+  className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500 hover:text-yellow-400'}`} 
+  onClick={handleSaveClick}
+  title={saved ? "Remover dos salvos" : "Salvar post"}
+>
+  {saved ? (
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+    </svg>
+  ) : (
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+    </svg>
+  )}
+</button>
           </div>
           
           {/* Seção de comentários quando o post estiver em modo completo */}
@@ -385,20 +450,25 @@ export default function Post({ post, big, small, completo = false }) {
             </svg>
           </button>
           
-          <button 
-            className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500'}`} 
-            onClick={handleSaveClick}
-          >
-            {saved ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
-              </svg>
-            )}
-          </button>
+          <button
+  className={`ml-auto ${saved ? 'text-yellow-500' : 'text-gray-500 hover:text-yellow-400'}`}
+  onClick={handleSaveClick}
+  title={saved ? 'Remover dos salvos' : 'Salvar post'}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-6 h-6"
+    viewBox="0 0 24 24"
+    fill={saved ? 'currentColor' : 'none'}                 // cheio ou vazio
+    stroke={saved ? 'none'        : 'currentColor'}        // sem borda no cheio
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-5-7 5V5z" />
+  </svg>
+</button>
+
         </div>
       </div>
     </>

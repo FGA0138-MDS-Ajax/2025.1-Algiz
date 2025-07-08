@@ -104,18 +104,33 @@ export const toggleLike = async (postId) => {
 };
 
 /**
- * Salvar/Dessalvar uma postagem
+ * Salva ou remove um post dos salvos
+ * @param {number} postId - ID do post
+ * @returns {Promise} - Resposta da API
  */
 export const toggleSave = async (postId) => {
   try {
+    // Obter o token do localStorage
+    const token = localStorage.getItem('authToken');
+    
+    if (!token) {
+      throw new Error('Usuário não autenticado');
+    }
+    
     const response = await axios.post(
-      `${API_URL}/posts/${postId}/save`,
-      {},
-      { headers: getAuthHeader() }
+      `http://localhost:3001/api/posts/${postId}/save`,
+      {}, // corpo vazio
+      { 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        } 
+      }
     );
+    
     return response.data;
   } catch (error) {
-    console.error(`Erro ao salvar/dessalvar post ${postId}:`, error);
+    console.error(`Erro ao salvar/remover post ${postId}:`, error);
     throw error;
   }
 };
@@ -135,6 +150,32 @@ export const getSavedPosts = async (page = 1, limit = 10) => {
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar posts salvos:', error);
+    throw error;
+  }
+};
+
+/**
+ * Obter posts salvos de um usuário específico
+ * @param {string|number} userId - ID do usuário
+ * @returns {Promise} - Resposta da API com posts salvos
+ */
+export const getUserSavedPosts = async (userId) => {
+  try {
+    const response = await axios.get(`http://localhost:3001/api/users/${userId}/salvos`);
+    
+    // Normalizar os dados para garantir que todos os posts tenham um ID acessível
+    const normalizedPosts = response.data.map(post => {
+      // Garantir que o post tenha uma propriedade id consistente
+      return {
+        ...post,
+        // Se não houver id, usar idPost
+        id: post.id || post.idPost
+      };
+    });
+    
+    return normalizedPosts;
+  } catch (error) {
+    console.error(`Erro ao buscar posts salvos do usuário ${userId}:`, error);
     throw error;
   }
 };

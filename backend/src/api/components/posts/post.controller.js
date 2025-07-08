@@ -236,21 +236,71 @@ async function toggleLike(req, res) {
 }
 
 /**
- * Salvar/Dessalvar uma postagem
+ * Toggle save em um post
  */
 async function toggleSave(req, res) {
   try {
-    const { id } = req.params;
+    const { id: postId } = req.params;
     const userId = req.user.id;
     
-    const result = await postService.toggleSave(id, userId);
-    return res.status(200).json(result);
-  } catch (error) {
-    if (error.name === 'NotFoundError') {
-      return res.status(404).json({ erro: error.message });
+    // Verificar se o post existe
+    const post = await Post.findByPk(postId);
+    if (!post) {
+      return res.status(404).json({ erro: 'Post não encontrado' });
     }
-    console.error("Erro ao salvar/dessalvar postagem:", error);
-    return res.status(500).json({ erro: "Ocorreu um erro interno no servidor." });
+    
+    // Verificar se já está salvo
+    const [alreadySavedResult] = await Post.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM SALVA 
+      WHERE idUsuario = ? AND idPost = ?
+    `, {
+      replacements: [userId, postId],
+      type: Post.sequelize.QueryTypes.SELECT
+    });
+    
+    let saved = false;
+    
+    // Se já salvou, remove
+    if (parseInt(alreadySavedResult.count) > 0) {
+      await Post.sequelize.query(`
+        DELETE FROM SALVA 
+        WHERE idUsuario = ? AND idPost = ?
+      `, {
+        replacements: [userId, postId]
+      });
+    } 
+    // Se não salvou, adiciona
+    else {
+      await Post.sequelize.query(`
+        INSERT INTO SALVA (idUsuario, idPost) 
+        VALUES (?, ?)
+      `, {
+        replacements: [userId, postId]
+      });
+      saved = true;
+    }
+    
+    // Contar total de salvamentos
+    const [saveCountResult] = await Post.sequelize.query(`
+      SELECT COUNT(*) as count 
+      FROM SALVA 
+      WHERE idPost = ?
+    `, {
+      replacements: [postId],
+      type: Post.sequelize.QueryTypes.SELECT
+    });
+    
+    const saveCount = parseInt(saveCountResult.count);
+    
+    return res.status(200).json({ 
+      saved, 
+      saveCount,
+      message: saved ? 'Post salvo com sucesso' : 'Post removido dos salvos com sucesso' 
+    });
+  } catch (error) {
+    console.error('Erro ao salvar/dessalvar postagem:', error);
+    return res.status(500).json({ erro: 'Ocorreu um erro ao processar sua solicitação' });
   }
 }
 
