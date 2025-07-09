@@ -2,6 +2,8 @@ import db from "../../config/db.js";
 import { hashPassword, comparePassword } from "../../utils/hash.util.js";
 import models from "../../../models/index.model.js";
 import { isValidDocument } from '../../utils/validation.util.js';
+import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
+
 const { Usuario, Fisico, FisicoSegueJuridico, Empresa } = models;
 
 // Helper functions for validation

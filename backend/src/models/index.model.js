@@ -12,6 +12,7 @@ import MensagemDef from './mensagem.model.js';
 import PostDef from './post.model.js';
 import TagDef from './tag.model.js';
 import ComentarioDef from './comentario.model.js';
+import Documento from './documento.model.js';
 
 dotenv.config();
 
@@ -41,7 +42,8 @@ const models = {
   Mensagem: MensagemDef(sequelize, DataTypes),
   Post: PostDef(sequelize, DataTypes),
   Tag: TagDef(sequelize, DataTypes),
-  Comentario: ComentarioDef(sequelize, DataTypes)
+  Comentario: ComentarioDef(sequelize, DataTypes),
+  Documento: Documento(sequelize, DataTypes)
 };
 
 // Configura as associações entre os modelos

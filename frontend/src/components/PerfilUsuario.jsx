@@ -2,7 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from "rea
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalFotoPerfil from "./ModalFotoPerfil";
-import { useModal } from "../context/ModalContext";
+import { useModal } from '../context/ModalContext';
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -172,15 +172,16 @@ const PerfilUsuario = forwardRef((props, ref) => {
   }, [usuario]);
 
   // Handler para troca de foto de perfil
-  const handleTrocarFoto = (file) => {
+  const handleTrocarFoto = async (file) => {
     setModalFotoOpen(false);
     openCropModal(file, "foto", usuario.id, "usuario");
+
   };
 
-  // Handler para troca de banner
-  const handleTrocarBanner = (file) => {
+  const handleTrocarBanner = async (file) => {
     setModalBannerOpen(false);
     openCropModal(file, "banner", usuario.id, "usuario");
+
   };
 
   // Exponha o estado do crop para o componente pai

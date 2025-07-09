@@ -71,6 +71,7 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
     ? empresasSeguindo
     : (usuario.empresasSeguindo || []);
 
+
   return (
     <div
       className={`rounded-xl bg-white border border-gray-200 shadow flex flex-col h-full justify-center items-start px-6 py-4 relative ${cardClass}`}
@@ -219,6 +220,7 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
           </div>
         </div>
       )}
+
     </div>
   );
 }
@@ -238,4 +240,5 @@ MinhasConexoes.propTypes = {
     ),
   }).isRequired,
   cardClass: PropTypes.string,
+
 };
