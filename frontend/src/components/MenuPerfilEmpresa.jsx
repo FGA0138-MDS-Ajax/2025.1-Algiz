@@ -1,41 +1,59 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function MenuPerfilEmpresa({ empresa }) {
-  const navigate = useNavigate();
+  const { usuario } = useContext(AuthContext);
 
-  const handleCriarPostagem = () => {
-    navigate("/empresa/criar-postagem");
-  };
+  const itemClass = ({ isActive }) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition text-sm font-medium w-full ${
+      isActive
+        ? "bg-green-50 text-green-700"
+        : "text-gray-700 hover:bg-green-50 hover:text-green-700"
+    }`;
 
   return (
     <div className="bg-white rounded-xl shadow p-4 mb-6">
-      <div className="space-y-2">
-        <div className="w-full text-left p-2 rounded-lg flex items-center gap-3">
+      <div className="flex flex-col divide-y divide-gray-200">
+        {/* Meu perfil */}
+        {usuario && (
+          <NavLink to={`/usuario/${usuario.id}`} className={itemClass}>
+            <img
+              src={usuario.fotoPerfil || "/user/foto-perfil-padrao-1.png"}
+              alt="Perfil"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <span>Meu perfil</span>
+          </NavLink>
+        )}
+
+        {/* Empresa */}
+        <div className="flex items-center gap-3 px-3 py-2">
           <img
             src={empresa.fotoEmpresa || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"}
             alt="Logo"
             className="w-8 h-8 rounded-full object-cover"
           />
-          <span className="text-sm text-gray-800">
+          <span className="text-sm font-medium text-gray-800">
             {empresa.nomeComercial}
           </span>
         </div>
-        
-        <button 
-          className="w-full text-left p-2 rounded-lg hover:bg-green-50 transition text-sm text-gray-600 hover:text-green-700"
-          onClick={handleCriarPostagem}
-        >
-          Criar postagem
-        </button>
-        
-        <button className="w-full text-left p-2 rounded-lg hover:bg-green-50 transition text-sm text-gray-600 hover:text-green-700">
-          Contratos
-        </button>
-        
-        <button className="w-full text-left p-2 rounded-lg hover:bg-green-50 transition text-sm text-gray-600 hover:text-green-700">
-          Configurações
-        </button>
+        <div className="pl-11">
+          {/* Criar postagem */}
+          <NavLink to="/empresa/criar-postagem" className={itemClass}>
+            Criar postagem
+          </NavLink>
+
+          {/* Contratos */}
+          <NavLink to="/empresa/contratos" className={itemClass}>
+            Contratos
+          </NavLink>
+
+          {/* Configurações */}
+          <NavLink to="/#" className={itemClass}>
+            Configurações
+          </NavLink>
+        </div>
       </div>
     </div>
   );
