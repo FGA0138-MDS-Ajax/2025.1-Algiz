@@ -20,15 +20,6 @@ export default (sequelize) => {
     nomeOriginal: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    // Chave estrangeira para associar o documento a uma parceria/contrato
-    idParceria: { // Ou idContrato, ajuste conforme o seu modelo de negócio
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Parcerias', // Nome da tabela de parcerias/contratos
-        key: 'id'
-      }
     }
   }, {
     tableName: 'DOCUMENTOS',

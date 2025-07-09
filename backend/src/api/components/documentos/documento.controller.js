@@ -1,4 +1,4 @@
-import documentService from './document.service.js';
+import documentService from './documento.service.js';
 
 export async function uploadDocumento(req, res) {
   try {

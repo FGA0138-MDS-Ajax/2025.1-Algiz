@@ -17,7 +17,7 @@ import { admin, adminRouter } from './admin.js';
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
 import empresaRoutes from './src/api/routes/empresa.route.js'; 
 import messageRoutes from './src/api/routes/message.route.js';
-import documentoRoutes from './src/api/routes/document.route.js';
+import documentoRoutes from './src/api/routes/documento.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
 
@@ -93,6 +93,8 @@ async function startServer() {
   app.use('/api', userRoutes);
   app.use('/api', empresaRoutes); 
   app.use('/api', postRoutes);
+  app.use('/api/mensagens', messageRoutes);
+  app.use('/api/documentos', documentoRoutes);
 
   app.use(
     session({
@@ -143,9 +145,7 @@ async function startServer() {
     console.error('❌ Não foi possível iniciar o servidor:', err);
     process.exit(1);
   }
-  app.use('/api/mensagens', messageRoutes)
 
-  app.use('/api/documentos', documentoRoutes);
 }
 
 startServer();
