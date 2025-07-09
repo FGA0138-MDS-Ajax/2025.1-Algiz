@@ -17,6 +17,7 @@ import { admin, adminRouter } from './admin.js';
 import userRoutes from './src/api/routes/user.routes.js'; // ✅ IMPORTAÇÃO ADICIONADA
 import empresaRoutes from './src/api/routes/empresa.route.js'; 
 import messageRoutes from './src/api/routes/message.route.js';
+import documentoRoutes from './src/api/routes/document.route.js';
 
 console.log('--- LENDO ARQUIVO server.js (VERSÃO COM ROTAS MODULARES) ---');
 
@@ -143,6 +144,8 @@ async function startServer() {
     process.exit(1);
   }
   app.use('/api/mensagens', messageRoutes)
+
+  app.use('/api/documentos', documentoRoutes);
 }
 
 startServer();
