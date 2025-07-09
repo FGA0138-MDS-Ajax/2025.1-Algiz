@@ -13,9 +13,11 @@ import CodigoAutenticacao from './pages/CodigoAutenticacao';
 import RedefinirSenha from './pages/RedefinirSenha';
 import ConfiguracoesUsuario from './pages/ConfiguracoesUsuario';
 import CriarPostagem from './pages/PaginaCriacaoPostagem';
+import Contratos from './pages/Contratos';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthListener from './components/AuthListener';
 import { ModalProvider } from './context/ModalContext';
+import VisualizarContrato from "./pages/VisualizarContrato";
 
 import AuthProvider from './context/AuthContext'; // <-- importado o AuthProvider
 
@@ -53,6 +55,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CriarPostagem />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/empresa/contratos"
+                element={
+                  <ProtectedRoute>
+                    <Contratos />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/empresa/contrato/:id"
+                element={
+                  <ProtectedRoute>
+                    <VisualizarContrato />
                   </ProtectedRoute>
                 }
               />
