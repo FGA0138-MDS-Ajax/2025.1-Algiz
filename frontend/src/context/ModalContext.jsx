@@ -109,7 +109,9 @@ const ModalProvider = ({ children }) => {
         );
         
         console.log(`✅ ${endpoint} da empresa atualizada:`, response.data);
-        
+        setCropModalOpen(false);
+        window.location.reload(); // <-- ADICIONE ESTA LINHA AQUI
+        return result;
       } else if (cropConfig.contexto === "usuario") {
         console.log("👤 Upload de USUÁRIO - ID:", cropConfig.entityId);
         
@@ -140,25 +142,14 @@ const ModalProvider = ({ children }) => {
         localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
         
         console.log(`✅ ${endpoint} do usuário atualizada:`, response.data);
-
+        setCropModalOpen(false);
+        window.location.reload();
+        return result;
       } else {
         throw new Error("❌ Erro: Contexto não definido (deve ser 'usuario' ou 'empresa')!");
       }
-      
-      const result = response.data.fotoPerfil || response.data.bannerPerfil || croppedBase64;
-      if (currentResolve) {
-        currentResolve(result);
-        currentResolve = null;
-        currentReject = null;
-      }
-      
-      setCropModalOpen(false);
-                 window.location.reload();
-
-      return result;
     } catch (err) {
       console.error("❌ Erro ao fazer upload da imagem:", err);
-
     }
   }, [cropConfig, cropModalType]);
 
