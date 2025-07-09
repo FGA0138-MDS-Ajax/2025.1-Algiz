@@ -1,5 +1,8 @@
-import empresaService from './empresa.service.js';
+import models from "../../../models/index.model.js"; // Corrigido para index.model.js
+import empresaService from "./empresa.service.js";
 import cloudinary from '../../utils/cloudinary.util.js';
+
+const { Fisico } = models;
 
 export async function registerEmpresa(req, res) {
     try {
@@ -258,5 +261,111 @@ export async function getUsuariosVinculados(req, res) {
     } catch (error) {
         console.error("Erro ao buscar usuários vinculados:", error);
         return res.status(500).json({ erro: "Erro interno do servidor." });
+    }
+}
+
+// Adicionar estas funções ao arquivo
+
+// Seguir uma empresa
+export async function followEmpresa(req, res) {
+    try {
+        const { id } = req.params;
+        const idUsuario = req.user.id;
+        
+        // Buscar o cpfFisico do usuário usando Sequelize
+        const usuario = await Fisico.findOne({
+            where: { idUsuario }
+        });
+        
+        if (!usuario) {
+            return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        }
+        
+        const cpfFisico = usuario.cpfFisico;
+        const result = await empresaService.followEmpresa(id, cpfFisico);
+        
+        if (result.already) {
+            return res.status(200).json(result);
+        }
+        
+        return res.status(201).json(result);
+    } catch (error) {
+        if (error.name === 'NotFoundError') {
+            return res.status(404).json({ erro: error.message });
+        }
+        console.error('Erro ao seguir empresa:', error);
+        return res.status(500).json({ erro: 'Erro interno do servidor.' });
+    }
+}
+
+// Deixar de seguir uma empresa
+export async function unfollowEmpresa(req, res) {
+    try {
+        const { id } = req.params;
+        const idUsuario = req.user.id;
+        
+        // Buscar o cpfFisico do usuário usando Sequelize
+        const usuario = await Fisico.findOne({
+            where: { idUsuario }
+        });
+        
+        if (!usuario) {
+            return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        }
+        
+        const cpfFisico = usuario.cpfFisico;
+        const result = await empresaService.unfollowEmpresa(id, cpfFisico);
+        
+        return res.status(200).json(result);
+    } catch (error) {
+        if (error.name === 'NotFoundError') {
+            return res.status(404).json({ erro: error.message });
+        }
+        console.error('Erro ao deixar de seguir empresa:', error);
+        return res.status(500).json({ erro: 'Erro interno do servidor.' });
+    }
+}
+
+// Verificar se o usuário segue a empresa
+export async function checkFollowStatus(req, res) {
+    try {
+        const { id } = req.params;
+        const idUsuario = req.user.id;
+        
+        // Buscar o cpfFisico do usuário usando Sequelize
+        const usuario = await Fisico.findOne({
+            where: { idUsuario }
+        });
+        
+        if (!usuario) {
+            return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        }
+        
+        const cpfFisico = usuario.cpfFisico;
+        const result = await empresaService.checkIfUserFollowsEmpresa(id, cpfFisico);
+        
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error('Erro ao verificar status de seguidor:', error);
+        return res.status(500).json({ erro: 'Erro interno do servidor.' });
+    }
+}
+
+// Obter seguidores de uma empresa
+export async function getEmpresaFollowers(req, res) {
+    try {
+        const { id } = req.params;
+        const { limit = 10, offset = 0 } = req.query;
+        
+        const followers = await empresaService.getEmpresaFollowers(
+            id, 
+            parseInt(limit), 
+            parseInt(offset)
+        );
+        
+        return res.status(200).json(followers);
+    } catch (error) {
+        console.error('Erro ao buscar seguidores:', error);
+        return res.status(500).json({ erro: 'Erro interno do servidor.' });
     }
 }

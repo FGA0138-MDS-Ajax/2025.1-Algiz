@@ -94,4 +94,7 @@ router.get("/:userId/salvos", async (req, res) => {
   }
 });
 
+// Rota para buscar empresas que o usuário segue
+router.get("/:id/following", userController.getEmpresasSeguidas);
+
 export default router;

@@ -468,6 +468,22 @@ async function getEmpresasAssociadas(req, res) {
   }
 }
 
+// Buscar empresas que o usuário segue
+async function getEmpresasSeguidas(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    const result = await userService.findEmpresasSeguidasByUserId(userId);
+    
+    // Log detalhado para ajudar na depuração
+    console.log(`Retornando ${result.total} empresas seguidas para o usuário ${userId}`);
+    
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Erro ao buscar empresas seguidas:", error);
+    return res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
 // Exporta todas as funções do controller
 export default {
   registerUser,
@@ -485,5 +501,6 @@ export default {
   editUserBanner,
   setUserDefaultProfilePhoto,
   setUserDefaultBanner,
-  getEmpresasAssociadas  // ✅ ADICIONAR
+  getEmpresasAssociadas,  // ✅ ADICIONAR
+  getEmpresasSeguidas
 };

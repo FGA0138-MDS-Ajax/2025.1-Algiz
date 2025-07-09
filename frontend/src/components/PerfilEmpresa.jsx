@@ -3,13 +3,18 @@ import { useModal } from "../context/ModalContext";
 import ModalFotoPerfil from "./ModalFotoPerfil";
 import axios from "axios";
 
-export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica }) {
+export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica, onFollowStatusChange }) {
   const { openEditarEmpresaModal, openCropModal } = useModal();
   
   // Estados para controle dos modais
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
   const [erro, setErro] = useState("");
+  
+  // Estado para controlar se o usuário segue a empresa
+  const [seguindo, setSeguindo] = useState(false);
+  // Estado para indicar loading durante operações de follow/unfollow
+  const [loadingFollow, setLoadingFollow] = useState(false);
   
   // Estados das imagens com URLs corretas
   const [logoEmpresa, setLogoEmpresa] = useState(
@@ -25,6 +30,79 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
   const defaultLogoURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
   const defaultBannerURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
 
+  // Verificar se o usuário está seguindo a empresa
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      // Só verificar status se não for o proprietário e tiver uma empresa carregada
+      if (isOwner || !empresa?.idEmpresa) return;
+      
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) return; // Usuário não está logado
+        
+        const empresaId = empresa?.idEmpresa || empresa?.id;
+        const response = await axios.get(
+          `http://localhost:3001/api/company/${empresaId}/follow/status`, 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        
+        setSeguindo(response.data.follows);
+        // Propaga o status para o componente pai
+        if (onFollowStatusChange) {
+          onFollowStatusChange(response.data.follows);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar status de seguidor:", error);
+      }
+    };
+    
+    checkFollowStatus();
+  }, [empresa, isOwner, onFollowStatusChange]);
+
+  // Handler para alternar seguir/deixar de seguir
+  const handleToggleFollow = async () => {
+    if (!empresa?.idEmpresa || loadingFollow) return;
+    
+    setLoadingFollow(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        // Redirecionar para login se não estiver autenticado
+        window.location.href = "/login";
+        return;
+      }
+      
+      const empresaId = empresa?.idEmpresa || empresa?.id;
+      const method = seguindo ? "DELETE" : "POST";
+      
+      await axios({
+        method,
+        url: `http://localhost:3001/api/company/${empresaId}/follow`,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Atualizar estado local
+      const novoStatus = !seguindo;
+      setSeguindo(novoStatus);
+      
+      // Propaga o status para o componente pai
+      if (onFollowStatusChange) {
+        onFollowStatusChange(novoStatus);
+      }
+    } catch (error) {
+      console.error("Erro ao alterar status de seguidor:", error);
+      setErro("Ocorreu um erro ao " + (seguindo ? "deixar de seguir" : "seguir") + " a empresa.");
+    } finally {
+      setLoadingFollow(false);
+    }
+  };
+
   // Atualizar estados quando empresa muda
   useEffect(() => {
     setLogoEmpresa(empresa?.fotoEmpresa || defaultLogoURL);
@@ -35,8 +113,6 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
   const handleTrocarLogo = (file) => {
     setModalFotoOpen(false);
     const empresaId = empresa?.idEmpresa || empresa?.id;
-    // ✅ DEBUG: Verificar ID e contexto
-    console.log("Troca de logo - Empresa ID:", empresaId);
     openCropModal(file, "foto", empresaId, "empresa");
   };
 
@@ -44,8 +120,6 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
   const handleTrocarBanner = (file) => {
     setModalBannerOpen(false);
     const empresaId = empresa?.idEmpresa || empresa?.id;
-    // ✅ DEBUG: Verificar ID e contexto
-    console.log("Troca de banner - Empresa ID:", empresaId);
     openCropModal(file, "banner", empresaId, "empresa");
   };
 
@@ -182,7 +256,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
           </p>
         </div>
 
-        {/* Botão Perfil público */}
+        {/* Botão Perfil público (para donos da empresa) */}
         {isOwner && !visualizandoPublico && onToggleVisualizacaoPublica && (
           <button 
             className="flex items-center gap-2 bg-green-200 hover:bg-green-300 text-green-900 font-semibold px-4 sm:px-6 py-2 rounded-lg shadow transition w-auto"

@@ -1,7 +1,7 @@
 // Import the models correctly
 import models from '../../../models/index.model.js';
 import db from '../../config/db.js';
-const { Empresa, Sequelize } = models;
+const { Empresa, Fisico, FisicoSegueJuridico } = models;
 import { isValidDocument } from '../../utils/validation.util.js';
 
 // ✅ ADICIONAR: Import direto do Sequelize para acessar Op
@@ -217,6 +217,119 @@ async function getUsuariosVinculados(idEmpresa) {
     }
 }
 
+// Seguir uma empresa
+async function followEmpresa(idEmpresa, cpfFisico) {
+    try {
+        // Verificar se a empresa existe
+        const empresa = await Empresa.findByPk(idEmpresa);
+        if (!empresa) {
+            throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
+        }
+        
+        // Verificar se já segue
+        const existingFollow = await models.FisicoSegueJuridico.findOne({
+            where: {
+                cpfFisico,
+                idEmpresa
+            }
+        });
+        
+        if (existingFollow) {
+            return { message: 'Você já segue esta empresa.', already: true };
+        }
+        
+        // Adicionar o relacionamento
+        await models.FisicoSegueJuridico.create({
+            cpfFisico,
+            idEmpresa,
+            dtInicio: new Date()
+        });
+        
+        return { message: 'Empresa seguida com sucesso!' };
+    } catch (error) {
+        console.error('Erro ao seguir empresa:', error);
+        throw error;
+    }
+}
+
+// Deixar de seguir uma empresa
+async function unfollowEmpresa(idEmpresa, cpfFisico) {
+    try {
+        // Verificar se a empresa existe
+        const empresa = await Empresa.findByPk(idEmpresa);
+        if (!empresa) {
+            throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
+        }
+        
+        // Remover o relacionamento
+        const result = await models.FisicoSegueJuridico.destroy({
+            where: {
+                cpfFisico,
+                idEmpresa
+            }
+        });
+        
+        if (result === 0) {
+            return { message: 'Você não segue esta empresa.', notFollowing: true };
+        }
+        
+        return { message: 'Você deixou de seguir esta empresa.' };
+    } catch (error) {
+        console.error('Erro ao deixar de seguir empresa:', error);
+        throw error;
+    }
+}
+
+// Verificar se usuário segue empresa
+async function checkIfUserFollowsEmpresa(idEmpresa, cpfFisico) {
+    try {
+        const follow = await models.FisicoSegueJuridico.findOne({
+            where: {
+                cpfFisico,
+                idEmpresa
+            }
+        });
+        
+        return { follows: !!follow };
+    } catch (error) {
+        console.error('Erro ao verificar se usuário segue empresa:', error);
+        throw error;
+    }
+}
+
+// Obter seguidores de uma empresa
+async function getEmpresaFollowers(idEmpresa, limit = 10, offset = 0) {
+    try {
+        const followers = await models.FisicoSegueJuridico.findAndCountAll({
+            where: { idEmpresa },
+            include: [{
+                model: models.Fisico,
+                include: [{
+                    model: models.Usuario,
+                    attributes: ['idUsuario', 'fotoPerfil']
+                }]
+            }],
+            order: [['dtInicio', 'DESC']],
+            limit,
+            offset
+        });
+        
+        return { 
+            followers: followers.rows.map(f => ({
+                id: f.Fisico.Usuario.idUsuario,
+                nome: f.Fisico.nomeFisico,
+                sobrenome: f.Fisico.sobrenomeFisico,
+                fotoPerfil: f.Fisico.Usuario.fotoPerfil,
+                dataInicio: f.dtInicio
+            })),
+            total: followers.count
+        };
+    } catch (error) {
+        console.error('Erro ao buscar seguidores da empresa:', error);
+        throw error;
+    }
+}
+
 // ✅ EXPORT atualizado
 export default {
     createEmpresa,
@@ -229,5 +342,9 @@ export default {
     getEmpresaPostagens,
     setEmpresaDefaultPhoto,    // ✅ NOVA
     setEmpresaDefaultBanner,    // ✅ NOVA
-    getUsuariosVinculados   // Nova função adicionada aqui
+    getUsuariosVinculados,   // Nova função adicionada aqui
+    followEmpresa,
+    unfollowEmpresa,
+    checkIfUserFollowsEmpresa,
+    getEmpresaFollowers
 };

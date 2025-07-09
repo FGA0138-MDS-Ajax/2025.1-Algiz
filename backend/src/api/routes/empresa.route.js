@@ -36,6 +36,14 @@ router.patch('/:id/banner',
 // Nova rota para buscar usuários vinculados a uma empresa
 router.get('/:id/usuarios', empresaController.getUsuariosVinculados);
 
+// Adicionar estas rotas ao arquivo
+
+// Rotas para gerenciamento de seguidores
+router.post('/:id/follow', verifyToken, empresaController.followEmpresa);
+router.delete('/:id/follow', verifyToken, empresaController.unfollowEmpresa);
+router.get('/:id/follow/status', verifyToken, empresaController.checkFollowStatus);
+router.get('/:id/followers', empresaController.getEmpresaFollowers);
+
 // Restante do código permanece o mesmo
 
 export default router;

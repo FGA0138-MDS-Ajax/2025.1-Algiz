@@ -6,11 +6,12 @@ import UsuarioDef from './usuario.model.js';
 import FisicoDef from './fisico.model.js';
 import EmpresaDef from './empresa.model.js';
 import VinculoEmpresaFisicoDef from './vinculoEmpresaFisico.model.js';
+import FisicoSegueJuridicoDef from './fisico-segue-juridico.model.js'; // ADICIONE ESTA IMPORTAÇÃO
 import setupAssociations from './associacoes.model.js';
 import MensagemDef from './mensagem.model.js';
 import PostDef from './post.model.js';
 import TagDef from './tag.model.js';
-import ComentarioDef from './comentario.model.js'; // ADICIONE ESTA IMPORTAÇÃO
+import ComentarioDef from './comentario.model.js';
 
 dotenv.config();
 
@@ -36,14 +37,26 @@ const models = {
   Fisico: FisicoDef(sequelize, DataTypes),
   Empresa: EmpresaDef(sequelize, DataTypes),
   VinculoEmpresaFisico: VinculoEmpresaFisicoDef(sequelize, DataTypes),
+  FisicoSegueJuridico: FisicoSegueJuridicoDef(sequelize, DataTypes), // ADICIONE ESTA LINHA
   Mensagem: MensagemDef(sequelize, DataTypes),
   Post: PostDef(sequelize, DataTypes),
   Tag: TagDef(sequelize, DataTypes),
-  Comentario: ComentarioDef(sequelize, DataTypes) // ADICIONE ESTA LINHA
+  Comentario: ComentarioDef(sequelize, DataTypes)
 };
 
 // Configura as associações entre os modelos
 setupAssociations(models);
+
+// Associações entre Usuário, Físico e Empresa
+models.Fisico.belongsTo(models.Usuario, { foreignKey: 'idUsuario' });
+models.Usuario.hasOne(models.Fisico, { foreignKey: 'idUsuario' });
+
+// Associação para seguidores
+models.FisicoSegueJuridico.belongsTo(models.Empresa, { foreignKey: 'idEmpresa' });
+models.Empresa.hasMany(models.FisicoSegueJuridico, { foreignKey: 'idEmpresa' });
+
+models.FisicoSegueJuridico.belongsTo(models.Fisico, { foreignKey: 'cpfFisico' });
+models.Fisico.hasMany(models.FisicoSegueJuridico, { foreignKey: 'cpfFisico' });
 
 // Test the connection
 (async () => {
