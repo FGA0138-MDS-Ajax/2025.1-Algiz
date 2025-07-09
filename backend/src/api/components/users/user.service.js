@@ -428,52 +428,30 @@ export async function findEmpresasAssociadasByUserId(userId) {
   }
 }
 
-// Substituir a função findEmpresasSeguidasByUserId por esta implementação SQL direta
-
 // Buscar empresas que o usuário segue
 async function findEmpresasSeguidasByUserId(userId) {
-  try {
-    // Primeiro buscar o cpfFisico do usuário
-    const [fisico] = await db.query(
-      "SELECT cpfFisico FROM FISICO WHERE idUsuario = ?",
-      [userId]
-    );
-    
-    if (!fisico || fisico.length === 0) {
-      return [];
-    }
-    
-    const cpfFisico = fisico[0].cpfFisico;
-    
-    // Agora buscar as empresas que o usuário segue usando SQL direto
-    // similar à implementação que funciona em empresa.service.js
-    const [empresasSeguidas] = await db.query(`
-      SELECT 
-        j.idEmpresa,
-        j.cnpjJuridico,
-        j.nomeComercial,
-        j.razaoSocial,
-        j.fotoEmpresa,
-        j.bannerEmpresa,
-        j.areaAtuacao,
-        fsj.dtInicio as dataInicio
-      FROM FISICO_SEGUE_JURIDICO fsj
-      JOIN JURIDICO j ON fsj.idEmpresa = j.idEmpresa
-      WHERE fsj.cpfFisico = ?
-      ORDER BY fsj.dtInicio DESC
-    `, [cpfFisico]);
-    
-    // Log para debugging
-    console.log(`Encontradas ${empresasSeguidas.length} empresas seguidas pelo usuário ${userId} (CPF: ${cpfFisico})`);
-    
-    return {
-      companies: empresasSeguidas,
-      total: empresasSeguidas.length
-    };
-  } catch (error) {
-    console.error("Erro ao buscar empresas seguidas:", error);
-    throw error;
-  }
+  // Buscar o cpfFisico do usuário
+  const usuario = await Fisico.findOne({ where: { idUsuario: userId } });
+  if (!usuario) return [];
+  
+  // Buscar as empresas que o usuário segue
+  const [empresasSeguidas] = await db.query(`
+    SELECT 
+      j.idEmpresa,
+      j.cnpjJuridico,
+      j.nomeComercial,
+      j.razaoSocial,
+      j.fotoEmpresa,
+      j.bannerEmpresa,
+      j.areaAtuacao,
+      fsj.dtInicio as dataInicio
+    FROM FISICO_SEGUE_JURIDICO fsj
+    JOIN JURIDICO j ON fsj.idEmpresa = j.idEmpresa
+    WHERE fsj.cpfFisico = ?
+    ORDER BY fsj.dtInicio DESC
+  `, [usuario.cpfFisico]);
+  
+  return empresasSeguidas;
 }
 
 export default {

@@ -11,37 +11,53 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
   // Buscar empresas seguidas pelo usuário
   useEffect(() => {
     const buscarEmpresasSeguidas = async () => {
-      if (!usuario?.id) return;
+      if (!usuario?.id) {
+        console.log("ID do usuário não disponível");
+        return;
+      }
 
       try {
         setCarregando(true);
         const token = localStorage.getItem("authToken");
-        if (!token) return;
+        if (!token) {
+          console.log("Token não disponível");
+          return;
+        }
 
+        console.log(`Buscando empresas seguidas pelo usuário ${usuario.id}...`);
+        
+        // Use a rota correta conforme definido no backend (user.routes.js)
         const response = await axios.get(
-          `http://localhost:3001/api/user/${usuario.id}/following`,
+          `http://localhost:3001/api/users/${usuario.id}/following`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           }
         );
 
-        console.log("Empresas seguidas:", response.data);
-
-        // Ajuste conforme a estrutura de resposta do backend
-        const empresas = response.data.companies || [];
-
+        console.log("Resposta completa da API:", response);
+        console.log("Dados recebidos:", response.data);
+        
+        let empresas = [];
+        
+        // Adaptando para o formato provável da resposta
+        if (Array.isArray(response.data)) {
+          empresas = response.data;
+        } else if (response.data && response.data.companies) {
+          empresas = response.data.companies;
+        } else if (response.data && response.data.data) {
+          empresas = response.data.data;
+        } else if (response.data && response.data.follows) {
+          empresas = response.data.follows;
+        }
+        
+        console.log("Empresas extraídas:", empresas);
         setEmpresasSeguindo(empresas);
       } catch (error) {
         console.error("Erro ao buscar empresas seguidas:", error);
-        // Log detalhado para depuração
-        if (error.response) {
-          console.error("Detalhes do erro:", {
-            status: error.response.status,
-            data: error.response.data,
-          });
-        }
+        // Não use dados mockados em caso de erro
+        setEmpresasSeguindo([]);
       } finally {
         setCarregando(false);
       }
@@ -51,10 +67,9 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
   }, [usuario]);
 
   // Definir as empresas a exibir (da API ou fallback para props)
-  const empresas =
-    empresasSeguindo.length > 0
-      ? empresasSeguindo
-      : usuario.empresasSeguindo || [];
+  const empresas = empresasSeguindo.length > 0
+    ? empresasSeguindo
+    : (usuario.empresasSeguindo || []);
 
   return (
     <div
@@ -78,20 +93,46 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
         ) : (
           <>
             <span className="text-2xl font-semibold text-gray-700">
-              {empresas.length}+
+              {empresas.length}
+              {empresas.length > 5 ? "+" : ""}
             </span>
-            {empresas.slice(0, 5).map((empresa) => (
-              <img
-                key={empresa.id || empresa.idEmpresa}
-                src={
-                  empresa.logo ||
-                  empresa.fotoEmpresa ||
-                  "/empresa-padrao.png"
-                }
-                alt={empresa.nome || empresa.nomeComercial}
-                className="w-10 h-10 rounded-full border border-gray-200"
-              />
-            ))}
+            {empresas.slice(0, 5).map((empresa, index) => {
+              // Identificar todas as possíveis propriedades para ID
+              const empresaId = empresa.id || empresa.idEmpresa || empresa.empresaId || index;
+              
+              // Use uma imagem de placeholder real, não dependa de URLs relativas que podem falhar
+              const imagemEmpresa = empresa.logo || 
+                                  empresa.fotoEmpresa || 
+                                  empresa.foto || 
+                                  empresa.imagem || 
+                                  "https://via.placeholder.com/150?text=Empresa";
+              
+              const nomeEmpresa = empresa.nome || 
+                                empresa.nomeComercial || 
+                                empresa.razaoSocial || 
+                                `Empresa ${index + 1}`;
+              
+              return (
+                <div 
+                  key={empresaId}
+                  className="flex flex-col items-center"
+                  title={nomeEmpresa}
+                >
+                  <img
+                    src={imagemEmpresa}
+                    alt={nomeEmpresa}
+                    className="w-10 h-10 rounded-full border border-gray-200 object-cover"
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/150?text=Empresa";
+                      e.target.onerror = null;
+                    }}
+                  />
+                  <span className="text-xs text-center mt-1 w-10 truncate">
+                    {nomeEmpresa.split(' ')[0]}
+                  </span>
+                </div>
+              );
+            })}
           </>
         )}
       </div>
@@ -160,7 +201,7 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
                           {empresa.nome || empresa.nomeComercial}
                         </p>
                         <Link
-                          to={`/empresas/${empresa.id || empresa.idEmpresa}`}
+                          to={`/empresa/${empresa.id || empresa.idEmpresa}`}
                           className="text-sm text-green-600 hover:underline"
                         >
                           Ver perfil
