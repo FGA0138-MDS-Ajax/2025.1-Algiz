@@ -1,57 +1,120 @@
 import { useState, useEffect, useContext } from "react";
 import { useModal } from "../context/ModalContext";
-import { AuthContext } from "../context/AuthContext"; // NOVO
+import { AuthContext } from "../context/AuthContext";
 import ModalFotoPerfil from "./ModalFotoPerfil";
 import axios from "axios";
+import FormEditarEmpresa from "./FormEditarEmpresa";
 
 export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica, onFollowStatusChange }) {
   const { openEditarEmpresaModal, openCropModal } = useModal();
-  const { setIsEditandoImagemEmpresa } = useContext(AuthContext); // NOVO
-  
+  const { setIsEditandoImagemEmpresa } = useContext(AuthContext);
+
   // Estados para controle dos modais
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
   const [modalBannerOpen, setModalBannerOpen] = useState(false);
   const [erro, setErro] = useState("");
-  
+
   // Estado para controlar se o usuário segue a empresa
   const [seguindo, setSeguindo] = useState(false);
   // Estado para indicar loading durante operações de follow/unfollow
   const [loadingFollow, setLoadingFollow] = useState(false);
-  
+
   // Estados das imagens com URLs corretas
   const [logoEmpresa, setLogoEmpresa] = useState(
-    empresa?.fotoEmpresa || 
-    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"
+    empresa?.fotoEmpresa ||
+      "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"
   );
   const [bannerEmpresa, setBannerEmpresa] = useState(
-    empresa?.bannerEmpresa || 
-    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png"
+    empresa?.bannerEmpresa ||
+      "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png"
   );
 
   // URLs padrão
-  const defaultLogoURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
-  const defaultBannerURL = "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
+  const defaultLogoURL =
+    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png";
+  const defaultBannerURL =
+    "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png";
+
+  // NOVO: Estados para edição local do modal de empresa
+  const [isEditingEmpresa, setIsEditingEmpresa] = useState(false);
+  const [formDataEmpresa, setFormDataEmpresa] = useState({
+    nomeComercial: empresa?.nomeComercial || "",
+    razaoSocial: empresa?.razaoSocial || "",
+    cnpjJuridico: empresa?.cnpjJuridico || "",
+    telefoneJuridico: empresa?.telefoneJuridico || "",
+    enderecoJuridico: empresa?.enderecoJuridico || "",
+    estadoJuridico: empresa?.estadoJuridico || "",
+    areaAtuacao: empresa?.areaAtuacao || "",
+  });
+  const [erroEdicaoEmpresa, setErroEdicaoEmpresa] = useState("");
+
+  // Atualiza formDataEmpresa quando empresa muda
+  useEffect(() => {
+    setFormDataEmpresa({
+      nomeComercial: empresa?.nomeComercial || "",
+      razaoSocial: empresa?.razaoSocial || "",
+      cnpjJuridico: empresa?.cnpjJuridico || "",
+      telefoneJuridico: empresa?.telefoneJuridico || "",
+      enderecoJuridico: empresa?.enderecoJuridico || "",
+      estadoJuridico: empresa?.estadoJuridico || "",
+      areaAtuacao: empresa?.areaAtuacao || "",
+    });
+  }, [empresa]);
+
+  // Handler para alteração dos campos do formulário de edição
+  const handleEditarEmpresaChange = (e) => {
+    const { name, value } = e.target;
+    setFormDataEmpresa((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handler para salvar edição da empresa
+  const handleSalvarEmpresa = async () => {
+    try {
+      setErroEdicaoEmpresa("");
+      const idEmpresa = empresa?.idEmpresa || empresa?.id;
+      const token = localStorage.getItem("authToken");
+      const response = await axios.put(
+        `http://localhost:3001/api/company/${idEmpresa}/edit`,
+        formDataEmpresa,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsEditingEmpresa(false);
+      window.location.reload();
+    } catch (error) {
+      setErroEdicaoEmpresa(
+        error.response?.data?.erro || "Erro ao salvar dados da empresa"
+      );
+    }
+  };
 
   // Verificar se o usuário está seguindo a empresa
   useEffect(() => {
     const checkFollowStatus = async () => {
       // Só verificar status se não for o proprietário e tiver uma empresa carregada
       if (isOwner || !empresa?.idEmpresa) return;
-      
+
       try {
         const token = localStorage.getItem("authToken");
         if (!token) return; // Usuário não está logado
-        
+
         const empresaId = empresa?.idEmpresa || empresa?.id;
         const response = await axios.get(
-          `http://localhost:3001/api/company/${empresaId}/follow/status`, 
+          `http://localhost:3001/api/company/${empresaId}/follow/status`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
-        
+
         setSeguindo(response.data.follows);
         // Propaga o status para o componente pai
         if (onFollowStatusChange) {
@@ -61,14 +124,14 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         console.error("Erro ao verificar status de seguidor:", error);
       }
     };
-    
+
     checkFollowStatus();
   }, [empresa, isOwner, onFollowStatusChange]);
 
   // Handler para alternar seguir/deixar de seguir
   const handleToggleFollow = async () => {
     if (!empresa?.idEmpresa || loadingFollow) return;
-    
+
     setLoadingFollow(true);
     try {
       const token = localStorage.getItem("authToken");
@@ -77,29 +140,33 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         window.location.href = "/login";
         return;
       }
-      
+
       const empresaId = empresa?.idEmpresa || empresa?.id;
       const method = seguindo ? "DELETE" : "POST";
-      
+
       await axios({
         method,
         url: `http://localhost:3001/api/company/${empresaId}/follow`,
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       // Atualizar estado local
       const novoStatus = !seguindo;
       setSeguindo(novoStatus);
-      
+
       // Propaga o status para o componente pai
       if (onFollowStatusChange) {
         onFollowStatusChange(novoStatus);
       }
     } catch (error) {
       console.error("Erro ao alterar status de seguidor:", error);
-      setErro("Ocorreu um erro ao " + (seguindo ? "deixar de seguir" : "seguir") + " a empresa.");
+      setErro(
+        "Ocorreu um erro ao " +
+          (seguindo ? "deixar de seguir" : "seguir") +
+          " a empresa."
+      );
     } finally {
       setLoadingFollow(false);
     }
@@ -118,7 +185,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     openCropModal(file, "foto", empresaId, "empresa");
   };
 
-  // Handler para trocar banner da empresa  
+  // Handler para trocar banner da empresa
   const handleTrocarBanner = (file) => {
     setModalBannerOpen(false);
     const empresaId = empresa?.idEmpresa || empresa?.id;
@@ -131,9 +198,9 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     try {
       const token = localStorage.getItem("authToken");
       const empresaId = empresa?.idEmpresa || empresa?.id;
-      
+
       console.log(`🗑️ Removendo logo da empresa ${empresaId}`);
-      
+
       const response = await axios.put(
         `http://localhost:3001/api/company/${empresaId}/foto/default`,
         {},
@@ -143,18 +210,20 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
           },
         }
       );
-      
+
       console.log("✅ Logo removido com sucesso:", response.data);
-      
+
       // Atualizar o estado local
       setLogoEmpresa(defaultLogoURL);
-      
+
       // Opcional: recarregar a página ou atualizar o estado pai
       // window.location.reload();
     } catch (err) {
       console.error("❌ Erro ao remover logo da empresa:", err);
       console.error("❌ Detalhes do erro:", err.response?.data);
-      setErro(err.response?.data?.erro || "Erro ao remover logo da empresa.");
+      setErro(
+        err.response?.data?.erro || "Erro ao remover logo da empresa."
+      );
     }
   };
 
@@ -164,9 +233,9 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     try {
       const token = localStorage.getItem("authToken");
       const empresaId = empresa?.idEmpresa || empresa?.id;
-      
+
       console.log(`🗑️ Removendo banner da empresa ${empresaId}`);
-      
+
       const response = await axios.put(
         `http://localhost:3001/api/company/${empresaId}/banner/default`,
         {},
@@ -176,21 +245,23 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
           },
         }
       );
-      
+
       console.log("✅ Banner removido com sucesso:", response.data);
-      
+
       // Atualizar o estado local
       setBannerEmpresa(defaultBannerURL);
-      
+
       // Opcional: recarregar a página ou atualizar o estado pai
       // window.location.reload();
     } catch (err) {
       console.error("❌ Erro ao remover banner da empresa:", err);
       console.error("❌ Detalhes do erro:", err.response?.data);
-      setErro(err.response?.data?.erro || "Erro ao remover banner da empresa.");
+      setErro(
+        err.response?.data?.erro || "Erro ao remover banner da empresa."
+      );
     }
   };
-  
+
   // NOVO: Controle de edição de imagem da empresa
   useEffect(() => {
     setIsEditandoImagemEmpresa(modalFotoOpen || modalBannerOpen);
@@ -213,7 +284,11 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
             style={{ zIndex: 30 }}
             onClick={() => setModalBannerOpen(true)}
           >
-            <img src="/icone-camera.png" alt="Alterar banner" className="w-6 h-6" />
+            <img
+              src="/icone-camera.png"
+              alt="Alterar banner"
+              className="w-6 h-6"
+            />
           </button>
         )}
         {/* Logo da empresa */}
@@ -222,7 +297,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
             <img
               src={logoEmpresa}
               alt="Logo Empresa"
-              className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover" // Removido border-4 border-white
+              className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover"
             />
             {isOwner && (
               <button
@@ -232,7 +307,11 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
                 aria-label="Editar logo da empresa"
                 onClick={() => setModalFotoOpen(true)}
               >
-                <img src="/icone-camera.png" alt="Alterar logo" className="w-8 h-8" />
+                <img
+                  src="/icone-camera.png"
+                  alt="Alterar logo"
+                  className="w-8 h-8"
+                />
               </button>
             )}
           </div>
@@ -241,11 +320,11 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
 
       {/* Card de dados da empresa */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end pt-24 sm:pt-20 pb-6 px-4 sm:px-6 relative gap-4 w-full">
-        
         {/* Botão de editar empresa */}
         {isOwner && (
           <button
-            onClick={() => openEditarEmpresaModal(empresa)}
+            // onClick={() => openEditarEmpresaModal(empresa)} // MANTÉM O DO CONTEXTO
+            onClick={() => setIsEditingEmpresa(true)} // NOVO: abre modal local
             className="absolute top-2 right-2 sm:top-4 sm:right-4 z-30 group"
             title="Editar informações da empresa"
             style={{ zIndex: 30 }}
@@ -282,7 +361,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
 
         {/* Botão Perfil público (para donos da empresa) */}
         {isOwner && !visualizandoPublico && onToggleVisualizacaoPublica && (
-          <button 
+          <button
             className="flex items-center gap-2 bg-green-200 hover:bg-green-300 text-green-900 font-semibold px-4 sm:px-6 py-2 rounded-lg shadow transition w-auto"
             onClick={onToggleVisualizacaoPublica}
             title="Visualizar como público"
@@ -321,11 +400,22 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         />
       )}
 
+      {/* NOVO: Modal local de edição de empresa */}
+      {isEditingEmpresa && (
+        <FormEditarEmpresa
+          formData={formDataEmpresa}
+          erro={erroEdicaoEmpresa}
+          onChange={handleEditarEmpresaChange}
+          onSave={handleSalvarEmpresa}
+          onClose={() => setIsEditingEmpresa(false)}
+        />
+      )}
+
       {/* Exibir erro se houver */}
       {erro && (
         <div className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg z-50">
           {erro}
-          <button 
+          <button
             onClick={() => setErro("")}
             className="ml-2 text-white hover:text-gray-200"
           >
