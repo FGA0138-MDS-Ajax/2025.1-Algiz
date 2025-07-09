@@ -1,6 +1,7 @@
 import multer from 'multer';
 const storage = multer.memoryStorage(); // usaremos buffer
 export const upload = multer({ storage });
+
 export const uploadMiddleware = (req, res, next) => {
   upload.single('file')(req, res, (err) => {
     if (err) {
@@ -16,7 +17,8 @@ const fileFilter = (req, file, cb) => {
     cb(new Error('Tipo de ficheiro não suportado. Apenas PDFs são permitidos.'), false);
   }
 };
-const upload = multer({
+
+export const uploadData = multer({
   storage,
   fileFilter,
   limits: {
