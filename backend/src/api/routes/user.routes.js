@@ -1,7 +1,7 @@
 // backend/src/api/routes/user.routes.js
 import express from "express";
 import userController from "../components/users/user.controller.js";
-import verifyToken from "../../middleware/auth.middleware.js";
+import verifyToken from "../../middleware/auth.middleware.js";        // ✅ USAR DEFAULT IMPORT
 import db from "../config/db.js";
 import { upload } from "../../middleware/upload.middleware.js";
 
@@ -19,8 +19,9 @@ router.get('/refresh', userController.refreshToken); // Rota para refresh de tok
 router.post("/logout", userController.logout);
 
 /* 🔐 ROTAS PROTEGIDAS (requer token de autenticação válido) */
-router.get("/:id/profile", verifyToken, userController.getUserProfile); // Obter perfil privado do usuário
-router.put("/:id/profile", verifyToken, userController.editUserProfile); // Editar perfil do usuário
+router.get("/:id/profile", verifyToken, userController.getUserProfile);
+router.get("/:id/empresas", verifyToken, userController.getEmpresasAssociadas); // ✅ NOVA ROTA
+router.put("/:id/profile", verifyToken, userController.editUserProfile);
 
 router.put(
   "/:id/photo", // Atualizar foto de perfil
@@ -54,5 +55,49 @@ router.get("/all", async (req, res) => {
 
 /* 📢 ROTA PÚBLICA: Perfil público de um usuário (sem necessidade de autenticação) */
 router.get("/:id/public", userController.getPublicUserProfile); // Obter perfil público
+
+// Rota pública para acessar posts salvos por um usuário
+router.get("/:userId/salvos", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Primeiro, verificar se existem posts salvos por este usuário
+    const [salvos] = await db.query(`
+      SELECT idPost FROM SALVA WHERE idUsuario = ?
+    `, [userId]);
+    
+    if (salvos.length === 0) {
+      console.log(`Usuário ${userId} não tem posts salvos.`);
+      return res.status(200).json([]);
+    }
+    
+    // Extrair IDs dos posts salvos
+    const postIds = salvos.map(s => s.idPost);
+    
+    // Usar POSTAGENS (nome correto da tabela) em vez de POST
+    const [posts] = await db.query(`
+      SELECT p.*, j.nomeComercial, j.cnpjJuridico, s.salvo_em
+      FROM POSTAGENS p
+      INNER JOIN SALVA s ON p.idPost = s.idPost
+      LEFT JOIN JURIDICO j ON p.idEmpresa = j.idEmpresa
+      WHERE p.idPost IN (?)
+      ORDER BY s.salvo_em DESC
+    `, [postIds]);
+    
+    console.log(`✅ Encontrados ${posts.length} posts salvos para o usuário ${userId}`);
+    
+    return res.status(200).json(posts);
+    
+  } catch (error) {
+    console.error("Erro ao buscar posts salvos:", error);
+    return res.status(500).json({ erro: "Ocorreu um erro ao buscar os posts salvos" });
+  }
+});
+
+// Rota para buscar empresas que o usuário segue
+router.get("/:id/following", userController.getEmpresasSeguidas);
+
+// Adicionar rota pública para empresas associadas
+router.get("/:id/empresas-publicas", userController.getEmpresasAssociadasPublic); // Nova rota pública
 
 export default router;

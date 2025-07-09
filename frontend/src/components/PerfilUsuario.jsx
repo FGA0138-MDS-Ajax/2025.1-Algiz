@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // ADICIONE ESTA LINHA
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalFotoPerfil from "./ModalFotoPerfil";
-import { useModal } from '../context/ModalContext';
+import ModalCropImagem from "./ModalCropImagem";
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -14,7 +15,8 @@ const PerfilUsuario = forwardRef((props, ref) => {
     visualizandoPublico = false,
     onToggleVisualizacaoPublica,
   } = props;
-  const { openCropModal, isCropOpen } = useModal();
+
+  const { setIsEditandoImagem } = useContext(AuthContext); // NOVO
 
   // Estado para controle de edição do perfil
   const [isEditing, setIsEditing] = useState(false);
@@ -46,6 +48,17 @@ const PerfilUsuario = forwardRef((props, ref) => {
     usuario.bannerPerfil ||
       "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246166/banner-padrao-1_lbhrjv.png"
   );
+
+  // Estado para crop modal
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [cropModalType, setCropModalType] = useState("foto");
+  const [cropImage, setCropImage] = useState(null);
+  const [cropConfig, setCropConfig] = useState({
+    aspect: 1,
+    cropShape: "round",
+    outputWidth: 160,
+    outputHeight: 160,
+  });
 
   // URLs padrão para foto e banner
   const defaultProfileURL =
@@ -171,42 +184,100 @@ const PerfilUsuario = forwardRef((props, ref) => {
     setFotoPerfil(usuario.fotoPerfil || defaultProfileURL);
   }, [usuario]);
 
+  // Quando crop modal abrir/fechar, avise o contexto
+  useEffect(() => {
+    setIsEditandoImagem(cropModalOpen || modalFotoOpen || modalBannerOpen);
+    // Limpa flag ao desmontar
+    return () => setIsEditandoImagem(false);
+  }, [cropModalOpen, modalFotoOpen, modalBannerOpen, setIsEditandoImagem]);
+
   // Handler para troca de foto de perfil
-  const handleTrocarFoto = async (file) => {
+  const handleTrocarFoto = (file) => {
     setModalFotoOpen(false);
-    try {
-      const newPhotoUrl = await openCropModal(file, "foto", usuario.id);
-      if (newPhotoUrl) {
-        setFotoPerfil(newPhotoUrl);
-        // Update local storage
-        const updatedUsuario = { ...usuario, fotoPerfil: newPhotoUrl };
-        localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
-      }
-    } catch (err) {
-      console.error("Error cropping image:", err);
-      setErro("Erro ao atualizar foto de perfil.");
-    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropImage(reader.result);
+      setCropModalType("foto");
+      setCropConfig({
+        aspect: 1,
+        cropShape: "round",
+        outputWidth: 160,
+        outputHeight: 160,
+      });
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleTrocarBanner = async (file) => {
+  // Handler para troca de banner
+  const handleTrocarBanner = (file) => {
     setModalBannerOpen(false);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropImage(reader.result);
+      setCropModalType("banner");
+      setCropConfig({
+        aspect: 3.5,
+        cropShape: "rect",
+        outputWidth: 1050,
+        outputHeight: 300,
+      });
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Handler para salvar imagem cropada
+  const handleCropSave = async (croppedBase64) => {
     try {
-      const newBannerUrl = await openCropModal(file, "banner", usuario.id);
-      if (newBannerUrl) {
-        setBanner(newBannerUrl);
-        // Update local storage
-        const updatedUsuario = { ...usuario, bannerPerfil: newBannerUrl };
-        localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      const response = await fetch(croppedBase64);
+      const croppedBlob = await response.blob();
+      const formData = new FormData();
+      const token = localStorage.getItem("authToken");
+
+      let fieldName, endpoint;
+      if (cropModalType === "foto") {
+        fieldName = "fotoPerfil";
+        endpoint = "photo";
+      } else {
+        fieldName = "bannerPerfil";
+        endpoint = "banner";
       }
+      formData.append(fieldName, croppedBlob, "imagem.jpg");
+
+      // PUT para usuário
+      const res = await axios.put(
+        `http://localhost:3001/api/users/${usuario.id}/${endpoint}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Atualiza localStorage e estado local
+      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+      if (cropModalType === "foto") {
+        usuarioLogado.fotoPerfil = res.data.fotoPerfil || croppedBase64;
+        setFotoPerfil(res.data.fotoPerfil || croppedBase64);
+      } else {
+        usuarioLogado.bannerPerfil = res.data.bannerPerfil || croppedBase64;
+        setBanner(res.data.bannerPerfil || croppedBase64);
+      }
+      localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+
+      setCropModalOpen(false);
+      window.location.reload(); // Atualiza a página após salvar
     } catch (err) {
-      console.error("Error cropping banner:", err);
-      setErro("Erro ao atualizar banner.");
+      console.error("Erro ao fazer upload da imagem:", err);
     }
   };
 
   // Exponha o estado do crop para o componente pai
   useImperativeHandle(ref, () => ({
-    isCropOpen,
+    isCropOpen: () => cropModalOpen,
   }));
 
   // Renderização do componente
@@ -349,6 +420,24 @@ const PerfilUsuario = forwardRef((props, ref) => {
         fotoAtual={banner}
         tipo="banner"
       />
+
+      {/* Modal de crop de imagem */}
+      {cropModalOpen && cropImage && (
+        <ModalCropImagem
+          open={cropModalOpen}
+          image={cropImage}
+          onClose={() => setCropModalOpen(false)}
+          onCropSave={handleCropSave}
+          aspect={cropConfig.aspect}
+          cropShape={cropConfig.cropShape}
+          outputWidth={cropConfig.outputWidth}
+          outputHeight={cropConfig.outputHeight}
+          tipo={cropModalType}
+          entityId={usuario.id}
+          contexto="usuario"
+          label="Salvar"
+        />
+      )}
     </div>
   );
 });

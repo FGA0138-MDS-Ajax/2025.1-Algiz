@@ -30,7 +30,7 @@ export default function MenuPerfilEmpresa({ empresa }) {
         {/* Empresa */}
         <div className="flex items-center gap-3 px-3 py-2">
           <img
-            src={empresa.logoUrl || "/user/foto-perfil-padrao-empresa.png"}
+            src={empresa.fotoEmpresa || "https://res.cloudinary.com/dupalmuyo/image/upload/v1751246125/foto-perfil-padrao-usuario-2_f0ghzz.png"}
             alt="Logo"
             className="w-8 h-8 rounded-full object-cover"
           />

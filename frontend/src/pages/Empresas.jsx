@@ -10,6 +10,7 @@ import UsuariosVinculados from "../components/UsuariosVinculados";
 import Salvos from "../components/Salvos";
 import MenuPerfilEmpresa from "../components/MenuPerfilEmpresa";
 import MensagensCard from "../components/MensagensCard";
+import ModalSeguidores from "../components/ModalSeguidores";
 
 const sugestoesEmpresas = [
   { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
@@ -22,7 +23,7 @@ const sugestoesEmpresas = [
 
 function Empresas() {
   const { idEmpresa } = useParams();
-  const { usuario: usuarioLogado } = useContext(AuthContext);
+  const { usuario: usuarioLogado, isEditandoImagemEmpresa } = useContext(AuthContext); // NOVO
 
   const [empresa, setEmpresa] = useState(null);
   const [seguindo, setSeguindo] = useState(false);
@@ -31,6 +32,8 @@ function Empresas() {
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
+  const [empresasModalOpen, setEmpresasModalOpen] = useState(false);
+  const [seguidoresModalOpen, setSeguidoresModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchEmpresa() {
@@ -41,6 +44,7 @@ function Empresas() {
         if (!res.ok) throw new Error("Empresa não encontrada");
         const data = await res.json();
 
+        // Configuração de usuários vinculados para exibição
         data.usuariosVinculados = [
           { id: 1, nome: "João Silva", cargo: "Dev", fotoPerfil: "/user/foto-perfil-padrao-1.png", dataVinculacao: "25/09/2023", status: "Presente", genero: "men" },
           { id: 2, nome: "Maria Santos", cargo: "Designer", fotoPerfil: "/user/foto-perfil-padrao-1.png", dataVinculacao: "15/08/2023", status: "Presente", genero: "women" },
@@ -58,8 +62,9 @@ function Empresas() {
         setLoading(false);
       }
     }
-    if (idEmpresa) fetchEmpresa();
-  }, [idEmpresa, usuarioLogado]);
+    // Só busca se NÃO estiver editando imagem da empresa
+    if (idEmpresa && !isEditandoImagemEmpresa) fetchEmpresa();
+  }, [idEmpresa, usuarioLogado, isEditandoImagemEmpresa]); // NOVO: dependência
 
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
     nome: e.nome,
@@ -82,7 +87,7 @@ function Empresas() {
   }
 
   return (
-    <div className="bg-green-50 min-h-screen py-2 relative">
+    <div className="container mx-auto px-4 sm:px-6 py-4 max-w-screen-xl">
       <div className="h-12" />
       <main className="flex gap-6 max-w-6xl mx-auto mt-8">
         <section className="flex-1">
@@ -91,16 +96,20 @@ function Empresas() {
             isOwner={isOwnerAtual}
             visualizandoPublico={visualizandoPublico}
             onToggleVisualizacaoPublica={handleToggleVisualizacaoPublica}
+            onFollowStatusChange={(status) => setSeguindo(status)}
           />
           <SeguidoresEmpresa
             isOwner={isOwnerAtual}
             seguindo={seguindo}
             setSeguindo={setSeguindo}
             empresa={empresa}
+            onVerTodos={() => setSeguidoresModalOpen(true)}
           />
           <SobreEmpresa empresa={empresa} isOwner={isOwnerAtual} />
           <UsuariosVinculados empresa={empresa} isOwner={isOwnerAtual} />
-          <Salvos />
+          
+          {/* ✅ MODIFICADO: Passando a empresa para o componente Salvos */}
+          <Salvos empresa={empresa} />
         </section>
 
         <aside className="w-80">
@@ -108,18 +117,25 @@ function Empresas() {
             {isOwnerAtual && <MenuPerfilEmpresa empresa={empresa} />}
             <SugestoesEmpresas
               sugestoes={sugestoesEmpresas}
-              onVerTodas={() => setModalOpen(true)}
+              onVerTodas={() => setEmpresasModalOpen(true)}
             />
           </div>
         </aside>
       </main>
 
       <EmpresasModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={empresasModalOpen}
+        onClose={() => setEmpresasModalOpen(false)}
         tab={tab}
         setTab={setTab}
         empresasRecomendadas={empresasRecomendadas}
+      />
+
+      {/* Adicione o modal de seguidores aqui */}
+      <ModalSeguidores 
+        isOpen={seguidoresModalOpen} 
+        onClose={() => setSeguidoresModalOpen(false)} 
+        empresa={empresa}
       />
 
       {isOwnerAtual && (

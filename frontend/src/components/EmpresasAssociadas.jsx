@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function MiniCardEmpresa({ empresa }) {
   const navigate = useNavigate();
@@ -38,21 +38,32 @@ function MiniCardEmpresa({ empresa }) {
   );
 }
 
-export default function EmpresasVinculadas({ usuario, isUsuarioLogado }) {
+export default function EmpresasAssociadas({ usuario, isUsuarioLogado }) {
+  console.log("🔍 EmpresasAssociadas - Componente renderizado");
+  console.log("🔍 EmpresasAssociadas - Props recebidas:", { 
+    "usuarioId": usuario?.id, 
+    "isUsuarioLogado": isUsuarioLogado 
+  });
+
   const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEmpresasVinculadas = async () => {
-      if (!usuario?.id) return;
+      if (!usuario?.id) {
+        console.log("❌ EmpresasAssociadas - Sem ID de usuário, abortando fetch");
+        return;
+      }
       
       try {
         setLoading(true);
         setError(null);
+        console.log(`🔄 EmpresasAssociadas - Iniciando fetch para usuário ID: ${usuario.id}`);
 
         // Usar a rota que já existe no backend
         const url = `http://localhost:3001/api/users/${usuario.id}/empresas`;
+        console.log(`🔄 EmpresasAssociadas - URL da requisição: ${url}`);
         
         // Configurar headers com autenticação apenas se o usuário estiver logado
         const headers = {
@@ -63,36 +74,57 @@ export default function EmpresasVinculadas({ usuario, isUsuarioLogado }) {
           const token = localStorage.getItem("authToken");
           if (token) {
             headers.Authorization = `Bearer ${token}`;
+            console.log("🔑 EmpresasAssociadas - Token adicionado ao header");
+          } else {
+            console.log("⚠️ EmpresasAssociadas - Token não encontrado no localStorage");
           }
         }
+        
+        console.log("🔄 EmpresasAssociadas - Configuração da requisição:", { 
+          headers: { ...headers, Authorization: headers.Authorization ? "Bearer [REDACTED]" : undefined },
+          credentials: isUsuarioLogado ? 'include' : 'omit' 
+        });
         
         const response = await fetch(url, {
           headers,
           credentials: isUsuarioLogado ? 'include' : 'omit'
         });
         
+        console.log(`🔄 EmpresasAssociadas - Status da resposta: ${response.status}`);
+        
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`❌ EmpresasAssociadas - Erro na resposta: ${response.status} - ${errorText}`);
+          
           if (response.status === 401 || response.status === 403) {
-            // Se não autorizado ou proibido, não mostrar erro, apenas empresas vazias
+            console.log("⚠️ EmpresasAssociadas - Erro de autenticação/autorização, mostrando lista vazia");
             setEmpresasVinculadas([]);
             return;
           }
-          throw new Error(`Erro ${response.status}: ${await response.text()}`);
+          throw new Error(`Erro ${response.status}: ${errorText}`);
         }
         
         const data = await response.json();
-        console.log("Empresas vinculadas recebidas:", data);
-        setEmpresasVinculadas(data);
+        console.log("✅ EmpresasAssociadas - Dados recebidos:", data);
+        setEmpresasVinculadas(Array.isArray(data) ? data : []);
+        
       } catch (err) {
-        console.error("Erro ao buscar empresas vinculadas:", err);
+        console.error("❌ EmpresasAssociadas - Erro na requisição:", err);
         setError(err.message);
       } finally {
         setLoading(false);
+        console.log("🔄 EmpresasAssociadas - Requisição finalizada");
       }
     };
 
     fetchEmpresasVinculadas();
   }, [usuario, isUsuarioLogado]);
+
+  console.log("🔍 EmpresasAssociadas - Estado atual:", {
+    empresasVinculadas,
+    loading,
+    error
+  });
 
   if (loading) {
     return (

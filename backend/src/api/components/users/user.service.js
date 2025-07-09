@@ -4,7 +4,7 @@ import models from "../../../models/index.model.js";
 import { isValidDocument } from '../../utils/validation.util.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
 
-const { Usuario } = models;
+const { Usuario, Fisico, FisicoSegueJuridico, Empresa } = models;
 
 // Helper functions for validation
 function validateRequiredField(field, fieldName, erros) {
@@ -176,6 +176,7 @@ async function findUserProfileById(userId) {
             f.sexo,
             f.dtNascimento,
             vjf.cargo,
+            j.idEmpresa,
             j.cnpjJuridico,
             j.nomeComercial,
             j.razaoSocial,
@@ -186,7 +187,7 @@ async function findUserProfileById(userId) {
         FROM USUARIO u
         INNER JOIN FISICO f ON u.idUsuario = f.idUsuario
         LEFT JOIN VINCULO_JURIDICO_FISICO vjf ON f.cpfFisico = vjf.cpfFisico
-        LEFT JOIN JURIDICO j ON vjf.cnpjJuridico = j.cnpjJuridico
+        LEFT JOIN JURIDICO j ON vjf.idEmpresa = j.idEmpresa
         WHERE u.idUsuario = ?;
     `;
 
@@ -201,6 +202,7 @@ async function findUserProfileById(userId) {
   // Buscar empresas seguidas
   const followedQuery = `
         SELECT
+            j.idEmpresa,
             j.cnpjJuridico,
             j.nomeComercial,
             j.razaoSocial,
@@ -209,7 +211,7 @@ async function findUserProfileById(userId) {
             j.enderecoJuridico,
             j.areaAtuacao
         FROM FISICO_SEGUE_JURIDICO fsj
-        INNER JOIN JURIDICO j ON fsj.cnpjJuridico = j.cnpjJuridico
+        INNER JOIN JURIDICO j ON fsj.idEmpresa = j.idEmpresa
         WHERE fsj.cpfFisico = ?;
     `;
   const [followedRows] = await db.query(followedQuery, [user.cpfFisico]);
@@ -227,8 +229,9 @@ async function findUserProfileById(userId) {
     fotoPerfil: user.fotoPerfil,
     bannerPerfil: user.bannerPerfil,
     cargo: user.cargo || null,
-    empresa_associada: user.cnpjJuridico
+    empresa_associada: user.idEmpresa
       ? {
+          id: user.idEmpresa,
           cnpj: user.cnpjJuridico,
           nomeComercial: user.nomeComercial,
           razaoSocial: user.razaoSocial,
@@ -400,6 +403,59 @@ async function updatePassword(userId, currentPassword, newPassword) {
   }
 }
 
+// ✅ NOVA FUNÇÃO: Buscar empresas associadas ao usuário
+export async function findEmpresasAssociadasByUserId(userId) {
+  try {
+    const query = `
+      SELECT DISTINCT
+        j.idEmpresa,
+        j.cnpjJuridico,
+        j.nomeComercial,
+        j.razaoSocial,
+        j.fotoEmpresa,
+        j.areaAtuacao,
+        vjf.cargo
+      FROM VINCULO_JURIDICO_FISICO vjf
+      INNER JOIN JURIDICO j ON vjf.idEmpresa = j.idEmpresa
+      INNER JOIN FISICO f ON vjf.cpfFisico = f.cpfFisico
+      WHERE f.idUsuario = ?
+      ORDER BY j.nomeComercial;
+    `;
+    
+    const [empresas] = await db.query(query, [userId]);
+    return empresas;
+  } catch (error) {
+    console.error("Erro ao buscar empresas associadas:", error);
+    throw error;
+  }
+}
+
+// Buscar empresas que o usuário segue
+async function findEmpresasSeguidasByUserId(userId) {
+  // Buscar o cpfFisico do usuário
+  const usuario = await Fisico.findOne({ where: { idUsuario: userId } });
+  if (!usuario) return [];
+  
+  // Buscar as empresas que o usuário segue
+  const [empresasSeguidas] = await db.query(`
+    SELECT 
+      j.idEmpresa,
+      j.cnpjJuridico,
+      j.nomeComercial,
+      j.razaoSocial,
+      j.fotoEmpresa,
+      j.bannerEmpresa,
+      j.areaAtuacao,
+      fsj.dtInicio as dataInicio
+    FROM FISICO_SEGUE_JURIDICO fsj
+    JOIN JURIDICO j ON fsj.idEmpresa = j.idEmpresa
+    WHERE fsj.cpfFisico = ?
+    ORDER BY fsj.dtInicio DESC
+  `, [usuario.cpfFisico]);
+  
+  return empresasSeguidas;
+}
+
 export default {
   createUser,
   findUserProfileById,
@@ -411,5 +467,7 @@ export default {
   updateUserProfile,
   updateUserProfilePhoto,
   updateUserBanner,
-  validateSenha
+  validateSenha,
+  findEmpresasAssociadasByUserId,  // ✅ ADICIONAR
+  findEmpresasSeguidasByUserId // Adicionando a nova função aqui
 };

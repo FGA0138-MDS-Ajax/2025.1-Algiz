@@ -440,6 +440,74 @@ export async function setUserDefaultBanner(req, res) {
   }
 }
 
+// ✅ NOVA FUNÇÃO: Buscar empresas associadas
+async function getEmpresasAssociadas(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    const authenticatedUserId = req.user.id;
+
+    // Verifica se o usuário está acessando suas próprias empresas ou se é público
+    if (userId !== authenticatedUserId) {
+      // Para outros usuários, retornar apenas empresas públicas (sem cargo)
+      const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+      const empresasPublicas = empresas.map(empresa => ({
+        id: empresa.idEmpresa,
+        nomeComercial: empresa.nomeComercial,
+        fotoEmpresa: empresa.fotoEmpresa,
+        areaAtuacao: empresa.areaAtuacao
+      }));
+      return res.json(empresasPublicas);
+    }
+
+    // Para o próprio usuário, retornar empresas completas
+    const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+    res.json(empresas);
+  } catch (error) {
+    console.error("Erro ao buscar empresas associadas:", error);
+    res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
+// Função pública para obter empresas vinculadas
+async function getEmpresasAssociadasPublic(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    console.log(`[getEmpresasAssociadasPublic] Buscando empresas públicas para usuário ${userId}`);
+    
+    // Retornar apenas informações públicas das empresas
+    const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+    console.log(`[getEmpresasAssociadasPublic] Encontradas ${empresas.length} empresas`);
+    
+    const empresasPublicas = empresas.map(empresa => ({
+      id: empresa.idEmpresa,
+      nomeComercial: empresa.nomeComercial,
+      fotoEmpresa: empresa.fotoEmpresa,
+      areaAtuacao: empresa.areaAtuacao
+    }));
+    
+    return res.json(empresasPublicas);
+  } catch (error) {
+    console.error("Erro ao buscar empresas associadas (público):", error);
+    res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
+// Buscar empresas que o usuário segue
+async function getEmpresasSeguidas(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    const result = await userService.findEmpresasSeguidasByUserId(userId);
+    
+    // Log detalhado para ajudar na depuração
+    console.log(`Retornando ${result.total} empresas seguidas para o usuário ${userId}`);
+    
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Erro ao buscar empresas seguidas:", error);
+    return res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
 // Exporta todas as funções do controller
 export default {
   registerUser,
@@ -456,5 +524,8 @@ export default {
   editUserProfilePhoto,
   editUserBanner,
   setUserDefaultProfilePhoto,
-  setUserDefaultBanner
+  setUserDefaultBanner,
+  getEmpresasAssociadas,  // ✅ ADICIONAR
+  getEmpresasAssociadasPublic,  // Adicionar esta nova função
+  getEmpresasSeguidas
 };

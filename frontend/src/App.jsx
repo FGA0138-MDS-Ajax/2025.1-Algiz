@@ -19,13 +19,13 @@ import AuthListener from './components/AuthListener';
 import { ModalProvider } from './context/ModalContext';
 import VisualizarContrato from "./pages/VisualizarContrato";
 
-import AuthProvider from './context/AuthContext'; // <-- importado o AuthProvider
+import AuthProvider from './context/AuthContext';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AuthListener /> {/* Ensures routing reacts to login/logout */}
+        <AuthListener />
         <ModalProvider>
           <Layout>
             <Routes>
@@ -34,7 +34,13 @@ function App() {
               <Route path="/sobrenos" element={<Sobrenos />} />
               <Route path="/empresa/:idEmpresa" element={<Empresas />} />
               <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
+              
+              {/* Rota para post específico com ID */}
+              <Route path="/post/:id" element={<PaginaPost />} />
+              
+              {/* Mantida a rota antiga para compatibilidade */}
               <Route path="/post" element={<PaginaPost />} />
+              
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/esqueci-senha" element={<EsqueciSenha />} />

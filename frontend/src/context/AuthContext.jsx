@@ -6,8 +6,13 @@ export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
+  const [isEditandoImagem, setIsEditandoImagem] = useState(false); // Usuário
+  const [isEditandoImagemEmpresa, setIsEditandoImagemEmpresa] = useState(false); // NOVO: Empresa
 
   const fetchUsuario = async () => {
+    // Só busca se NÃO estiver editando imagem
+    if (isEditandoImagem) return;
+
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
     const token = localStorage.getItem("authToken");
 
@@ -33,12 +38,12 @@ const AuthProvider = ({ children }) => {
 
     const handleStorageChange = (event) => {
       if (["authToken", "usuarioLogado", "authEvent"].includes(event.key)) {
-        fetchUsuario(); // ✅ don't reload — fetch updated user data
+        fetchUsuario();
       }
     };
 
     const handleFocus = () => {
-      fetchUsuario(); // ✅ useful when user switches tabs
+      fetchUsuario();
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -48,18 +53,19 @@ const AuthProvider = ({ children }) => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("focus", handleFocus);
     };
-  }, []);
+    // Adicione isEditandoImagem como dependência
+  }, [isEditandoImagem]);
 
   const login = async (user, token) => {
     localStorage.setItem("usuarioLogado", JSON.stringify(user));
     localStorage.setItem("authToken", token);
     localStorage.setItem("authEvent", Date.now().toString());
-    await fetchUsuario(); // ✅ get full profile (not just ID/email)
+    await fetchUsuario();
   };
 
   const logout = async () => {
     try {
-      await api.post("/users/logout"); // ✅ clears refreshToken on server
+      await api.post("/users/logout");
     } catch (err) {
       console.warn("Erro ao fazer logout no backend:", err);
     }
@@ -70,7 +76,11 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{
+      usuario, login, logout,
+      isEditandoImagem, setIsEditandoImagem,
+      isEditandoImagemEmpresa, setIsEditandoImagemEmpresa // NOVO
+    }}>
       {children}
     </AuthContext.Provider>
   );

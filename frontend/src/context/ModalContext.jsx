@@ -12,14 +12,16 @@ const ModalProvider = ({ children }) => {
   
   // Estados para o modal de crop de imagem
   const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto");
+  const [cropModalType, setCropModalType] = useState("foto"); 
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [cropConfig, setCropConfig] = useState({
     aspect: 1,
     cropShape: "round",
     outputWidth: 160,
     outputHeight: 160,
-    usuarioId: null
+    entityId: null,
+    contexto: null  // "usuario" ou "empresa"
   });
 
   // Estados para o modal de edição de empresa
@@ -37,76 +39,111 @@ const ModalProvider = ({ children }) => {
     setShowCadastroEmpresaModal(false);
   };
 
-  // Função para abrir o modal de crop
-  const openCropModal = useCallback((imageFile, type, userId) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedImage(reader.result);
-        setCropModalType(type);
-        
-        if (type === "foto") {
-          setCropConfig({
-            aspect: 1,
-            cropShape: "round",
-            outputWidth: 160,
-            outputHeight: 160,
-            usuarioId: userId
-          });
-        } else if (type === "banner") {
-          setCropConfig({
-            aspect: 3.5,
-            cropShape: "rect", 
-            outputWidth: 1050,
-            outputHeight: 300,
-            usuarioId: userId
-          });
-        }
-        
-        setCropModalOpen(true);
-        currentResolve = resolve;
-        currentReject = reject;
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(imageFile);
-    });
-  }, []);
+  // Função para abrir modal de crop
+  const openCropModal = (imageFile, tipo, entityId, contexto) => {
+    console.log(`Abrindo modal para ${contexto} com ID ${entityId} - Tipo: ${tipo}`);
+    
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+      setCropModalType(tipo);
+      
+      // Configurações baseadas no tipo de imagem
+      if (tipo === "foto" || tipo === "logo") {
+        setCropConfig({
+          aspect: 1,
+          cropShape: "round",
+          outputWidth: 160,
+          outputHeight: 160,
+          entityId: entityId,
+          contexto: contexto  // "usuario" ou "empresa"
+        });
+      } else if (tipo === "banner") {
+        setCropConfig({
+          aspect: 3.5,
+          cropShape: "rect", 
+          outputWidth: 1050,
+          outputHeight: 300,
+          entityId: entityId,
+          contexto: contexto  // "usuario" ou "empresa"
+        });
+      }
+      
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(imageFile);
+  };
 
-  // Função para salvar a imagem cropada
+  // Função para salvar imagem cropada
   const handleCropSave = useCallback(async (croppedBase64) => {
     try {
-      if (!cropConfig.usuarioId) throw new Error("ID do usuário não definido");
-      
-      const croppedBlob = await (await fetch(croppedBase64)).blob();
+      const response = await fetch(croppedBase64);
+      const croppedBlob = await response.blob();
       const formData = new FormData();
-      
-      const fieldName = cropModalType === "foto" ? "fotoPerfil" : "bannerPerfil";
-      const endpoint = cropModalType === "foto" ? "photo" : "banner";
-      
-      formData.append(fieldName, croppedBlob, "imagem.jpg");
-      
       const token = localStorage.getItem("authToken");
       
-      const response = await axios.put(
-        `http://localhost:3001/api/users/${cropConfig.usuarioId}/${endpoint}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+      // ✅ DEBUG: Log para verificar o contexto e ID sendo usados
+      console.log("📌 SALVANDO IMAGEM - Contexto:", cropConfig.contexto);
+      console.log("📌 SALVANDO IMAGEM - EntityID:", cropConfig.entityId);
+      console.log("📌 SALVANDO IMAGEM - Tipo:", cropModalType);
+
+      // ROTEAMENTO BASEADO NO CONTEXTO
+      if (cropConfig.contexto === "empresa") {
+        console.log("🏢 Upload de EMPRESA - ID:", cropConfig.entityId);
+        
+        const fieldName = cropModalType === "foto" || cropModalType === "logo" ? "foto" : "banner";
+        const endpoint = cropModalType === "foto" || cropModalType === "logo" ? "foto" : "banner";
+        
+        formData.append(fieldName, croppedBlob, "imagem.jpg");
+        
+        // ✅ CORRIGIR: Usar método PATCH para empresa
+        const response = await axios.patch(
+          `http://localhost:3001/api/company/${cropConfig.entityId}/${endpoint}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        
+        console.log(`✅ ${endpoint} da empresa atualizada:`, response.data);
+        
+      } else if (cropConfig.contexto === "usuario") {
+        console.log("👤 Upload de USUÁRIO - ID:", cropConfig.entityId);
+        
+        const fieldName = cropModalType === "foto" ? "fotoPerfil" : "bannerPerfil";
+        const endpoint = cropModalType === "foto" ? "photo" : "banner";
+        
+        formData.append(fieldName, croppedBlob, "imagem.jpg");
+        
+        // ✅ CORRIGIR: Usar método PUT para usuário
+        const response = await axios.put(
+          `http://localhost:3001/api/users/${cropConfig.entityId}/${endpoint}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        
+        // Atualizar localStorage para usuários
+        const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+        if (cropModalType === "foto") {
+          usuarioLogado.fotoPerfil = response.data.fotoPerfil || croppedBase64;
+        } else {
+          usuarioLogado.bannerPerfil = response.data.bannerPerfil || croppedBase64;
         }
-      );
-      
-      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-      if (cropModalType === "foto") {
-        usuarioLogado.fotoPerfil = response.data.fotoPerfil || croppedBase64;
+        localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+        
+        console.log(`✅ ${endpoint} do usuário atualizada:`, response.data);
+
       } else {
-        usuarioLogado.bannerPerfil = response.data.bannerPerfil || croppedBase64;
+        throw new Error("❌ Erro: Contexto não definido (deve ser 'usuario' ou 'empresa')!");
       }
-      localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
       
       const result = response.data.fotoPerfil || response.data.bannerPerfil || croppedBase64;
       if (currentResolve) {
@@ -116,19 +153,16 @@ const ModalProvider = ({ children }) => {
       }
       
       setCropModalOpen(false);
+                 window.location.reload();
+
       return result;
     } catch (err) {
-      console.error("Erro ao fazer upload da imagem:", err);
-      if (currentReject) {
-        currentReject(err);
-        currentResolve = null;
-        currentReject = null;
-      }
-      throw err;
-    }
-  }, [cropConfig.usuarioId, cropModalType]);
+      console.error("❌ Erro ao fazer upload da imagem:", err);
 
-  // Função para fechar o modal de crop
+    }
+  }, [cropConfig, cropModalType]);
+
+  
   const closeCropModal = useCallback(() => {
     if (currentReject) {
       currentReject(new Error("Modal closed by user"));
@@ -139,7 +173,11 @@ const ModalProvider = ({ children }) => {
   }, []);
 
   // Função para abrir o modal de edição de empresa
-  const openEditarEmpresaModal = useCallback((empresa) => {
+  const openEditarEmpresaModal = ((empresa) => {
+    console.log("Empresa recebida para edição:", empresa);
+    console.log("ID da empresa:", empresa?.idEmpresa || empresa?.id);
+    
+
     setEmpresaEditando(empresa);
     setFormDataEmpresa({
       nomeComercial: empresa?.nomeComercial || "",
@@ -172,10 +210,17 @@ const ModalProvider = ({ children }) => {
         throw new Error("Empresa não identificada");
       }
       
-      const cnpjLimpo = empresaEditando.cnpjJuridico.replace(/\D/g, '');
+      const idEmpresa = empresaEditando.idEmpresa || empresaEditando.id;
+      
+      if (!idEmpresa) {
+        throw new Error("ID da empresa não encontrado");
+      }
+      
+
       const token = localStorage.getItem("authToken");
       
-      const response = await fetch(`http://localhost:3001/api/company/${cnpjLimpo}`, {
+      // ✅ MANTER: URL com /edit conforme solicitado
+      const response = await fetch(`http://localhost:3001/api/company/${idEmpresa}/edit`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -214,7 +259,25 @@ const ModalProvider = ({ children }) => {
   };
 
   return (
-    <ModalContext.Provider value={value}>
+    <ModalContext.Provider 
+      value={{
+        // Modal de cadastro de empresa
+        showCadastroEmpresaModal,
+        openCadastroEmpresaModal: () => setShowCadastroEmpresaModal(true),
+        closeCadastroEmpresaModal: () => setShowCadastroEmpresaModal(false),
+        
+        // Modal de crop de imagem
+        cropModalOpen,
+        openCropModal,  // (file, tipo, entityId, contexto)
+        closeCropModal: () => setCropModalOpen(false),
+        isCropOpen: () => cropModalOpen,
+        
+        // Modal de edição de empresa
+        openEditarEmpresaModal,
+        closeEditarEmpresaModal: () => setShowEditarEmpresaModal(false)
+      }}
+    >
+
       {children}
       
       {showCadastroEmpresaModal && (
@@ -235,7 +298,8 @@ const ModalProvider = ({ children }) => {
           outputWidth={cropConfig.outputWidth}
           outputHeight={cropConfig.outputHeight}
           tipo={cropModalType}
-          usuarioId={cropConfig.usuarioId}
+          entityId={cropConfig.entityId}
+          contexto={cropConfig.contexto}  
           label="Salvar"
         />
       )}
