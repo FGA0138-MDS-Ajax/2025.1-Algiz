@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import models from "../../../models/index.model.js";
 import { isValidDocument } from '../../utils/validation.util.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
+
 const { Usuario } = models;
 
 // Helper functions for validation
