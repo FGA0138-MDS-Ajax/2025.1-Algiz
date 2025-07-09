@@ -23,7 +23,7 @@ const sugestoesEmpresas = [
 
 function Empresas() {
   const { idEmpresa } = useParams();
-  const { usuario: usuarioLogado } = useContext(AuthContext);
+  const { usuario: usuarioLogado, isEditandoImagemEmpresa } = useContext(AuthContext); // NOVO
 
   const [empresa, setEmpresa] = useState(null);
   const [seguindo, setSeguindo] = useState(false);
@@ -62,8 +62,9 @@ function Empresas() {
         setLoading(false);
       }
     }
-    if (idEmpresa) fetchEmpresa();
-  }, [idEmpresa, usuarioLogado]);
+    // Só busca se NÃO estiver editando imagem da empresa
+    if (idEmpresa && !isEditandoImagemEmpresa) fetchEmpresa();
+  }, [idEmpresa, usuarioLogado, isEditandoImagemEmpresa]); // NOVO: dependência
 
   const empresasRecomendadas = sugestoesEmpresas.map((e) => ({
     nome: e.nome,

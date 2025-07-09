@@ -80,6 +80,7 @@ export default function ModalCropImagem({
         "Erro ao processar imagem."
       );
     }
+
   };
   
   if (!open) return null;

@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useModal } from "../context/ModalContext";
+import { AuthContext } from "../context/AuthContext"; // NOVO
 import ModalFotoPerfil from "./ModalFotoPerfil";
 import axios from "axios";
 
 export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica, onFollowStatusChange }) {
   const { openEditarEmpresaModal, openCropModal } = useModal();
+  const { setIsEditandoImagemEmpresa } = useContext(AuthContext); // NOVO
   
   // Estados para controle dos modais
   const [modalFotoOpen, setModalFotoOpen] = useState(false);
@@ -189,6 +191,12 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
     }
   };
   
+  // NOVO: Controle de edição de imagem da empresa
+  useEffect(() => {
+    setIsEditandoImagemEmpresa(modalFotoOpen || modalBannerOpen);
+    return () => setIsEditandoImagemEmpresa(false);
+  }, [modalFotoOpen, modalBannerOpen, setIsEditandoImagemEmpresa]);
+
   return (
     <div className="bg-white rounded-xl shadow p-0 overflow-hidden relative w-full">
       {/* Banner */}
@@ -214,7 +222,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
             <img
               src={logoEmpresa}
               alt="Logo Empresa"
-              className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover border-4 border-white"
+              className="w-28 h-28 sm:w-40 sm:h-40 rounded-full shadow bg-white object-cover" // Removido border-4 border-white
             />
             {isOwner && (
               <button

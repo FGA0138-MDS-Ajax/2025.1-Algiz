@@ -75,10 +75,10 @@ const ModalProvider = ({ children }) => {
   };
 
   // Função para salvar imagem cropada
-  const handleCropSave = async (croppedBase64) => {
-
+  const handleCropSave = useCallback(async (croppedBase64) => {
     try {
-      const croppedBlob = await (await fetch(croppedBase64)).blob();
+      const response = await fetch(croppedBase64);
+      const croppedBlob = await response.blob();
       const formData = new FormData();
       const token = localStorage.getItem("authToken");
       
@@ -153,14 +153,16 @@ const ModalProvider = ({ children }) => {
       }
       
       setCropModalOpen(false);
+                 window.location.reload();
+
       return result;
     } catch (err) {
       console.error("❌ Erro ao fazer upload da imagem:", err);
 
     }
-  }, [cropConfig.usuarioId, cropModalType]);
+  }, [cropConfig, cropModalType]);
 
-  // Função para fechar o modal de crop
+  
   const closeCropModal = useCallback(() => {
     if (currentReject) {
       currentReject(new Error("Modal closed by user"));
@@ -171,7 +173,7 @@ const ModalProvider = ({ children }) => {
   }, []);
 
   // Função para abrir o modal de edição de empresa
-  const openEditarEmpresaModal = (empresa) => {
+  const openEditarEmpresaModal = ((empresa) => {
     console.log("Empresa recebida para edição:", empresa);
     console.log("ID da empresa:", empresa?.idEmpresa || empresa?.id);
     
