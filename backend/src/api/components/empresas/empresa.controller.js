@@ -2,7 +2,7 @@ import models from "../../../models/index.model.js"; // Corrigido para index.mod
 import empresaService from "./empresa.service.js";
 import cloudinary from '../../utils/cloudinary.util.js';
 
-const { Fisico } = models;
+const { Fisico, Empresa } = models;
 
 export async function registerEmpresa(req, res) {
     try {
@@ -369,3 +369,111 @@ export async function getEmpresaFollowers(req, res) {
         return res.status(500).json({ erro: 'Erro interno do servidor.' });
     }
 }
+;
+
+// Correção do método updateEmpresaDescricao
+
+// Adicione um endpoint específico para atualizar apenas a descrição
+export const updateEmpresaDescricao = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { descricaoEmpresa } = req.body;
+    const idUsuario = req.user.id;
+
+    console.log(`[updateEmpresaDescricao] ================================`);
+    console.log(`[updateEmpresaDescricao] ID da empresa: ${id}`);
+    console.log(`[updateEmpresaDescricao] ID do usuário: ${idUsuario}`);
+    console.log(`[updateEmpresaDescricao] Descrição recebida: "${descricaoEmpresa}"`);
+    console.log(`[updateEmpresaDescricao] Tipo da descrição: ${typeof descricaoEmpresa}`);
+
+    if (descricaoEmpresa === undefined) {
+      return res.status(400).json({ mensagem: "A descrição da empresa é obrigatória" });
+    }
+
+    try {
+      // Buscar a empresa
+      const empresa = await empresaService.findEmpresaById(id);
+      console.log(`[updateEmpresaDescricao] Empresa encontrada:`, {
+        id: empresa?.idEmpresa,
+        nome: empresa?.nomeComercial,
+        idUsuario: empresa?.idUsuario,
+        descricaoAtual: empresa?.descricaoEmpresa
+      });
+      
+      if (!empresa) {
+        return res.status(404).json({ mensagem: "Empresa não encontrada" });
+      }
+      
+      // Verificar permissões
+      if (empresa.idUsuario !== idUsuario) {
+        console.log(`[updateEmpresaDescricao] ERRO: Usuário ${idUsuario} não tem permissão. Dono: ${empresa.idUsuario}`);
+        return res.status(403).json({ mensagem: "Você não tem permissão para editar esta empresa" });
+      }
+      
+      console.log(`[updateEmpresaDescricao] Permissões OK. Atualizando...`);
+      
+      // Tentar atualizar usando Sequelize direto
+      const [numRowsUpdated] = await models.Empresa.update(
+        { descricaoEmpresa: descricaoEmpresa },
+        { 
+          where: { idEmpresa: id },
+          returning: true
+        }
+      );
+      
+      console.log(`[updateEmpresaDescricao] Linhas atualizadas: ${numRowsUpdated}`);
+      
+      // Buscar novamente para confirmar a atualização
+      const empresaAtualizada = await empresaService.findEmpresaById(id);
+      console.log(`[updateEmpresaDescricao] Empresa após atualização:`, {
+        id: empresaAtualizada?.idEmpresa,
+        descricaoNova: empresaAtualizada?.descricaoEmpresa
+      });
+      
+      // Verificar se a atualização foi bem-sucedida
+      if (empresaAtualizada.descricaoEmpresa !== descricaoEmpresa) {
+        console.log(`[updateEmpresaDescricao] ALERTA: Descrição não foi salva corretamente!`);
+        console.log(`[updateEmpresaDescricao] Esperado: "${descricaoEmpresa}"`);
+        console.log(`[updateEmpresaDescricao] Obtido: "${empresaAtualizada.descricaoEmpresa}"`);
+      }
+      
+      return res.status(200).json({
+        mensagem: "Descrição atualizada com sucesso!",
+        empresa: empresaAtualizada
+      });
+    } catch (error) {
+      console.error(`[updateEmpresaDescricao] Erro interno:`, error);
+      if (error.name === 'NotFoundError') {
+        return res.status(404).json({ mensagem: "Empresa não encontrada" });
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error("[updateEmpresaDescricao] Erro geral:", error);
+    res.status(500).json({ mensagem: "Erro ao atualizar descrição da empresa", erro: error.message });
+  }
+};
+
+// Atualizar também a função getEmpresaDescricao para logs detalhados
+export const getEmpresaDescricao = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(`[getEmpresaDescricao] Buscando descrição para empresa ID: ${id}`);
+    
+    const empresa = await empresaService.findEmpresaById(id);
+    
+    if (!empresa) {
+      console.log(`[getEmpresaDescricao] Empresa ${id} não encontrada`);
+      return res.status(404).json({ mensagem: "Empresa não encontrada" });
+    }
+    
+    console.log(`[getEmpresaDescricao] Descrição encontrada: "${empresa.descricaoEmpresa}"`);
+    
+    return res.status(200).json({ 
+      descricaoEmpresa: empresa.descricaoEmpresa || "" 
+    });
+  } catch (error) {
+    console.error("[getEmpresaDescricao] Erro:", error);
+    return res.status(500).json({ mensagem: "Erro ao buscar descrição da empresa", erro: error.message });
+  }
+};

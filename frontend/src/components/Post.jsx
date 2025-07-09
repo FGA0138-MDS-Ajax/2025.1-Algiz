@@ -68,26 +68,31 @@ export default function Post({ post, big, small, completo = false }) {
   // Carregar dados da empresa
   useEffect(() => {
     const carregarDetalhesEmpresa = async () => {
-      // Se já temos os dados da empresa no post, usamos eles
-      if (post.empresa?.nomeComercial) {
-        setEmpresaData(post.empresa);
-        console.log("✅ Empresa já carregada no post:", post.empresa);
-        return;
-      }
-      
-      // Se temos apenas o ID da empresa, buscamos os detalhes
-      if (post.idEmpresa) {
+      // Sempre buscar dados atualizados se tivermos um ID de empresa
+      if (post.idEmpresa || (post.empresa?.id) || (post.empresa?.idEmpresa)) {
         try {
-          console.log("🔍 Buscando detalhes da empresa:", post.idEmpresa);
-          const response = await axios.get(`http://localhost:3001/api/company/${post.idEmpresa}`);
+          // Obter o ID da empresa considerando as diferentes possibilidades
+          const empresaId = post.idEmpresa || post.empresa?.id || post.empresa?.idEmpresa;
+          
+          console.log("🔍 Buscando detalhes atualizados da empresa:", empresaId);
+          const response = await axios.get(`http://localhost:3001/api/company/${empresaId}`);
           
           if (response.data) {
-            console.log("✅ Detalhes da empresa obtidos:", response.data);
+            console.log("✅ Detalhes atualizados da empresa obtidos:", response.data);
             setEmpresaData(response.data);
           }
         } catch (error) {
           console.error("❌ Erro ao buscar detalhes da empresa:", error);
+          // Em caso de erro, usar os dados que já temos no post
+          if (post.empresa) {
+            console.log("⚠️ Usando dados da empresa do post como fallback");
+            setEmpresaData(post.empresa);
+          }
         }
+      } else if (post.empresa) {
+        // Se não temos ID mas temos dados da empresa no post
+        console.log("⚠️ ID da empresa não disponível, usando dados do post");
+        setEmpresaData(post.empresa);
       }
     };
     

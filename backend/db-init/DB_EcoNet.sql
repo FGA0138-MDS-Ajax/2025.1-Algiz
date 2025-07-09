@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS JURIDICO (
     areaAtuacao         VARCHAR(255)    NOT NULL,
     fotoEmpresa         VARCHAR(500),
     bannerEmpresa       VARCHAR(500),
+    descricaoEmpresa    TEXT             NULL,
     idUsuario           INT             NOT NULL,
     PRIMARY KEY (idEmpresa),
     UNIQUE KEY uk_cnpj (cnpjJuridico),

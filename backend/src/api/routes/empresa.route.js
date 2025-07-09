@@ -44,6 +44,7 @@ router.delete('/:id/follow', verifyToken, empresaController.unfollowEmpresa);
 router.get('/:id/follow/status', verifyToken, empresaController.checkFollowStatus);
 router.get('/:id/followers', empresaController.getEmpresaFollowers);
 
-// Restante do código permanece o mesmo
-
+// Adicione esta nova rota antes de export default router
+router.patch('/:id/descricao', verifyToken, empresaController.updateEmpresaDescricao);
+router.get('/:id/descricao', empresaController.getEmpresaDescricao);
 export default router;

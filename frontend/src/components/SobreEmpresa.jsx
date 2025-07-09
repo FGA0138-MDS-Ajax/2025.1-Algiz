@@ -1,75 +1,102 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function SobreEmpresa({ empresa, isOwner }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [descricao, setDescricao] = useState(empresa.descricao || "");
+  const [editando, setEditando] = useState(false);
+  const [descricao, setDescricao] = useState(empresa?.descricaoEmpresa || "");
+  const [descricaoOriginal, setDescricaoOriginal] = useState(empresa?.descricaoEmpresa || "");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSaveDescricao = async () => {
-    if (loading) return;
-    
-    setLoading(true);
-    try {
-      // TODO: Implementar endpoint no backend para atualizar descrição da empresa
-      /*
-      // Formatar o CNPJ para a busca
-      const cnpjFormatado = empresa.cnpjJuridico.replace(/\D/g, '').replace(
-        /(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
-        '$1.$2.$3/$4-$5'
-      );
-      
-      const response = await fetch(`http://localhost:3001/api/empresa/${cnpjFormatado}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ descricao }),
-      });
-
-      if (response.ok) {
-        // Atualizar o objeto empresa localmente
-        empresa.descricao = descricao;
-        setIsEditing(false);
-        
-        // Opcional: Mostrar notificação de sucesso
-        console.log('Descrição atualizada com sucesso!');
-      } else {
-        throw new Error('Erro ao salvar descrição');
+  // Melhorar o useEffect para debugging e garantir atualização da descrição
+  useEffect(() => {
+    const fetchDescricao = async () => {
+      try {
+        if (empresa?.idEmpresa || empresa?.id) {
+          const empresaId = empresa?.idEmpresa || empresa?.id;
+          console.log(`Buscando descrição atualizada para empresa ID: ${empresaId}`);
+          
+          // Usar a rota específica para obter a descrição
+          const response = await axios.get(
+            `http://localhost:3001/api/company/${empresaId}/descricao`
+          );
+          
+          console.log("Descrição obtida da API:", response.data);
+          
+          // Atualizar estados com a descrição mais recente
+          if (response.data && response.data.descricaoEmpresa !== undefined) {
+            setDescricao(response.data.descricaoEmpresa);
+            setDescricaoOriginal(response.data.descricaoEmpresa);
+          }
+        }
+      } catch (err) {
+        console.error("Erro ao buscar descrição:", err);
       }
-      */
+    };
+    
+    // Primeiro atualizamos com o que temos localmente
+    if (empresa) {
+      console.log("Descrição local da empresa:", empresa.descricaoEmpresa);
+      setDescricao(empresa.descricaoEmpresa || "");
+      setDescricaoOriginal(empresa.descricaoEmpresa || "");
+    }
+    
+    // Depois buscamos a versão mais atualizada da API
+    fetchDescricao();
+  }, [empresa]);
+
+  const handleSalvar = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      const empresaId = empresa?.idEmpresa || empresa?.id;
+      console.log(`Salvando descrição para empresa ID: ${empresaId}`);
       
-      // Simulação temporária - atualizar localmente
-      empresa.descricao = descricao;
-      setIsEditing(false);
-      console.log('Descrição atualizada localmente (temporário):', descricao);
+      const response = await axios.patch(
+        `http://localhost:3001/api/company/${empresaId}/descricao`,
+        { descricaoEmpresa: descricao },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Resposta da API:", response.data);
+      setDescricaoOriginal(descricao);
+      setEditando(false);
       
-    } catch (error) {
-      console.error('Erro ao salvar descrição:', error);
-      // Opcional: Mostrar notificação de erro
-      alert('Erro ao salvar descrição. Tente novamente.');
+      // Atualizar a página para mostrar os dados atualizados
+      // Alternativa mais suave ao refresh completo
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao salvar descrição:", err);
+      setError("Não foi possível salvar a descrição. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setDescricao(empresa.descricao || "");
-    setIsEditing(false);
-  };
-
-  const handleStartEdit = () => {
-    setIsEditing(true);
+  const handleCancelar = () => {
+    setDescricao(descricaoOriginal);
+    setEditando(false);
   };
 
   return (
     <div className="bg-white rounded-xl shadow p-6 mt-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-xl">Sobre a empresa</h3>
-        {isOwner && !isEditing && (
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-bold text-xl">Sobre a Empresa</h3>
+        {isOwner && !editando && (
           <button
-            className="text-gray-500 hover:text-gray-700 transition"
+            onClick={() => setEditando(true)}
+            className="text-green-600 hover:text-green-800 transition-colors"
             title="Editar descrição"
-            onClick={handleStartEdit}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,53 +116,57 @@ export default function SobreEmpresa({ empresa, isOwner }) {
         )}
       </div>
 
-      {isEditing ? (
-        <div className="space-y-4">
-          <textarea
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            placeholder="Descreva sua empresa, seus valores, missão e o que ela faz..."
-            className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            rows={6}
-            maxLength={1000}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">
-              {descricao.length}/1000 caracteres
-            </span>
-            <div className="flex gap-2">
+      <div className="text-gray-700">
+        {editando ? (
+          <div className="space-y-4">
+            <textarea
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-200 focus:border-green-500 outline-none transition"
+              placeholder="Descreva sua empresa, conte sua história, missão, valores e objetivos..."
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <div className="flex gap-2 justify-end">
               <button
-                onClick={handleCancelEdit}
-                className="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                onClick={handleCancelar}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
                 disabled={loading}
               >
                 Cancelar
               </button>
               <button
-                onClick={handleSaveDescricao}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+                onClick={handleSalvar}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-1"
                 disabled={loading}
               >
-                {loading ? 'Salvando...' : 'Salvar'}
+                {loading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Salvando...
+                  </>
+                ) : (
+                  "Salvar"
+                )}
               </button>
             </div>
           </div>
-        </div>
-      ) : (
-        <div>
-          {empresa.descricao ? (
-            <p className="text-gray-700 text-sm whitespace-pre-wrap">
-              {empresa.descricao}
-            </p>
-          ) : (
-            <p className="text-gray-500 text-sm italic">
-              {isOwner
-                ? "Clique no ícone de edição para adicionar uma descrição da sua empresa..."
-                : "Essa empresa ainda não cadastrou uma descrição."}
-            </p>
-          )}
-        </div>
-      )}
+        ) : (
+          <div className="prose max-w-none">
+            {descricaoOriginal ? (
+              <div className="whitespace-pre-wrap">{descricaoOriginal}</div>
+            ) : (
+              <div className="text-gray-500 italic">
+                {isOwner
+                  ? "Adicione uma descrição para sua empresa clicando no ícone de edição acima."
+                  : "Esta empresa ainda não possui uma descrição."}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

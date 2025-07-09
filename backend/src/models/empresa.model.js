@@ -45,6 +45,11 @@ export default (sequelize) => {
       allowNull: false,
       field: 'areaAtuacao'
     },
+    descricaoEmpresa: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      field: 'descricaoEmpresa'
+    },
     fotoEmpresa: {
       type: DataTypes.STRING(500),
       allowNull: true,

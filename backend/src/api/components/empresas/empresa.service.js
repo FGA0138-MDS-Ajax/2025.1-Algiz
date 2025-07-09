@@ -109,6 +109,9 @@ async function findEmpresaByPk(cnpj) {
 
 // Função para atualização
 async function updateEmpresa(id, idUsuario, dadosUpdate) {
+    console.log(`[service.updateEmpresa] ID: ${id}, UsuarioID: ${idUsuario}`);
+    console.log(`[service.updateEmpresa] Dados para atualizar:`, dadosUpdate);
+    
     const empresa = await Empresa.findByPk(id);
 
     if (!empresa) {
@@ -118,12 +121,17 @@ async function updateEmpresa(id, idUsuario, dadosUpdate) {
         throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
     }
     
-    // Verificar conflito de nome comercial
+    console.log(`[service.updateEmpresa] Empresa antes da atualização:`, {
+        id: empresa.idEmpresa,
+        descricao: empresa.descricaoEmpresa
+    });
+    
+    // Verificar conflito de nome comercial (apenas se estiver sendo atualizado)
     if (dadosUpdate.nomeComercial) {
         const existingNome = await Empresa.findOne({ 
             where: { 
                 nomeComercial: dadosUpdate.nomeComercial,
-                idEmpresa: { [Op.ne]: id }        // ✅ CORRIGIR: usar Op do import direto
+                idEmpresa: { [Op.ne]: id }
             } 
         });
         if (existingNome) {
@@ -131,7 +139,22 @@ async function updateEmpresa(id, idUsuario, dadosUpdate) {
         }
     }
 
+    // Realizar a atualização
     await empresa.update(dadosUpdate);
+    
+    console.log(`[service.updateEmpresa] Empresa após atualização:`, {
+        id: empresa.idEmpresa,
+        descricao: empresa.descricaoEmpresa
+    });
+    
+    // Recarregar do banco para ter certeza
+    await empresa.reload();
+    
+    console.log(`[service.updateEmpresa] Empresa após reload:`, {
+        id: empresa.idEmpresa,
+        descricao: empresa.descricaoEmpresa
+    });
+    
     return empresa;
 }
 
