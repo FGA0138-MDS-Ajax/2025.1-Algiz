@@ -6,12 +6,13 @@ import * as documentController from '../components/documents/document.controller
 const router = express.Router();
 
 // ROTA DE UPLOAD: POST /api/documentos
-// 1. verifyToken: Garante que o utilizador está logado.
-// 2. upload.single('documento'): Processa um único ficheiro do campo 'documento'.
 router.post('/', verifyToken, upload.single('documento'), documentController.uploadDocumento);
 
-// Adicione as outras rotas aqui depois
- router.get('/:id', verifyToken, documentController.downloadDocumento);
+// NOVA ROTA DE DOWNLOAD: GET /api/documentos/:id
+// O ':id' aqui é o idDocumento do nosso banco de dados.
+router.get('/:id', verifyToken, documentController.getDocumento);
+
+// NOVA ROTA DE EXCLUSÃO: DELETE /api/documentos/:id
 router.delete('/:id', verifyToken, documentController.deleteDocumento);
 
 export default router;
