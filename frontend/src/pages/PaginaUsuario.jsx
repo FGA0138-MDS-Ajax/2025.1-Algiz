@@ -17,7 +17,6 @@ export default function PaginaUsuario() {
   const [showEmpresasModal, setShowEmpresasModal] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
-  const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
  
   const perfilUsuarioRef = useRef();
 
@@ -69,29 +68,6 @@ export default function PaginaUsuario() {
     fetchUsuario();
   }, [idUsuario, visualizandoPublico, usuarioLogado]);
 
-  {/* CODIGO QUE NAO ESTA SENDO UTILIZado NO MOMENTO
-  useEffect(() => {
-    async function fetchEmpresasVinculadas() {
-      if (usuario) {
-        try {
-          const token = localStorage.getItem("authToken");
-          const res = await fetch("http://localhost:3001/api/empresa", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const empresas = await res.json();
-          const vinculadas = empresas.filter((e) => e.idUsuario === usuario.id);
-          setEmpresasVinculadas(vinculadas);
-        } catch {
-          setEmpresasVinculadas([]);
-        }
-      }
-    }
-    fetchEmpresasVinculadas();
-  }, [usuario]);
-*/}
   const sugestoes = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
     { id: "2", nome: "Nestle", logo: "/nestle.png" },

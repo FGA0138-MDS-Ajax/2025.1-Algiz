@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export default function MinhasConexoes({ usuario, cardClass = "" }) {
+export default function MinhasConexoes({ usuario, cardClass = "", onVerTodas }) {
   const empresas = usuario.empresasSeguindo || [];
   return (
     <div
@@ -32,13 +32,13 @@ export default function MinhasConexoes({ usuario, cardClass = "" }) {
           </>
         )}
       </div>
-      <Link
-        to="/conexoes"
+      <button
+        onClick={onVerTodas}
         className="text-green-600 font-semibold hover:underline text-xs absolute bottom-4 right-6"
         style={{ padding: 0, margin: 0, background: "transparent" }}
       >
-        Ver todos
-      </Link>
+        Ver todas
+      </button>
     </div>
   );
 }
@@ -54,4 +54,5 @@ MinhasConexoes.propTypes = {
     ),
   }).isRequired,
   cardClass: PropTypes.string,
-}; 
+  onVerTodas: PropTypes.func.isRequired, // Adiciona onVerTodas como prop obrigatória
+};

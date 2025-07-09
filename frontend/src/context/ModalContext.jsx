@@ -1,18 +1,18 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useCallback } from 'react';
 import ModalCadastroEmpresa from '../components/ModalCadastroEmpresa';
 import ModalCropImagem from '../components/ModalCropImagem';
-import FormEditarEmpresa from '../components/FormEditarEmpresa'; // Adicione esta importação
+import FormEditarEmpresa from '../components/FormEditarEmpresa';
 import axios from 'axios';
 
 const ModalContext = createContext();
 
-export function ModalProvider({ children }) {
+const ModalProvider = ({ children }) => {
   // Estados para o modal de cadastro de empresa
   const [showCadastroEmpresaModal, setShowCadastroEmpresaModal] = useState(false);
   
   // Estados para o modal de crop de imagem
   const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropModalType, setCropModalType] = useState("foto"); // "foto" ou "banner"
+  const [cropModalType, setCropModalType] = useState("foto");
   const [selectedImage, setSelectedImage] = useState(null);
   const [cropConfig, setCropConfig] = useState({
     aspect: 1,
@@ -28,45 +28,54 @@ export function ModalProvider({ children }) {
   const [formDataEmpresa, setFormDataEmpresa] = useState({});
   const [erroEdicaoEmpresa, setErroEdicaoEmpresa] = useState("");
 
+  // Promise handlers for crop modal
+  let currentResolve = null;
+  let currentReject = null;
+
   // Handler para salvar empresa
   const handleSaveEmpresa = (dados) => {
-    // Lógica de salvar empresa
     setShowCadastroEmpresaModal(false);
   };
 
   // Função para abrir o modal de crop
-  const openCropModal = (imageFile, type, userId) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-      setCropModalType(type);
-      
-      // Configura os parâmetros do crop com base no tipo
-      if (type === "foto") {
-        setCropConfig({
-          aspect: 1,
-          cropShape: "round",
-          outputWidth: 160,
-          outputHeight: 160,
-          usuarioId: userId
-        });
-      } else if (type === "banner") {
-        setCropConfig({
-          aspect: 3.5,
-          cropShape: "rect", 
-          outputWidth: 1050,
-          outputHeight: 300,
-          usuarioId: userId
-        });
-      }
-      
-      setCropModalOpen(true);
-    };
-    reader.readAsDataURL(imageFile);
-  };
+  const openCropModal = useCallback((imageFile, type, userId) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSelectedImage(reader.result);
+        setCropModalType(type);
+        
+        if (type === "foto") {
+          setCropConfig({
+            aspect: 1,
+            cropShape: "round",
+            outputWidth: 160,
+            outputHeight: 160,
+            usuarioId: userId
+          });
+        } else if (type === "banner") {
+          setCropConfig({
+            aspect: 3.5,
+            cropShape: "rect", 
+            outputWidth: 1050,
+            outputHeight: 300,
+            usuarioId: userId
+          });
+        }
+        
+        setCropModalOpen(true);
+        currentResolve = resolve;
+        currentReject = reject;
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  }, []);
 
   // Função para salvar a imagem cropada
-  const handleCropSave = async (croppedBase64) => {
+  const handleCropSave = useCallback(async (croppedBase64) => {
     try {
       if (!cropConfig.usuarioId) throw new Error("ID do usuário não definido");
       
@@ -91,7 +100,6 @@ export function ModalProvider({ children }) {
         }
       );
       
-      // Atualizar localStorage com URL do Cloudinary
       const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
       if (cropModalType === "foto") {
         usuarioLogado.fotoPerfil = response.data.fotoPerfil || croppedBase64;
@@ -100,18 +108,38 @@ export function ModalProvider({ children }) {
       }
       localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
       
-      // Fechar o modal e atualizar a página
-      setCropModalOpen(false);
-      window.location.reload();
+      const result = response.data.fotoPerfil || response.data.bannerPerfil || croppedBase64;
+      if (currentResolve) {
+        currentResolve(result);
+        currentResolve = null;
+        currentReject = null;
+      }
       
+      setCropModalOpen(false);
+      return result;
     } catch (err) {
       console.error("Erro ao fazer upload da imagem:", err);
-      // Opção: adicionar estado para erro e exibi-lo
+      if (currentReject) {
+        currentReject(err);
+        currentResolve = null;
+        currentReject = null;
+      }
+      throw err;
     }
-  };
+  }, [cropConfig.usuarioId, cropModalType]);
+
+  // Função para fechar o modal de crop
+  const closeCropModal = useCallback(() => {
+    if (currentReject) {
+      currentReject(new Error("Modal closed by user"));
+      currentResolve = null;
+      currentReject = null;
+    }
+    setCropModalOpen(false);
+  }, []);
 
   // Função para abrir o modal de edição de empresa
-  const openEditarEmpresaModal = (empresa) => {
+  const openEditarEmpresaModal = useCallback((empresa) => {
     setEmpresaEditando(empresa);
     setFormDataEmpresa({
       nomeComercial: empresa?.nomeComercial || "",
@@ -124,19 +152,19 @@ export function ModalProvider({ children }) {
     });
     setErroEdicaoEmpresa("");
     setShowEditarEmpresaModal(true);
-  };
+  }, []);
   
   // Função para atualizar os campos do formulário de edição
-  const handleEditarEmpresaChange = (e) => {
+  const handleEditarEmpresaChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormDataEmpresa(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
   
   // Função para salvar dados da empresa
-  const handleSalvarEmpresa = async () => {
+  const handleSalvarEmpresa = useCallback(async () => {
     try {
       setErroEdicaoEmpresa("");
       
@@ -144,10 +172,7 @@ export function ModalProvider({ children }) {
         throw new Error("Empresa não identificada");
       }
       
-      // CNPJ limpo (apenas números) para URL
       const cnpjLimpo = empresaEditando.cnpjJuridico.replace(/\D/g, '');
-      
-      // Obter token de autenticação
       const token = localStorage.getItem("authToken");
       
       const response = await fetch(`http://localhost:3001/api/company/${cnpjLimpo}`, {
@@ -162,46 +187,36 @@ export function ModalProvider({ children }) {
 
       if (response.ok) {
         const resultado = await response.json();
-        
-        // Atualizar o objeto empresa localmente
         Object.assign(empresaEditando, formDataEmpresa);
         setShowEditarEmpresaModal(false);
-        
-        // Atualizar a página para mostrar as alterações
         window.location.reload();
       } else {
         const errorData = await response.json();
         throw new Error(errorData.erro || 'Erro ao salvar dados da empresa');
       }
-      
     } catch (error) {
       console.error('Erro ao salvar dados da empresa:', error);
       setErroEdicaoEmpresa(error.message || 'Erro ao salvar dados da empresa. Tente novamente.');
     }
+  }, [empresaEditando, formDataEmpresa]);
+
+  const value = {
+    showCadastroEmpresaModal,
+    openCadastroEmpresaModal: () => setShowCadastroEmpresaModal(true),
+    closeCadastroEmpresaModal: () => setShowCadastroEmpresaModal(false),
+    cropModalOpen,
+    openCropModal,
+    closeCropModal,
+    isCropOpen: () => cropModalOpen,
+    handleCropSave,
+    openEditarEmpresaModal,
+    closeEditarEmpresaModal: () => setShowEditarEmpresaModal(false)
   };
 
   return (
-    <ModalContext.Provider 
-      value={{
-        // Modal de cadastro de empresa
-        showCadastroEmpresaModal,
-        openCadastroEmpresaModal: () => setShowCadastroEmpresaModal(true),
-        closeCadastroEmpresaModal: () => setShowCadastroEmpresaModal(false),
-        
-        // Modal de crop de imagem
-        cropModalOpen,
-        openCropModal,
-        closeCropModal: () => setCropModalOpen(false),
-        isCropOpen: () => cropModalOpen,
-        
-        // Modal de edição de empresa
-        openEditarEmpresaModal,
-        closeEditarEmpresaModal: () => setShowEditarEmpresaModal(false)
-      }}
-    >
+    <ModalContext.Provider value={value}>
       {children}
       
-      {/* Renderiza o modal de cadastro de empresa */}
       {showCadastroEmpresaModal && (
         <ModalCadastroEmpresa
           onClose={() => setShowCadastroEmpresaModal(false)}
@@ -209,12 +224,11 @@ export function ModalProvider({ children }) {
         />
       )}
       
-      {/* Renderiza o modal de crop de imagem */}
       {cropModalOpen && selectedImage && (
         <ModalCropImagem
           open={cropModalOpen}
           image={selectedImage}
-          onClose={() => setCropModalOpen(false)}
+          onClose={closeCropModal}
           onCropSave={handleCropSave}
           aspect={cropConfig.aspect}
           cropShape={cropConfig.cropShape}
@@ -226,7 +240,6 @@ export function ModalProvider({ children }) {
         />
       )}
       
-      {/* Renderiza o modal de edição de empresa */}
       {showEditarEmpresaModal && empresaEditando && (
         <FormEditarEmpresa
           formData={formDataEmpresa}
@@ -238,8 +251,14 @@ export function ModalProvider({ children }) {
       )}
     </ModalContext.Provider>
   );
-}
+};
 
-export function useModal() {
-  return useContext(ModalContext);
-}
+const useModal = () => {
+  const context = useContext(ModalContext);
+  if (context === undefined) {
+    throw new Error('useModal must be used within a ModalProvider');
+  }
+  return context;
+};
+
+export { ModalProvider, useModal };

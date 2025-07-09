@@ -2,7 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from "rea
 import { getEstadoCompleto } from "../utils/opcoes_form";
 import FormEditarUsuario from "./FormEditarUsuario";
 import ModalFotoPerfil from "./ModalFotoPerfil";
-import { useModal } from "../context/ModalContext";
+import { useModal } from '../context/ModalContext';
 import axios from "axios";
 import PropTypes from "prop-types";
 
@@ -172,15 +172,36 @@ const PerfilUsuario = forwardRef((props, ref) => {
   }, [usuario]);
 
   // Handler para troca de foto de perfil
-  const handleTrocarFoto = (file) => {
+  const handleTrocarFoto = async (file) => {
     setModalFotoOpen(false);
-    openCropModal(file, "foto", usuario.id);
+    try {
+      const newPhotoUrl = await openCropModal(file, "foto", usuario.id);
+      if (newPhotoUrl) {
+        setFotoPerfil(newPhotoUrl);
+        // Update local storage
+        const updatedUsuario = { ...usuario, fotoPerfil: newPhotoUrl };
+        localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      }
+    } catch (err) {
+      console.error("Error cropping image:", err);
+      setErro("Erro ao atualizar foto de perfil.");
+    }
   };
 
-  // Handler para troca de banner
-  const handleTrocarBanner = (file) => {
+  const handleTrocarBanner = async (file) => {
     setModalBannerOpen(false);
-    openCropModal(file, "banner", usuario.id);
+    try {
+      const newBannerUrl = await openCropModal(file, "banner", usuario.id);
+      if (newBannerUrl) {
+        setBanner(newBannerUrl);
+        // Update local storage
+        const updatedUsuario = { ...usuario, bannerPerfil: newBannerUrl };
+        localStorage.setItem("usuarioLogado", JSON.stringify(updatedUsuario));
+      }
+    } catch (err) {
+      console.error("Error cropping banner:", err);
+      setErro("Erro ao atualizar banner.");
+    }
   };
 
   // Exponha o estado do crop para o componente pai
