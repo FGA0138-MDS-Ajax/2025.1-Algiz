@@ -46,6 +46,7 @@ export default function ModalCadastroEmpresa({ onClose, onSave, erro }) {
       if (response.data) {
         onSave?.(response.data.empresa);
         onClose();
+        window.location.reload(); // <-- Adicione esta linha para atualizar a página
       }
     } catch (err) {
       console.error("Erro ao cadastrar empresa:", err);
