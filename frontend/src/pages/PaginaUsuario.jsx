@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import PerfilUsuario from "../components/PerfilUsuario";
 import EmpresasTrabalhando from "../components/EmpresasTrabalhando";
 import SugestoesEmpresas from "../components/SugestoesEmpresas";
@@ -17,7 +17,8 @@ export default function PaginaUsuario() {
   const [showEmpresasModal, setShowEmpresasModal] = useState(false);
   const [tab, setTab] = useState("recomendadas");
   const [visualizandoPublico, setVisualizandoPublico] = useState(false);
-  const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
+ 
+  const perfilUsuarioRef = useRef();
 
   const { usuario: usuarioLogado } = useContext(AuthContext);
 
@@ -25,6 +26,10 @@ export default function PaginaUsuario() {
 
   useEffect(() => {
     async function fetchUsuario() {
+      // Só faz fetch se o crop NÃO estiver aberto
+      if (perfilUsuarioRef.current?.isCropOpen && perfilUsuarioRef.current.isCropOpen()) {
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
@@ -63,29 +68,6 @@ export default function PaginaUsuario() {
     fetchUsuario();
   }, [idUsuario, visualizandoPublico, usuarioLogado]);
 
-  {/* CODIGO QUE NAO ESTA SENDO UTILIZado NO MOMENTO
-  useEffect(() => {
-    async function fetchEmpresasVinculadas() {
-      if (usuario) {
-        try {
-          const token = localStorage.getItem("authToken");
-          const res = await fetch("http://localhost:3001/api/empresa", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const empresas = await res.json();
-          const vinculadas = empresas.filter((e) => e.idUsuario === usuario.id);
-          setEmpresasVinculadas(vinculadas);
-        } catch {
-          setEmpresasVinculadas([]);
-        }
-      }
-    }
-    fetchEmpresasVinculadas();
-  }, [usuario]);
-*/}
   const sugestoes = [
     { id: "1", nome: "Cacau Show", logo: "/cacau.png" },
     { id: "2", nome: "Nestle", logo: "/nestle.png" },
@@ -105,6 +87,8 @@ export default function PaginaUsuario() {
   const handleToggleVisualizacaoPublica = () => {
     setVisualizandoPublico((v) => !v);
   };
+
+ 
 
   if (loading) {
     return (
@@ -128,6 +112,7 @@ export default function PaginaUsuario() {
         {/* Coluna principal */}
         <section className="flex-1 flex flex-col gap-2">
           <PerfilUsuario
+            ref={perfilUsuarioRef}
             usuario={usuario}
             isUsuarioLogado={isUsuarioLogado}
             visualizandoPublico={visualizandoPublico}
@@ -184,4 +169,4 @@ export default function PaginaUsuario() {
       )}
     </div>
   );
-}
+} 

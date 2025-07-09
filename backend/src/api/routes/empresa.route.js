@@ -4,7 +4,7 @@ import * as empresaController from '../components/empresas/empresa.controller.js
 
 const router = express.Router();
 
-router.post('/', verifyToken, empresaController.registerEmpresa);
+router.post('/register', verifyToken, empresaController.registerEmpresa);
 router.get('/', empresaController.getAllEmpresas);
 router.get('/:cnpj', empresaController.getEmpresaById);
 // Adicione a rota PUT para atualização

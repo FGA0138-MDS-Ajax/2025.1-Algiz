@@ -1,51 +1,89 @@
-// frontend/src/components/AuthListener.jsx
-import { useEffect, useContext } from 'react'; // Added useContext import
-import { useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+// frontend/src/context/AuthContext.jsx
+import { createContext, useState, useEffect } from "react";
+import api from "../utils/axios";
 
-// List of public paths that don't require authentication
-const PUBLIC_PATHS = [
-  '/',
-  '/sobrenos',
-  '/post',
-  '/empresa/:idEmpresa',
-  '/usuario/:idUsuario',
-  '/login',
-  '/cadastro',
-  '/esqueci-senha',
-  '/codigo-autenticacao',
-  '/redefinir-senha'
-];
+export const AuthContext = createContext();
 
-export default function AuthListener() {
-  const { usuario, loading } = useContext(AuthContext); // Now using the imported useContext
-  const navigate = useNavigate();
-  const location = useLocation();
+const AuthProvider = ({ children }) => {
+  const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUsuario = async () => {
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+    const token = localStorage.getItem("authToken");
+
+    if (usuarioLogado?.id && token) {
+      try {
+        setLoading(true);
+        const res = await api.get(`/users/${usuarioLogado.id}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUsuario(res.data);
+      } catch (error) {
+        console.error("Erro ao buscar o usuário:", error);
+        setUsuario(null);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setUsuario(null);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (loading) return;
+    fetchUsuario();
 
-    const token = localStorage.getItem("authToken");
-    const isPublicPath = PUBLIC_PATHS.some(path => {
-      // Handle dynamic routes like /empresa/:idEmpresa
-      if (path.includes(':')) {
-        const basePath = path.split('/:')[0];
-        return location.pathname.startsWith(basePath);
+    const handleStorageChange = (event) => {
+      if (["authToken", "usuarioLogado", "authEvent"].includes(event.key)) {
+        fetchUsuario();
       }
-      return path === location.pathname;
-    });
+    };
 
-    // If on a protected route without token, redirect to login
-    if (!isPublicPath && !token) {
-      navigate('/login', { state: { from: location }, replace: true });
+    const handleFocus = () => {
+      const token = localStorage.getItem("authToken");
+      const user = localStorage.getItem("usuarioLogado");
+
+      if (token && user && !usuario) {
+        fetchUsuario();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [usuario]);
+
+  const login = async (user, token) => {
+    localStorage.setItem("usuarioLogado", JSON.stringify(user));
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("authEvent", Date.now().toString());
+    await fetchUsuario();
+  };
+
+  const logout = async () => {
+    try {
+      await api.post("/users/logout");
+    } catch (err) {
+      console.warn("Erro ao fazer logout no backend:", err);
     }
+    localStorage.removeItem("usuarioLogado");
+    localStorage.removeItem("authToken");
+    localStorage.setItem("authEvent", Date.now().toString());
+    setUsuario(null);
+  };
 
-    // If on a guest-only route with token, redirect to home
-    const guestOnlyPaths = ['/login', '/cadastro', '/esqueci-senha'];
-    if (guestOnlyPaths.includes(location.pathname) && token) {
-      navigate('/', { replace: true });
-    }
-  }, [usuario, loading, navigate, location]);
+  return (
+    <AuthContext.Provider value={{ usuario, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-  return null;
-}
+export default AuthProvider;

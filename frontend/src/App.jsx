@@ -15,6 +15,7 @@ import ConfiguracoesUsuario from './pages/ConfiguracoesUsuario';
 import CriarPostagem from './pages/PaginaCriacaoPostagem';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthListener from './components/AuthListener';
+import { ModalProvider } from './context/ModalContext';
 
 import AuthProvider from './context/AuthContext'; // <-- importado o AuthProvider
 
@@ -23,39 +24,41 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <AuthListener /> {/* Ensures routing reacts to login/logout */}
-        <Layout>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/sobrenos" element={<Sobrenos />} />
-            <Route path="/empresa/:idEmpresa" element={<Empresas />} />
-            <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
-            <Route path="/post" element={<PaginaPost />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/esqueci-senha" element={<EsqueciSenha />} />
-            <Route path="/codigo-autenticacao" element={<CodigoAutenticacao />} />
-            <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+        <ModalProvider>
+          <Layout>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/sobrenos" element={<Sobrenos />} />
+              <Route path="/empresa/:idEmpresa" element={<Empresas />} />
+              <Route path="/usuario/:idUsuario" element={<PaginaUsuario />} />
+              <Route path="/post" element={<PaginaPost />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+              <Route path="/codigo-autenticacao" element={<CodigoAutenticacao />} />
+              <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
-            {/* Protected routes */}
-            <Route
-              path="/configuracoesusuario"
-              element={
-                <ProtectedRoute>
-                  <ConfiguracoesUsuario />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/empresa/criar-postagem"
-              element={
-                <ProtectedRoute>
-                  <CriarPostagem />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Layout>
+              {/* Protected routes */}
+              <Route
+                path="/configuracoesusuario"
+                element={
+                  <ProtectedRoute>
+                    <ConfiguracoesUsuario />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/empresa/criar-postagem"
+                element={
+                  <ProtectedRoute>
+                    <CriarPostagem />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </Layout>
+        </ModalProvider>
       </AuthProvider>
     </BrowserRouter>
   );

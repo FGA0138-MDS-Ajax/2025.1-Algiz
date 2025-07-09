@@ -21,6 +21,7 @@
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "connect-session-sequelize": "^7.1.7",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.6.1",

@@ -1,84 +1,8 @@
-import { useState } from "react";
-import FormEditarEmpresa from "./FormEditarEmpresa";
+import { useModal } from "../context/ModalContext";
 
 export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, onToggleVisualizacaoPublica }) {
-  const [modalEditarAberto, setModalEditarAberto] = useState(false);
-  const [formData, setFormData] = useState({
-    nomeComercial: empresa?.nomeComercial || "",
-    razaoSocial: empresa?.razaoSocial || "",
-    cnpjJuridico: empresa?.cnpjJuridico || "",
-    telefoneJuridico: empresa?.telefoneJuridico || "",
-    enderecoJuridico: empresa?.enderecoJuridico || "",
-    estadoJuridico: empresa?.estadoJuridico || "",
-    areaAtuacao: empresa?.areaAtuacao || "",
-  });
-  const [erro, setErro] = useState("");
-
-  const handleAbrirModal = () => {
-    setFormData({
-      nomeComercial: empresa?.nomeComercial || "",
-      razaoSocial: empresa?.razaoSocial || "",
-      cnpjJuridico: empresa?.cnpjJuridico || "",
-      telefoneJuridico: empresa?.telefoneJuridico || "",
-      enderecoJuridico: empresa?.enderecoJuridico || "",
-      estadoJuridico: empresa?.estadoJuridico || "",
-      areaAtuacao: empresa?.areaAtuacao || "",
-    });
-    setModalEditarAberto(true);
-  };
-
-  const handleFecharModal = () => {
-    setModalEditarAberto(false);
-    setErro("");
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSalvar = async () => {
-    try {
-      setErro("");
-      
-      // ✅ CORREÇÃO: Passar CNPJ limpo (apenas números) na URL
-      const cnpjLimpo = empresa.cnpjJuridico.replace(/\D/g, '');
-      
-      // Obter token de autenticação
-      const token = localStorage.getItem("authToken");
-      
-      const response = await fetch(`http://localhost:3001/api/empresa/${cnpjLimpo}/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const resultado = await response.json();
-        
-        // Atualizar o objeto empresa localmente
-        Object.assign(empresa, formData);
-        setModalEditarAberto(false);
-        
-        console.log('Dados da empresa atualizados com sucesso!', resultado);
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.erro || 'Erro ao salvar dados da empresa');
-      }
-      
-    } catch (error) {
-      console.error('Erro ao salvar dados da empresa:', error);
-      setErro(error.message || 'Erro ao salvar dados da empresa. Tente novamente.');
-    }
-  };
-
+  const { openEditarEmpresaModal } = useModal();
+  
   return (
     <div className="bg-white rounded-xl shadow p-0 overflow-hidden relative w-full">
       {/* Banner */}
@@ -125,7 +49,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         {/* Botão de editar empresa - no canto superior direito do card branco */}
         {isOwner && (
           <button
-            onClick={handleAbrirModal}
+            onClick={() => openEditarEmpresaModal(empresa)}
             className="absolute top-2 right-2 sm:top-4 sm:right-4 z-30 group"
             title="Editar informações da empresa"
             style={{ zIndex: 30 }}
@@ -160,7 +84,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
           </p>
         </div>
 
-        {/* Botão Perfil público - posicionado como no PerfilUsuario */}
+        {/* Botão Perfil público */}
         {isOwner && !visualizandoPublico && onToggleVisualizacaoPublica && (
           <button 
             className="flex items-center gap-2 bg-green-200 hover:bg-green-300 text-green-900 font-semibold px-4 sm:px-6 py-2 rounded-lg shadow transition w-auto"
@@ -177,16 +101,7 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         )}
       </div>
 
-      {/* Modal de edição */}
-      {modalEditarAberto && (
-        <FormEditarEmpresa
-          formData={formData}
-          erro={erro}
-          onChange={handleChange}
-          onSave={handleSalvar}
-          onClose={handleFecharModal}
-        />
-      )}
+      {/* Removemos o modal que agora é renderizado pelo contexto */}
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import db from "../../config/db.js";
 import { hashPassword, comparePassword } from "../../utils/hash.util.js";
-import jwt from "jsonwebtoken";
 import models from "../../../models/index.model.js";
 import { isValidDocument } from '../../utils/validation.util.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../../config/auth.config.js";
@@ -259,7 +258,6 @@ async function authenticateUser(email, password) {
     }
 
     const user = userRows[0];
-
     const senhaHash = user.senha;
 
     const senhaCorreta = await comparePassword(password, senhaHash);
@@ -269,21 +267,10 @@ async function authenticateUser(email, password) {
       throw error;
     }
 
-    const tokenPayload = {
+    // ✅ Retorne apenas os dados necessários
+    return {
       id: user.idUsuario,
       email: user.emailUsuario,
-    };
-
-    const token = jwt.sign(tokenPayload, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
-
-    return {
-      token,
-      user: {
-        id: user.idUsuario,
-        email: user.emailUsuario,
-      },
     };
   } catch (err) {
     console.error("Erro no authenticateUser:", err);

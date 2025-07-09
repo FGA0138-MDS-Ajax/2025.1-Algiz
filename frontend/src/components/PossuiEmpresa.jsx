@@ -1,21 +1,8 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
-import ModalCadastroEmpresa from "./ModalCadastroEmpresa";
+import { useModal } from "../context/ModalContext";
 
 export default function PossuiEmpresa({ cardClass = "" }) {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleCadastroEmpresa = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => setShowModal(false);
-
-  const handleSaveEmpresa = (dados) => {
-    // Aqui você pode fazer o POST para o backend
-    // Exemplo: await axios.post("/api/empresas", dados);
-    setShowModal(false);
-  };
+  const { openCadastroEmpresaModal } = useModal();
 
   return (
     <div
@@ -30,7 +17,7 @@ export default function PossuiEmpresa({ cardClass = "" }) {
       </div>
       <button
         className="bg-green-600 text-white font-bold rounded px-4 py-2 transition hover:bg-green-700 text-base flex justify-center items-center w-full sm:w-auto"
-        onClick={handleCadastroEmpresa}
+        onClick={openCadastroEmpresaModal}
         style={{
           minWidth: 0,
           maxWidth: "100%",
@@ -39,12 +26,6 @@ export default function PossuiEmpresa({ cardClass = "" }) {
       >
         Cadastrar empresa
       </button>
-      {showModal && (
-        <ModalCadastroEmpresa
-          onClose={handleCloseModal}
-          onSave={handleSaveEmpresa}
-        />
-      )}
     </div>
   );
 }

@@ -1,4 +1,6 @@
+// frontend/src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from "react";
+import api from "../utils/axios"; // ✅ Axios with refresh token interceptor
 
 export const AuthContext = createContext();
 
@@ -11,22 +13,12 @@ const AuthProvider = ({ children }) => {
 
     if (usuarioLogado?.id && token) {
       try {
-        const res = await fetch(
-          `http://localhost:3001/api/users/${usuarioLogado.id}/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          setUsuario(data);
-        } else {
-          setUsuario(null);
-        }
+        const res = await api.get(`/users/${usuarioLogado.id}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUsuario(res.data);
       } catch (error) {
         console.error("Erro ao buscar o usuário:", error);
         setUsuario(null);
@@ -40,18 +32,13 @@ const AuthProvider = ({ children }) => {
     fetchUsuario();
 
     const handleStorageChange = (event) => {
-      if (
-        event.key === "authToken" ||
-        event.key === "usuarioLogado" ||
-        event.key === "authEvent"
-      ) {
-        fetchUsuario();
-        window.location.reload();
+      if (["authToken", "usuarioLogado", "authEvent"].includes(event.key)) {
+        fetchUsuario(); // ✅ don't reload — fetch updated user data
       }
     };
 
     const handleFocus = () => {
-      fetchUsuario();
+      fetchUsuario(); // ✅ useful when user switches tabs
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -63,14 +50,19 @@ const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const login = (user, token) => {
+  const login = async (user, token) => {
     localStorage.setItem("usuarioLogado", JSON.stringify(user));
     localStorage.setItem("authToken", token);
     localStorage.setItem("authEvent", Date.now().toString());
-    setUsuario(user);
+    await fetchUsuario(); // ✅ get full profile (not just ID/email)
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post("/users/logout"); // ✅ clears refreshToken on server
+    } catch (err) {
+      console.warn("Erro ao fazer logout no backend:", err);
+    }
     localStorage.removeItem("usuarioLogado");
     localStorage.removeItem("authToken");
     localStorage.setItem("authEvent", Date.now().toString());

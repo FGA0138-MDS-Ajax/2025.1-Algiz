@@ -1,44 +1,38 @@
-import { useState } from "react";
+// frontend/src/pages/Login.jsx
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react"; // ✅ import icons
+import { Eye, EyeOff } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
+import api from "../utils/axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [mostrarSenha, setMostrarSenha] = useState(false); // ✅ toggle state
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // ✅ chama o contexto
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErro("");
 
     try {
-      const response = await fetch("http://localhost:3001/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password: senha })
+      const res = await api.post("/users/login", {
+        email,
+        password: senha,
       });
 
-      const data = await response.json();
+      const { token, user } = res.data;
+      login(user, token); // ✅ usa função do contexto
 
-      if (!response.ok) {
-        throw new Error(data.erro || "Erro ao fazer login.");
-      }
-
-    // Armazena token e usuário no localStorage
-    localStorage.setItem("authToken", data.token);
-    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
-    navigate("/");
-    window.location.reload(); // Força o refresh após navegar
-  } catch (err) {
-    setErro(err.message);
-    throw new Error("Erro inesperado no servidor. Verifique o backend.");
-  }
-};
+      navigate("/");
+    } catch (err) {
+      const msg = err.response?.data?.erro || "Erro ao fazer login.";
+      setErro(msg);
+    }
+  };
 
 
   return (
