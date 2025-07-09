@@ -468,6 +468,30 @@ async function getEmpresasAssociadas(req, res) {
   }
 }
 
+// Função pública para obter empresas vinculadas
+async function getEmpresasAssociadasPublic(req, res) {
+  try {
+    const userId = parseInt(req.params.id);
+    console.log(`[getEmpresasAssociadasPublic] Buscando empresas públicas para usuário ${userId}`);
+    
+    // Retornar apenas informações públicas das empresas
+    const empresas = await userService.findEmpresasAssociadasByUserId(userId);
+    console.log(`[getEmpresasAssociadasPublic] Encontradas ${empresas.length} empresas`);
+    
+    const empresasPublicas = empresas.map(empresa => ({
+      id: empresa.idEmpresa,
+      nomeComercial: empresa.nomeComercial,
+      fotoEmpresa: empresa.fotoEmpresa,
+      areaAtuacao: empresa.areaAtuacao
+    }));
+    
+    return res.json(empresasPublicas);
+  } catch (error) {
+    console.error("Erro ao buscar empresas associadas (público):", error);
+    res.status(500).json({ erro: "Erro interno do servidor." });
+  }
+}
+
 // Buscar empresas que o usuário segue
 async function getEmpresasSeguidas(req, res) {
   try {
@@ -502,5 +526,6 @@ export default {
   setUserDefaultProfilePhoto,
   setUserDefaultBanner,
   getEmpresasAssociadas,  // ✅ ADICIONAR
+  getEmpresasAssociadasPublic,  // Adicionar esta nova função
   getEmpresasSeguidas
 };

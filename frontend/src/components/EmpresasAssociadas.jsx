@@ -1,184 +1,155 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+function MiniCardEmpresa({ empresa }) {
+  const navigate = useNavigate();
+
+  const handleFotoClick = () => {
+    navigate(`/empresa/${empresa.id || empresa.idEmpresa}`);
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow flex items-center gap-3 p-3 mb-2 min-w-[220px] max-w-[320px]">
+      <button
+        onClick={handleFotoClick}
+        className="focus:outline-none"
+        style={{ border: "none", background: "none", padding: 0 }}
+        title={`Ver perfil da empresa ${empresa.nomeComercial}`}
+      >
+        <img
+          src={empresa.fotoEmpresa || "/empresa-default.png"}
+          alt={empresa.nomeComercial}
+          className="w-12 h-12 rounded-full object-cover"
+        />
+      </button>
+      <div className="flex-1">
+        <div className="font-semibold text-gray-800">{empresa.nomeComercial}</div>
+        {empresa.cargo && (
+          <div className="text-xs text-gray-500">{empresa.cargo}</div>
+        )}
+        <button 
+          onClick={handleFotoClick}
+          className="mt-1 px-3 py-1 border border-green-400 text-green-700 rounded-full text-xs hover:bg-green-50 transition"
+        >
+          Perfil empresa
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function EmpresasAssociadas({ usuario, isUsuarioLogado }) {
-  const [empresas, setEmpresas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  console.log("🔍 EmpresasAssociadas - Componente renderizado");
+  console.log("🔍 EmpresasAssociadas - Props recebidas:", { 
+    "usuarioId": usuario?.id, 
+    "isUsuarioLogado": isUsuarioLogado 
+  });
+
+  const [empresasVinculadas, setEmpresasVinculadas] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchEmpresasAssociadas() {
-      if (!usuario?.id) return;
-
-      setLoading(true);
-      setError(null);
-
+    const fetchEmpresasVinculadas = async () => {
+      if (!usuario?.id) {
+        console.log("❌ EmpresasAssociadas - Sem ID de usuário, abortando fetch");
+        return;
+      }
+      
       try {
-        const token = localStorage.getItem("authToken");
+        setLoading(true);
+        setError(null);
+        console.log(`🔄 EmpresasAssociadas - Iniciando fetch para usuário ID: ${usuario.id}`);
+
+        // Usar a rota que já existe no backend
+        const url = `http://localhost:3001/api/users/${usuario.id}/empresas`;
+        console.log(`🔄 EmpresasAssociadas - URL da requisição: ${url}`);
+        
+        // Configurar headers com autenticação apenas se o usuário estiver logado
         const headers = {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         };
-
-        // Só adiciona token se o usuário estiver logado
-        if (token && isUsuarioLogado) {
-          headers.Authorization = `Bearer ${token}`;
+        
+        if (isUsuarioLogado) {
+          const token = localStorage.getItem("authToken");
+          if (token) {
+            headers.Authorization = `Bearer ${token}`;
+            console.log("🔑 EmpresasAssociadas - Token adicionado ao header");
+          } else {
+            console.log("⚠️ EmpresasAssociadas - Token não encontrado no localStorage");
+          }
         }
-
-        const res = await fetch(
-          `http://localhost:3001/api/users/${usuario.id}/empresas`,
-          { headers }
-        );
-
-        if (!res.ok) {
-          throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        
+        console.log("🔄 EmpresasAssociadas - Configuração da requisição:", { 
+          headers: { ...headers, Authorization: headers.Authorization ? "Bearer [REDACTED]" : undefined },
+          credentials: isUsuarioLogado ? 'include' : 'omit' 
+        });
+        
+        const response = await fetch(url, {
+          headers,
+          credentials: isUsuarioLogado ? 'include' : 'omit'
+        });
+        
+        console.log(`🔄 EmpresasAssociadas - Status da resposta: ${response.status}`);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`❌ EmpresasAssociadas - Erro na resposta: ${response.status} - ${errorText}`);
+          
+          if (response.status === 401 || response.status === 403) {
+            console.log("⚠️ EmpresasAssociadas - Erro de autenticação/autorização, mostrando lista vazia");
+            setEmpresasVinculadas([]);
+            return;
+          }
+          throw new Error(`Erro ${response.status}: ${errorText}`);
         }
-
-        const data = await res.json();
-        setEmpresas(data);
+        
+        const data = await response.json();
+        console.log("✅ EmpresasAssociadas - Dados recebidos:", data);
+        setEmpresasVinculadas(Array.isArray(data) ? data : []);
+        
       } catch (err) {
-        console.error("Erro ao buscar empresas associadas:", err);
+        console.error("❌ EmpresasAssociadas - Erro na requisição:", err);
         setError(err.message);
-        setEmpresas([]);
       } finally {
         setLoading(false);
+        console.log("🔄 EmpresasAssociadas - Requisição finalizada");
       }
-    }
+    };
 
-    fetchEmpresasAssociadas();
-  }, [usuario?.id, isUsuarioLogado]);
+    fetchEmpresasVinculadas();
+  }, [usuario, isUsuarioLogado]);
+
+  console.log("🔍 EmpresasAssociadas - Estado atual:", {
+    empresasVinculadas,
+    loading,
+    error
+  });
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Empresas Associadas
-        </h2>
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Empresas Associadas
-        </h2>
-        <p className="text-red-500 text-sm">Erro ao carregar empresas: {error}</p>
-      </div>
-    );
-  }
-
-  if (empresas.length === 0) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Empresas Associadas
-        </h2>
-        <div className="text-center py-8">
-          <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </div>
-          <p className="text-gray-500">
-            {isUsuarioLogado 
-              ? "Você ainda não está associado a nenhuma empresa"
-              : "Este usuário não está associado a nenhuma empresa"
-            }
-          </p>
-        </div>
+      <div className="bg-white rounded-2xl border border-green-100 p-4">
+        <div className="font-bold text-gray-700 mb-2">Empresas vinculadas</div>
+        <div className="text-gray-400 text-sm">Carregando empresas...</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        Empresas Associadas
-        {empresas.length > 0 && (
-          <span className="ml-2 text-sm font-normal text-gray-500">
-            ({empresas.length})
-          </span>
+    <div className="bg-white rounded-2xl border border-green-100 p-4">
+      <div className="font-bold text-gray-700 mb-2">Empresas vinculadas</div>
+      <div>
+        {empresasVinculadas && empresasVinculadas.length > 0 ? (
+          empresasVinculadas.map((empresa) => (
+            <MiniCardEmpresa 
+              key={empresa.id || empresa.idEmpresa} 
+              empresa={empresa} 
+            />
+          ))
+        ) : (
+          <div className="text-gray-400 text-sm">Este usuário não possui nenhuma empresa vinculada.</div>
         )}
-      </h2>
-
-      <div className="space-y-3">
-        {empresas.map((empresa) => (
-          <Link
-            key={empresa.idEmpresa || empresa.id}
-            to={`/empresa/${empresa.idEmpresa || empresa.id}`}
-            className="block group"
-          >
-            <div className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200">
-              {/* Logo da Empresa */}
-              <div className="flex-shrink-0 mr-3">
-                {empresa.fotoEmpresa ? (
-                  <img
-                    src={empresa.fotoEmpresa}
-                    alt={empresa.nomeComercial}
-                    className="h-12 w-12 rounded-lg object-cover"
-                  />
-                ) : (
-                  <div className="h-12 w-12 rounded-lg bg-gray-100 flex items-center justify-center">
-                    <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-
-              {/* Informações da Empresa */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-gray-900 group-hover:text-green-600 transition-colors">
-                  {empresa.nomeComercial}
-                </h3>
-                
-                <div className="flex items-center gap-3 mt-1">
-                  {empresa.areaAtuacao && (
-                    <span className="text-xs text-gray-500">
-                      {empresa.areaAtuacao}
-                    </span>
-                  )}
-                  
-                  {isUsuarioLogado && empresa.cargo && (
-                    <>
-                      <span className="text-xs text-gray-300">•</span>
-                      <span className="text-xs text-blue-600 font-medium">
-                        {empresa.cargo}
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Ícone de Seta */}
-              <div className="flex-shrink-0 ml-3">
-                <svg 
-                  className="h-4 w-4 text-gray-400 group-hover:text-green-600 transition-colors" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </Link>
-        ))}
       </div>
-
-      {/* Botão Ver Todas (se houver muitas empresas) */}
-      {empresas.length > 3 && (
-        <div className="mt-4 text-center">
-          <button className="text-sm text-green-600 hover:text-green-700 font-medium">
-            Ver todas as empresas ({empresas.length})
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -97,4 +97,7 @@ router.get("/:userId/salvos", async (req, res) => {
 // Rota para buscar empresas que o usuário segue
 router.get("/:id/following", userController.getEmpresasSeguidas);
 
+// Adicionar rota pública para empresas associadas
+router.get("/:id/empresas-publicas", userController.getEmpresasAssociadasPublic); // Nova rota pública
+
 export default router;
