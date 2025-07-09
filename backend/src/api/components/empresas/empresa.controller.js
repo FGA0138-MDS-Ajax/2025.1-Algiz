@@ -166,22 +166,34 @@ export async function updateEmpresaBanner(req, res) {
     }
 }
 
+// Corrigir as funções existentes e garantir que estejam implementadas corretamente
+
 // ✅ NOVA FUNÇÃO: Restaurar foto padrão da empresa
 export async function setEmpresaDefaultPhoto(req, res) {
     try {
         const { id } = req.params;
         const idUsuario = req.user.id;
 
+        console.log(`[setEmpresaDefaultPhoto] Restaurando foto padrão para empresa ${id}, usuário ${idUsuario}`);
+
         const result = await empresaService.setEmpresaDefaultPhoto(id, idUsuario);
-        return res.status(200).json(result);
+        
+        console.log(`[setEmpresaDefaultPhoto] Foto padrão definida com sucesso:`, result);
+        
+        return res.status(200).json({
+            mensagem: "Foto da empresa restaurada para padrão com sucesso!",
+            fotoEmpresa: result.fotoEmpresa
+        });
     } catch (error) {
+        console.error("[setEmpresaDefaultPhoto] Erro:", error);
+        
         if (error.name === 'NotFoundError') {
             return res.status(404).json({ erro: error.message });
         }
         if (error.name === 'AuthorizationError') {
             return res.status(403).json({ erro: error.message });
         }
-        console.error("Erro ao restaurar foto padrão:", error);
+        
         return res.status(500).json({ erro: "Erro interno do servidor." });
     }
 }
@@ -192,16 +204,26 @@ export async function setEmpresaDefaultBanner(req, res) {
         const { id } = req.params;
         const idUsuario = req.user.id;
 
+        console.log(`[setEmpresaDefaultBanner] Restaurando banner padrão para empresa ${id}, usuário ${idUsuario}`);
+
         const result = await empresaService.setEmpresaDefaultBanner(id, idUsuario);
-        return res.status(200).json(result);
+        
+        console.log(`[setEmpresaDefaultBanner] Banner padrão definido com sucesso:`, result);
+        
+        return res.status(200).json({
+            mensagem: "Banner da empresa restaurado para padrão com sucesso!",
+            bannerEmpresa: result.bannerEmpresa
+        });
     } catch (error) {
+        console.error("[setEmpresaDefaultBanner] Erro:", error);
+        
         if (error.name === 'NotFoundError') {
             return res.status(404).json({ erro: error.message });
         }
         if (error.name === 'AuthorizationError') {
             return res.status(403).json({ erro: error.message });
         }
-        console.error("Erro ao restaurar banner padrão:", error);
+        
         return res.status(500).json({ erro: "Erro interno do servidor." });
     }
 }

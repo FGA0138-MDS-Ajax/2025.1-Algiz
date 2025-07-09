@@ -130,7 +130,9 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
       const token = localStorage.getItem("authToken");
       const empresaId = empresa?.idEmpresa || empresa?.id;
       
-      await axios.put(
+      console.log(`🗑️ Removendo logo da empresa ${empresaId}`);
+      
+      const response = await axios.put(
         `http://localhost:3001/api/company/${empresaId}/foto/default`,
         {},
         {
@@ -140,11 +142,17 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         }
       );
       
+      console.log("✅ Logo removido com sucesso:", response.data);
+      
+      // Atualizar o estado local
       setLogoEmpresa(defaultLogoURL);
-      window.location.reload();
+      
+      // Opcional: recarregar a página ou atualizar o estado pai
+      // window.location.reload();
     } catch (err) {
-      console.error("Erro ao remover logo da empresa:", err);
-      setErro("Erro ao remover logo da empresa.");
+      console.error("❌ Erro ao remover logo da empresa:", err);
+      console.error("❌ Detalhes do erro:", err.response?.data);
+      setErro(err.response?.data?.erro || "Erro ao remover logo da empresa.");
     }
   };
 
@@ -155,7 +163,9 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
       const token = localStorage.getItem("authToken");
       const empresaId = empresa?.idEmpresa || empresa?.id;
       
-      await axios.put(
+      console.log(`🗑️ Removendo banner da empresa ${empresaId}`);
+      
+      const response = await axios.put(
         `http://localhost:3001/api/company/${empresaId}/banner/default`,
         {},
         {
@@ -165,11 +175,17 @@ export default function PerfilEmpresa({ empresa, isOwner, visualizandoPublico, o
         }
       );
       
+      console.log("✅ Banner removido com sucesso:", response.data);
+      
+      // Atualizar o estado local
       setBannerEmpresa(defaultBannerURL);
-      window.location.reload();
+      
+      // Opcional: recarregar a página ou atualizar o estado pai
+      // window.location.reload();
     } catch (err) {
-      console.error("Erro ao remover banner da empresa:", err);
-      setErro("Erro ao remover banner da empresa.");
+      console.error("❌ Erro ao remover banner da empresa:", err);
+      console.error("❌ Detalhes do erro:", err.response?.data);
+      setErro(err.response?.data?.erro || "Erro ao remover banner da empresa.");
     }
   };
   

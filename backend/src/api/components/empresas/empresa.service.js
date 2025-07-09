@@ -187,36 +187,6 @@ async function getEmpresaPostagens(idEmpresa, options = {}) {
     return empresa;
 }
 
-// ✅ NOVA FUNÇÃO: Definir foto padrão da empresa
-async function setEmpresaDefaultPhoto(idEmpresa, idUsuario) {
-    const empresa = await Empresa.findByPk(idEmpresa);
-
-    if (!empresa) {
-        throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
-    }
-    if (empresa.idUsuario !== idUsuario) {
-        throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
-    }
-
-    await empresa.update({ fotoEmpresa: DEFAULT_FOTO_EMPRESA });
-    return { message: "Foto da empresa restaurada para padrão.", fotoEmpresa: DEFAULT_FOTO_EMPRESA };
-}
-
-// ✅ NOVA FUNÇÃO: Definir banner padrão da empresa
-async function setEmpresaDefaultBanner(idEmpresa, idUsuario) {
-    const empresa = await Empresa.findByPk(idEmpresa);
-
-    if (!empresa) {
-        throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
-    }
-    if (empresa.idUsuario !== idUsuario) {
-        throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
-    }
-
-    await empresa.update({ bannerEmpresa: DEFAULT_BANNER_EMPRESA });
-    return { message: "Banner da empresa restaurado para padrão.", bannerEmpresa: DEFAULT_BANNER_EMPRESA };
-}
-
 // Corrigindo a função getUsuariosVinculados - removendo referência à coluna status inexistente
 
 async function getUsuariosVinculados(idEmpresa) {
@@ -353,6 +323,58 @@ async function getEmpresaFollowers(idEmpresa, limit = 10, offset = 0) {
     }
 }
 
+// Corrigir as funções para definir imagens padrão
+
+// ✅ NOVA FUNÇÃO: Definir foto padrão da empresa
+async function setEmpresaDefaultPhoto(idEmpresa, idUsuario) {
+    console.log(`[service.setEmpresaDefaultPhoto] Empresa: ${idEmpresa}, Usuário: ${idUsuario}`);
+    
+    const empresa = await Empresa.findByPk(idEmpresa);
+
+    if (!empresa) {
+        throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
+    }
+    if (empresa.idUsuario !== idUsuario) {
+        throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
+    }
+
+    console.log(`[service.setEmpresaDefaultPhoto] Definindo foto padrão: ${DEFAULT_FOTO_EMPRESA}`);
+    
+    await empresa.update({ fotoEmpresa: DEFAULT_FOTO_EMPRESA });
+    
+    console.log(`[service.setEmpresaDefaultPhoto] Foto atualizada com sucesso`);
+    
+    return { 
+        message: "Foto da empresa restaurada para padrão.", 
+        fotoEmpresa: DEFAULT_FOTO_EMPRESA 
+    };
+}
+
+// ✅ NOVA FUNÇÃO: Definir banner padrão da empresa
+async function setEmpresaDefaultBanner(idEmpresa, idUsuario) {
+    console.log(`[service.setEmpresaDefaultBanner] Empresa: ${idEmpresa}, Usuário: ${idUsuario}`);
+    
+    const empresa = await Empresa.findByPk(idEmpresa);
+
+    if (!empresa) {
+        throw { name: 'NotFoundError', message: 'Empresa não encontrada.' };
+    }
+    if (empresa.idUsuario !== idUsuario) {
+        throw { name: 'AuthorizationError', message: 'Você não tem permissão para editar esta empresa.' };
+    }
+
+    console.log(`[service.setEmpresaDefaultBanner] Definindo banner padrão: ${DEFAULT_BANNER_EMPRESA}`);
+    
+    await empresa.update({ bannerEmpresa: DEFAULT_BANNER_EMPRESA });
+    
+    console.log(`[service.setEmpresaDefaultBanner] Banner atualizado com sucesso`);
+    
+    return { 
+        message: "Banner da empresa restaurado para padrão.", 
+        bannerEmpresa: DEFAULT_BANNER_EMPRESA 
+    };
+}
+
 // ✅ EXPORT atualizado
 export default {
     createEmpresa,
@@ -363,9 +385,9 @@ export default {
     findEmpresaByUserId,
     updateEmpresa,
     getEmpresaPostagens,
-    setEmpresaDefaultPhoto,    // ✅ NOVA
-    setEmpresaDefaultBanner,    // ✅ NOVA
-    getUsuariosVinculados,   // Nova função adicionada aqui
+    setEmpresaDefaultPhoto,    // ✅ CERTIFICAR QUE ESTÁ AQUI
+    setEmpresaDefaultBanner,   // ✅ CERTIFICAR QUE ESTÁ AQUI
+    getUsuariosVinculados,
     followEmpresa,
     unfollowEmpresa,
     checkIfUserFollowsEmpresa,
